@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>派生态社区</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.544.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js"></script>
+    <style>
+        @keyframes color-change {
+            0% { background-color: red; }
+            33% { background-color: green; }
+            66% { background-color: yellow; }
+            100% { background-color: red; }
+        }
+        .animate-color-change {
+            animation: color-change 2s ease-in-out infinite;
+        }
+        
+        @keyframes rotate3d {
+            0% {
+                transform: rotateY(0deg) rotateX(10deg);
+            }
+            100% {
+                transform: rotateY(360deg) rotateX(10deg);
+            }
+        }
+        .animate-rotate-3d {
+            animation: rotate3d 20s linear infinite;
+            background-image: url('https://p11-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1977001200551591948~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1792495050&x-signature=yKJQsDbLQ%2FOKbXiJ0m6zTr%2BgRcI%3D');
+            background-size: cover;
+            background-position: center;
+            box-shadow: inset -20px -20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(0, 100, 255, 0.5);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .animate-rotate-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 11px
+            );
+            animation: rotate 10s linear infinite reverse;
+        }
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        .animate-gradient {
+            animation: gradient 15s ease infinite;
+            background-size: 200% 200%;
+        }
+        .moon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 0 0 2px black;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor, 0 0 80px currentColor, 0 0 100px currentColor, 0 0 120px currentColor, 0 0 140px currentColor, 0 0 160px currentColor;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .moon::before {
+            content: attr(data-name);
+            white-space: nowrap;
+        }
+
+        .moon-1 { color: red; animation: orbit 12s linear infinite reverse, glow 2s ease-in-out infinite alternate, color-change-1 5s ease-in-out infinite; }
+        .moon-2 { color: orange; animation: orbit 18s linear infinite, glow 2s ease-in-out infinite alternate, color-change-2 6s ease-in-out infinite; }
+        .moon-3 { color: yellow; animation: orbit 15s linear infinite reverse, glow 2s ease-in-out infinite alternate, color-change-3 7s ease-in-out infinite; }
+        .moon-4 { color: green; animation: orbit 20s linear infinite, glow 2s ease-in-out infinite alternate, color-change-4 8s ease-in-out infinite; }
+        .moon-5 { color: cyan; animation: orbit 22s linear infinite reverse, glow 2s ease-in-out infinite alternate, color-change-5 9s ease-in-out infinite; }
+        .moon-6 { color: blue; animation: orbit 25s linear infinite, glow 2s ease-in-out infinite alternate, color-change-6 10s ease-in-out infinite; }
+        .moon-7 { color: purple; animation: orbit 30s linear infinite reverse, glow 2s ease-in-out infinite alternate, color-change-7 11s ease-in-out infinite; }
+
+        @keyframes orbit {
+            from {
+                transform: rotate(0deg) translateX(100px) rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg) translateX(100px) rotate(-360deg);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+            }
+            to {
+                box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+            }
+        }
+
+        @keyframes pulse-glow-green {
+            0% {
+                box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e;
+                background-color: #22c55e;
+            }
+            50% {
+                box-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e, 0 0 30px #22c55e;
+                background-color: #eab308;
+            }
+            100% {
+                box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e;
+                background-color: #22c55e;
+            }
+        }
+
+        @keyframes pulse-glow-yellow {
+            0% {
+                box-shadow: 0 0 5px #eab308, 0 0 10px #eab308;
+                background-color: #eab308;
+            }
+            50% {
+                box-shadow: 0 0 10px #eab308, 0 0 20px #eab308, 0 0 30px #eab308;
+                background-color: #22c55e;
+            }
+            100% {
+                box-shadow: 0 0 5px #eab308, 0 0 10px #eab308;
+                background-color: #eab308;
+            }
+        }
+
+        @keyframes pulse-glow-purple {
+            0% {
+                box-shadow: 0 0 5px #a855f7, 0 0 10px #a855f7;
+            }
+            100% {
+                box-shadow: 0 0 10px #a855f7, 0 0 20px #a855f7, 0 0 30px #a855f7;
+            }
+        }
+
+        @keyframes pulse-glow-pink {
+            0% {
+                box-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899;
+            }
+            100% {
+                box-shadow: 0 0 10px #ec4899, 0 0 20px #ec4899, 0 0 30px #ec4899;
+            }
+        }
+
+        @keyframes earth-color-change {
+            0% { background-color: black; box-shadow: 0 0 50px black; }
+            25% { background-color: white; box-shadow: 0 0 50px white; }
+            50% { background-color: red; box-shadow: 0 0 50px red; }
+            75% { background-color: yellow; box-shadow: 0 0 50px yellow; }
+            100% { background-color: black; box-shadow: 0 0 50px black; }
+        }
+
+        .button-animate {
+            animation: button-color-change 5s ease-in-out infinite;
+        }
+
+        @keyframes button-color-change {
+            0% { color: white; }
+            50% { color: black; }
+            100% { color: yellow; }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            margin: 5% auto;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 0 60px rgba(0, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: modalSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(15px);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 255, 0.7);
+        }
+        
+        .floating-dot {
+            position: absolute;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+        
+        .dot-red {
+            background-color: red;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .dot-green {
+            background-color: green;
+            animation: float 8s ease-in-out infinite 1s;
+        }
+        
+        .dot-yellow {
+            background-color: yellow;
+            animation: float 7s ease-in-out infinite 2s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, -30px) rotate(90deg);
+            }
+            50% {
+                transform: translate(-10px, -10px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-30px, 20px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        @keyframes blob {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+            100% {
+                transform: translate(0px, 0px) scale(1);
+            }
+        }
+        
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+        
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+        
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        #earth-container {
+            background-image: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
+            border-radius: 50%;
+            padding: 20px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .firework {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .firework::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background-color: currentColor;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: firework-burst 1s ease-out forwards;
+            box-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor;
+        }
+
+        @keyframes firework-burst {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-purple-500 to-blue-500 animate-gradient">
+    <div class="container mx-auto p-4 max-w-md h-screen flex flex-col" id="main-container">
+        <!-- Header -->
+        <header class="text-center mt-2 mb-6">
+            <h1 class="text-2xl font-bold" style="color: rgb(245, 207, 39);">派生态社区宣发</h1>
+        </header>
+
+        <div class="flex-1 flex flex-col justify-between">
+            <!-- Earth and Moons Model - Moved further down -->
+            <div class="flex items-center justify-center mb-8 mt-12">
+                <div class="relative w-36 h-36" id="earth-container">
+                    <div id="earth" class="absolute inset-0 rounded-full cursor-pointer flex items-center justify-center" style="background-color: white; transform-style: preserve-3d; animation: earth-color-change 18s infinite; overflow: hidden; color: black; font-size: 18px; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.8);">pi network</div>
+                    <canvas id="earth-canvas" class="absolute inset-0 rounded-full"></canvas>
+                    
+                    <!-- Orbiting Moons -->
+                    <div class="moon moon-1" data-name="派节点"></div>
+                    <div class="moon moon-2" data-name="派生态"></div>
+                    <div class="moon moon-3" data-name="pi币入股"></div>
+                    <div class="moon moon-4" data-name="派先锋"></div>
+                    <div class="moon moon-5" data-name="二八定律"></div>
+                    <div class="moon moon-6" data-name="派社区"></div>
+                    <div class="moon moon-7" data-name="生态公募"></div>
+                </div>
+            </div>
+
+            <!-- Announcement - Moved further down -->
+            <div class="bg-black text-white p-2 rounded-lg shadow-md mb-8 mx-auto w-full max-w-xs cursor-pointer" id="announcement">
+                <p class="text-xs text-center"><strong>公告：</strong>最新派生态招募股东开启，关注最新动态</p>
+            </div>
+
+            <!-- Buttons - Reorganized layout -->
+            <div class="mb-8 px-4">
+                <!-- First row: Ecosystem Query and Join Community -->
+                <div class="flex gap-3 mb-4">
+                    <button id="ecosystem-query" class="flex-1 bg-green-500 bg-opacity-20 p-3 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-green-300 animate-pulse button-animate text-lg">生态查询</button>
+                    <button id="friend-planning" class="flex-1 bg-blue-900 bg-opacity-20 p-3 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-blue-500 animate-pulse button-animate text-lg">加入社群</button>
+                </div>
+                
+                <!-- Second row: About Us -->
+                <div class="w-full">
+                    <button id="about-us" class="w-full bg-yellow-500 bg-opacity-20 p-3 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-yellow-300 animate-pulse button-animate text-lg">关于我们</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const moonSounds = {
+            '派节点': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'], volume: 0.5 }),
+            '派生态': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3'], volume: 0.5 }),
+            'pi币入股': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2002/2002-preview.mp3'], volume: 0.5 }),
+            '派先锋': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'], volume: 0.5 }),
+            '二八定律': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2004/2004-preview.mp3'], volume: 0.5 }),
+            '派社区': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3'], volume: 0.5 }),
+            '生态公募': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2006/2006-preview.mp3'], volume: 0.5 }),
+        };
+
+        const buttonSounds = {
+            'ecosystem-query': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'], volume: 0.7 }),
+            'friend-planning': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2569/2569-preview.mp3'], volume: 0.7 }),
+            'about-us': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3'], volume: 0.7 }),
+            'earth': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'], volume: 0.7 }),
+            'background-click': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2575/2575-preview.mp3'], volume: 0.5 }),
+            'announcement-scroll': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2576/2576-preview.mp3'], volume: 0.6 }),
+        };
+
+        lucide.createIcons();
+        
+        // Earth data stream effect
+        function initEarthDataStream() {
+            const canvas = document.getElementById('earth-canvas');
+            const ctx = canvas.getContext('2d');
+            const earth = document.getElementById('earth');
+            
+            // Set canvas size to match earth element
+            function resizeCanvas() {
+                const rect = earth.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+            
+            // Initial resize
+            resizeCanvas();
+            
+            // Handle window resize
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Data stream particles
+            const particles = [];
+            const particleCount = 100;
+            
+            // Create particles
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    speed: Math.random() * 2 + 1,
+                    length: Math.random() * 10 + 5,
+                    width: Math.random() * 2 + 1,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    angle: Math.random() * Math.PI * 2
+                });
+            }
+            
+            // Animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw and update particles
+                particles.forEach(particle => {
+                    // Calculate center of the circle
+                    const centerX = canvas.width / 2;
+                    const centerY = canvas.height / 2;
+                    const radius = canvas.width / 2;
+                    
+                    // Calculate distance from center
+                    const dx = particle.x - centerX;
+                    const dy = particle.y - centerY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Only draw particles inside the circle
+                    if (distance < radius) {
+                        // Draw particle
+                        ctx.beginPath();
+                        ctx.moveTo(particle.x, particle.y);
+                        
+                        // Calculate end point based on angle and length
+                        const endX = particle.x + Math.cos(particle.angle) * particle.length;
+                        const endY = particle.y + Math.sin(particle.angle) * particle.length;
+                        
+                        ctx.lineTo(endX, endY);
+                        ctx.strokeStyle = `rgba(0, 255, 0, ${particle.opacity})`;
+                        ctx.lineWidth = particle.width;
+                        ctx.stroke();
+                        
+                        // Update position (move in a circular pattern)
+                        particle.angle += 0.02;
+                        particle.x += Math.cos(particle.angle) * particle.speed * 0.2;
+                        particle.y += Math.sin(particle.angle) * particle.speed * 0.2;
+                        
+                        // Wrap around if particle goes outside canvas
+                        if (particle.x < 0) particle.x = canvas.width;
+                        if (particle.x > canvas.width) particle.x = 0;
+                        if (particle.y < 0) particle.y = canvas.height;
+                        if (particle.y > canvas.height) particle.y = 0;
+                    } else {
+                        // Reset particle inside the circle if it goes outside
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = Math.random() * radius * 0.8;
+                        particle.x = centerX + Math.cos(angle) * distance;
+                        particle.y = centerY + Math.sin(angle) * distance;
+                    }
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            
+            // Start animation
+            animate();
+        }
+        
+        // Initialize earth data stream after page loads
+        window.addEventListener('load', initEarthDataStream);
+
+        document.querySelectorAll('.moon').forEach(moon => {
+            moon.addEventListener('click', () => {
+                const name = moon.dataset.name;
+                moonSounds[name].play();
+                speakText(name);
+            });
+        });
+
+        document.getElementById('earth').addEventListener('click', function() {
+            // Play ding sound
+            buttonSounds['earth'].play();
+            
+            // Play welcome voice with male voice first
+            speakText('欢迎来到，welcome to pi network this is good', 'male');
+            
+            // Play female voice after a short delay
+            setTimeout(() => {
+                speakText('欢迎来到，welcome to pi network this is good', 'female');
+            }, 3000);
+            
+            // Start black hole absorption effect
+            startBlackHoleEffect();
+        });
+
+        function startBlackHoleEffect() {
+            const earth = document.getElementById('earth');
+            const container = document.getElementById('earth-container');
+            const moons = document.querySelectorAll('.moon');
+            
+            // Disable earth click during animation
+            earth.style.pointerEvents = 'none';
+            
+            // Get center coordinates
+            const rect = earth.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2 - containerRect.left;
+            const centerY = rect.top + rect.height / 2 - containerRect.top;
+            
+            // Stop all moon animations and save original styles
+            const originalStyles = [];
+            moons.forEach((moon, index) => {
+                originalStyles[index] = {
+                    animation: moon.style.animation,
+                    transform: moon.style.transform,
+                    opacity: moon.style.opacity
+                };
+                moon.style.animation = 'none';
+            });
+            
+            // Animate moons being sucked into the center
+            moons.forEach((moon, index) => {
+                setTimeout(() => {
+                    // Play explosion sound
+                    const fireworkSound = new Howl({ 
+                        src: ['https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'], 
+                        volume: 0.5 
+                    });
+                    fireworkSound.play();
+                    
+                    // Create firework at moon position
+                    createFireworkAtPosition(moon.offsetLeft, moon.offsetTop);
+                    
+                    // Animate moon to center
+                    moon.animate([
+                        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                        { transform: `translate(calc(${centerX}px - 50%), calc(${centerY}px - 50%)) scale(0)`, opacity: 0 }
+                    ], {
+                        duration: 1000,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                        fill: 'forwards'
+                    });
+                }, index * 200);
+            });
+            
+            // Create central explosion after all moons are absorbed
+            setTimeout(() => {
+                createCentralExplosion(centerX, centerY);
+            }, moons.length * 200 + 500);
+            
+            // Restore moons after 3 seconds
+            setTimeout(() => {
+                moons.forEach((moon, index) => {
+                    moon.style.animation = originalStyles[index].animation;
+                    moon.style.transform = originalStyles[index].transform;
+                    moon.style.opacity = originalStyles[index].opacity;
+                    moon.style.animationPlayState = 'running';
+                });
+                
+                // Re-enable earth click
+                earth.style.pointerEvents = 'auto';
+            }, 3000);
+        }
+
+        function createFireworkAtPosition(x, y) {
+            const container = document.getElementById('earth-container');
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            
+            // Random color
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            firework.style.color = color;
+            
+            // Position at moon
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+            
+            container.appendChild(firework);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (firework.parentNode) {
+                    firework.parentNode.removeChild(firework);
+                }
+            }, 1000);
+        }
+
+        function createCentralExplosion(centerX, centerY) {
+            const container = document.getElementById('earth-container');
+            const fireworkCount = 20;
+            
+            // Create multiple fireworks from center
+            for (let i = 0; i < fireworkCount; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    
+                    // Random color
+                    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    firework.style.color = color;
+                    
+                    // Start at center
+                    firework.style.left = `${centerX}px`;
+                    firework.style.top = `${centerY}px`;
+                    
+                    container.appendChild(firework);
+                    
+                    // Animate firework outward
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 150 + 50;
+                    const duration = Math.random() * 0.5 + 0.5;
+                    
+                    const targetX = centerX + Math.cos(angle) * distance;
+                    const targetY = centerY + Math.sin(angle) * distance;
+                    
+                    firework.animate([
+                        { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
+                        { transform: `translate(calc(-50% + ${targetX - centerX}px), calc(-50% + ${targetY - centerY}px)) scale(1)`, opacity: 1 },
+                        { transform: `translate(calc(-50% + ${targetX - centerX}px), calc(-50% + ${targetY - centerY}px)) scale(0)`, opacity: 0 }
+                    ], {
+                        duration: duration * 1000,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    });
+                    
+                    // Remove firework after animation
+                    setTimeout(() => {
+                        if (firework.parentNode) {
+                            firework.parentNode.removeChild(firework);
+                        }
+                    }, (duration + 1) * 1000);
+                }, i * 50);
+            }
+        }
+
+        // Create ecosystem query page
+        const ecosystemPage = document.createElement('div');
+        ecosystemPage.id = 'ecosystem-page';
+        ecosystemPage.className = 'fixed inset-0 bg-gradient-to-r from-purple-500 to-blue-500 animate-gradient z-50 hidden';
+        ecosystemPage.innerHTML = `
+            <div class="container mx-auto p-4 max-w-md h-screen flex flex-col">
+                <!-- Header -->
+                <header class="text-center mt-6 mb-8">
+                    <h1 class="text-3xl font-bold" style="color: rgb(245, 207, 39);">派生态详情</h1>
+                </header>
+
+                <!-- Content -->
+                <div class="flex-1 flex flex-col justify-center items-center space-y-6">
+                    <!-- Free Ecosystem Button -->
+                    <button id="free-ecosystem" class="w-full bg-gradient-to-r from-green-500/30 to-green-600/30 p-6 rounded-xl text-center font-bold backdrop-blur-sm shadow-lg border-2 border-green-400 text-xl text-white hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105">
+                        免费派生态 <span class="text-sm opacity-80">（宣传）</span>
+                    </button>
+                    
+                    <!-- Investment Ecosystem Button -->
+                    <button id="investment-ecosystem" class="w-full bg-gradient-to-r from-blue-500/30 to-blue-600/30 p-6 rounded-xl text-center font-bold backdrop-blur-sm shadow-lg border-2 border-blue-400 text-xl text-white hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
+                        派币招募生态 <span class="text-sm opacity-80">（宣发）</span>
+                    </button>
+                    
+                    <!-- Future Planning Button -->
+                    <button id="future-planning" class="w-full bg-gradient-to-r from-purple-500/30 to-purple-600/30 p-6 rounded-xl text-center font-bold backdrop-blur-sm shadow-lg border-2 border-purple-400 text-xl text-white hover:shadow-purple-500/50 transition-all duration-300 transform hover:scale-105 relative overflow-hidden">
+                        派币未来规划路线 <span class="inline-block w-3 h-3 rounded-full ml-2 animate-color-change"></span>
+                    </button>
+                </div>
+
+                <!-- Back Button -->
+                <div class="mt-6 mb-4 flex justify-center">
+                    <button id="back-to-main" class="px-8 py-3 bg-gradient-to-r from-red-500/30 to-red-600/30 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-red-400 text-lg text-white hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
+                        返回主页
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(ecosystemPage);
+
+        document.getElementById('ecosystem-query').addEventListener('click', () => {
+            buttonSounds['ecosystem-query'].play();
+            document.getElementById('main-container').classList.add('hidden');
+            document.getElementById('ecosystem-page').classList.remove('hidden');
+        });
+
+        // Back to main page
+        document.getElementById('back-to-main').addEventListener('click', () => {
+            buttonSounds['ecosystem-query'].play();
+            document.getElementById('ecosystem-page').classList.add('hidden');
+            document.getElementById('main-container').classList.remove('hidden');
+        });
+
+        // Add event listeners for back to ecosystem buttons after pages are created
+        function addBackButtonListeners() {
+            const backButtons = document.querySelectorAll('.back-to-ecosystem');
+            backButtons.forEach(button => {
+                // Remove any existing event listeners
+                button.replaceWith(button.cloneNode(true));
+            });
+            
+            // Add fresh event listeners
+            document.querySelectorAll('.back-to-ecosystem').forEach(button => {
+                button.addEventListener('click', function() {
+                    console.log('Back button clicked');
+                    buttonSounds['ecosystem-query'].play();
+                    // Hide all sub-pages
+                    document.getElementById('free-ecosystem-page').classList.add('hidden');
+                    document.getElementById('investment-ecosystem-page').classList.add('hidden');
+                    document.getElementById('future-planning-page').classList.add('hidden');
+                    // Show ecosystem page
+                    document.getElementById('ecosystem-page').classList.remove('hidden');
+                });
+            });
+        }
+
+        // Ecosystem buttons functionality
+        // Create Free Ecosystem Page
+        const freeEcosystemPage = document.createElement('div');
+        freeEcosystemPage.id = 'free-ecosystem-page';
+        freeEcosystemPage.className = 'fixed inset-0 bg-gradient-to-r from-blue-500 to-green-500 animate-gradient z-50 hidden';
+        freeEcosystemPage.innerHTML = `
+            <div class="container mx-auto p-4 max-w-md h-screen flex flex-col">
+                <!-- Header -->
+                <header class="text-center mt-6 mb-4">
+                    <h1 class="text-3xl font-bold" style="color: rgb(245, 207, 39);">社区生态宣传</h1>
+                </header>
+
+                <!-- Notice -->
+                <div class="bg-yellow-500/20 p-3 rounded-lg border border-yellow-400/30 mb-6 backdrop-blur-sm">
+                    <p class="text-yellow-100 text-sm text-center">
+                        <i class="fa fa-info-circle mr-1"></i>
+                        欢迎访问派碧生态，请粘贴下面网址进入派浏览器进行操作
+                    </p>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto pb-4">
+                    <div class="space-y-6">
+                        <!-- Ecosystem Item 1 -->
+                        <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
+                            <h3 class="text-lg font-bold text-green-300 mb-2 flex items-center">
+                                <i class="fa fa-leaf mr-2"></i>SatPi 派游器
+                            </h3>
+                            <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
+                                <span class="text-gray-200 text-sm flex-1 truncate">https://satpi.app</span>
+                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://satpi.app">复制</button>
+                            </div>
+                            <div class="mt-3">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/c7aa1b6141004150a6052ff7eb9d7d54.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=rKETlaYCIEyeKctUMHeqEAL2QcM%3D" alt="SatPi 派游器" class="w-full h-auto rounded-lg border border-green-500/30">
+                            </div>
+                        </div>
+                        
+                        <!-- Ecosystem Item 2 -->
+                        <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
+                            <h3 class="text-lg font-bold text-blue-300 mb-2 flex items-center">
+                                <i class="fa fa-shield mr-2"></i>Hashpi 哈希派
+                            </h3>
+                            <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
+                                <span class="text-gray-200 text-sm flex-1 truncate">hashpi.app</span>
+                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="hashpi.app">复制</button>
+                            </div>
+                            <div class="mt-3">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/0599eb9256ef486e81589f54ca0f3f8a.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=zudY0bru9Hqdj76Ltqq968RDIPs%3D" alt="Hashpi 哈希派" class="w-full h-auto rounded-lg border border-blue-500/30">
+                            </div>
+                        </div>
+                        
+                        <!-- Ecosystem Item 3 -->
+                        <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-4 rounded-xl border border-purple-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
+                            <h3 class="text-lg font-bold text-purple-300 mb-2 flex items-center">
+                                <i class="fa fa-gift mr-2"></i>Pipet 派宠物
+                            </h3>
+                            <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
+                                <span class="text-gray-200 text-sm flex-1 truncate">https://pi.net/#/app?launchId=pipetmainnet&x-api-key=pi7419296</span>
+                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://pi.net/#/app?launchId=pipetmainnet&x-api-key=pi7419296">复制</button>
+                            </div>
+                            <div class="mt-3">
+                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/1e6c8ca338ff49d699723ac5173a9402.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=i71JWORWhx0tOrESqyI6QHuDEaY%3D" alt="Pipet 派宠物" class="w-full h-auto rounded-lg border border-purple-500/30">
+                            </div>
+                        </div>
+                        
+                        <!-- Ecosystem Item 4 -->
+                        <div class="bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 p-4 rounded-xl border border-yellow-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
+                            <h3 class="text-lg font-bold text-yellow-300 mb-2 flex items-center">
+                                <i class="fa fa-bank mr-2"></i>timebank 时间银行
+                            </h3>
+                            <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
+                                <span class="text-gray-200 text-sm flex-1 truncate">https://satpi.app</span>
+                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://satpi.app">复制</button>
+                            </div>
+                            <div class="mt-3">
+                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/00d9153ff1854e44b0973287e08e335b.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=o0kicHJOtPRzqeGAgzIXI4WeokE%3D" alt="timebank 时间银行" class="w-full h-auto rounded-lg border border-yellow-500/30">
+                            </div>
+                        </div>
+                        
+                        <!-- Ecosystem Item 5 -->
+                        <div class="bg-gradient-to-br from-orange-900/40 to-orange-800/20 p-4 rounded-xl border border-orange-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
+                            <h3 class="text-lg font-bold text-orange-300 mb-2 flex items-center">
+                                <i class="fa fa-comments mr-2"></i>TELTLK 派社群
+                            </h3>
+                            <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
+                                <span class="text-gray-200 text-sm flex-1 truncate">https://www.teltlk.com/#/register?invite=ss444</span>
+                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://www.teltlk.com/#/register?invite=ss444">复制</button>
+                            </div>
+                            <div class="mt-3">
+                                <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7143d761387c4f2fb2adcfa8664cec3a.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=acjV2aDxJj2oYmCGWX%2BSH3rjhuQ%3D" alt="TELTLK 派社群" class="w-full h-auto rounded-lg border border-orange-500/30">
+                            </div>
+                        </div>
+                        
+                        <!-- Reference Images -->
+                        <div class="mt-6 space-y-4">
+                            <div class="bg-gradient-to-br from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30 backdrop-blur-sm">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/8230bc8e760b4c83a883ef24dac079ab.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235238AAF8542CBAFC7BC4F8E8&rrcfp=8a172a1a&x-expires=1777564358&x-signature=u%2BLGP9nQH4Pp3%2B%2FEzgsCe5H%2Be0M%3D" alt="派币未来规划参考图1" class="w-full h-auto rounded-lg border border-purple-500/30 shadow-lg shadow-purple-500/20">
+                            </div>
+                            <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/38b7bef4bc654c2dbfc2a2da4a415952.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235238AAF8542CBAFC7BC4F8E8&rrcfp=8a172a1a&x-expires=1777564358&x-signature=w5KcbuIzS8Z038NWb2Ju8%2FCX5d8%3D" alt="派币未来规划参考图2" class="w-full h-auto rounded-lg border border-blue-500/30 shadow-lg shadow-blue-500/20">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back Button -->
+                <div class="mt-4 mb-4 flex justify-center">
+                    <button class="back-to-ecosystem px-8 py-3 bg-gradient-to-r from-red-500/30 to-red-600/30 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-red-400 text-lg text-white hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
+                        返回上一页
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(freeEcosystemPage);
+
+        document.getElementById('free-ecosystem').addEventListener('click', () => {
+            buttonSounds['ecosystem-query'].play();
+            document.getElementById('ecosystem-page').classList.add('hidden');
+            document.getElementById('free-ecosystem-page').classList.remove('hidden');
+        });
+
+        // Create Investment Ecosystem Page
+        const investmentEcosystemPage = document.createElement('div');
+        investmentEcosystemPage.id = 'investment-ecosystem-page';
+        investmentEcosystemPage.className = 'fixed inset-0 bg-gradient-to-r from-yellow-500 to-orange-500 animate-gradient z-50 hidden';
+        investmentEcosystemPage.innerHTML = `
+            <div class="container mx-auto p-4 max-w-md h-screen flex flex-col">
+                <!-- Header -->
+                <header class="text-center mt-6 mb-4">
+                    <h1 class="text-2xl font-bold" style="color: rgb(245, 207, 39);">派币招募生态</h1>
+                </header>
+
+                <!-- Subtitle -->
+                <div class="text-center mb-6">
+                    <p class="text-lg text-white font-semibold" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">以下生态正在公布招募中</p>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto pb-4">
+                    <div class="space-y-6">
+                        <!-- Ecosystem 1 -->
+                        <div class="w-full bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-green-300 flex items-center">
+                                    <i class="fa fa-gamepad mr-2"></i>派信娱乐（游戏生态）
+                                </h3>
+                                <div class="w-6 h-6 rounded-full bg-green-500 animate-pulse-glow flex items-center justify-center" style="animation: pulse-glow-green 2s ease-in-out infinite alternate;"></div>
+                            </div>
+                            <div class="text-gray-100 space-y-2 mb-4">
+                                <p><strong>项目类型：</strong>游戏娱乐生态</p>
+                                <p><strong>招募金额：</strong>900pi</p>
+                                <p><strong>股东数量：</strong>总计1000名股东</p>
+                            </div>
+                            <div class="space-y-3">
+                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/904367744524448f9c2f9b2739c1d2e2.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235049FA58B6AAFF559AAE40C3&rrcfp=8a172a1a&x-expires=1777564250&x-signature=pBj%2BYm4QH1rpZ2C1yX7z65CEp4g%3D" alt="派信娱乐参考图1" class="w-full h-auto rounded-lg border border-green-500/30 shadow-lg shadow-green-500/20">
+                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/92f8ff800d1841ad9b9090d98a7ecc8b.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235049FA58B6AAFF559AAE40C3&rrcfp=8a172a1a&x-expires=1777564250&x-signature=qM2Py%2BEjaaAeXedcnC4nl8YUuN8%3D" alt="派信娱乐参考图2" class="w-full h-auto rounded-lg border border-green-500/30 shadow-lg shadow-green-500/20">
+                            </div>
+                        </div>
+
+                        <!-- Ecosystem 2 -->
+                        <div class="w-full bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-blue-300 flex items-center">
+                                    <i class="fa fa-globe mr-2"></i>SPACE（社区生态）
+                                </h3>
+                                <div class="w-6 h-6 rounded-full bg-yellow-500 animate-pulse-glow flex items-center justify-center" style="animation: pulse-glow-yellow 2s ease-in-out infinite alternate;"></div>
+                            </div>
+                            <div class="text-gray-100 space-y-2">
+                                <p><strong>项目类型：</strong>社区生态平台</p>
+                                <p><strong>参与金额：</strong>628pi</p>
+                                <p><strong>项目特色：</strong>构建派友交流、资源共享的社区平台</p>
+                                <p><strong>发展规划：</strong>打造多元化的社区服务，促进派生态繁荣发展</p>
+                                <p><strong>招募状态：</strong>正在招募中，名额有限，先到先得</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Back Button -->
+                <div class="mt-2 mb-4 flex justify-center">
+                    <button class="back-to-ecosystem px-8 py-3 bg-gradient-to-r from-red-500/30 to-red-600/30 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-red-400 text-lg text-white hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
+                        返回上一页
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(investmentEcosystemPage);
+
+        document.getElementById('investment-ecosystem').addEventListener('click', () => {
+            buttonSounds['ecosystem-query'].play();
+            document.getElementById('ecosystem-page').classList.add('hidden');
+            document.getElementById('investment-ecosystem-page').classList.remove('hidden');
+        });
+
+        // Create Future Planning Page
+        const futurePlanningPage = document.createElement('div');
+        futurePlanningPage.id = 'future-planning-page';
+        futurePlanningPage.className = 'fixed inset-0 bg-gradient-to-r from-purple-500 to-blue-500 animate-gradient z-50 hidden';
+        futurePlanningPage.innerHTML = `
+            <div class="container mx-auto p-4 max-w-md h-screen flex flex-col">
+                <!-- Header -->
+                <header class="text-center mt-6 mb-6">
+                    <h1 class="text-2xl font-bold" style="color: rgb(245, 207, 39);">派币未来规划路线</h1>
+                </header>
+
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto pb-4">
+                    <div class="space-y-6">
+                        <!-- Phase 1 -->
+                        <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm">
+                            <h3 class="text-xl font-bold mb-3 text-cyan-300 flex items-center">
+                                <i class="fa fa-server mr-2"></i>节点建设
+                            </h3>
+                            <p class="text-gray-100">全球节点网络部署，确保网络安全与稳定性，为生态发展奠定坚实基础。</p>
+                        </div>
+                        
+                        <!-- Phase 2 -->
+                        <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm">
+                            <h3 class="text-xl font-bold mb-3 text-green-300 flex items-center">
+                                <i class="fa fa-exchange mr-2"></i>交易所上线
+                            </h3>
+                            <p class="text-gray-100">主流交易所陆续上线，提供更多交易渠道，提升派币流动性与价值。</p>
+                        </div>
+                        
+                        <!-- Phase 3 -->
+                        <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-4 rounded-xl border border-purple-500/30 backdrop-blur-sm">
+                            <h3 class="text-xl font-bold mb-3 text-purple-300 flex items-center">
+                                <i class="fa fa-globe mr-2"></i>生态应用
+                            </h3>
+                            <p class="text-gray-100">多元化生态应用开发，涵盖支付、社交、游戏、金融等多个领域，打造完整生态系统。</p>
+                        </div>
+                        
+                        <!-- Phase 4 -->
+                        <div class="bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 p-4 rounded-xl border border-yellow-500/30 backdrop-blur-sm">
+                            <h3 class="text-xl font-bold mb-3 text-yellow-300 flex items-center">
+                                <i class="fa fa-handshake-o mr-2"></i>全球合作
+                            </h3>
+                            <p class="text-gray-100">与全球企业和机构建立战略合作，推动派币在实体经济中的广泛应用。</p>
+                        </div>
+                        
+                        <!-- Reference Images -->
+                        <div class="mt-6 space-y-4">
+                            <div class="bg-gradient-to-br from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30 backdrop-blur-sm">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/8230bc8e760b4c83a883ef24dac079ab.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235238AAF8542CBAFC7BC4F8E8&rrcfp=8a172a1a&x-expires=1777564358&x-signature=u%2BLGP9nQH4Pp3%2B%2FEzgsCe5H%2Be0M%3D" alt="派币未来规划参考图1" class="w-full h-auto rounded-lg border border-purple-500/30 shadow-lg shadow-purple-500/20">
+                            </div>
+                            <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/38b7bef4bc654c2dbfc2a2da4a415952.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235238AAF8542CBAFC7BC4F8E8&rrcfp=8a172a1a&x-expires=1777564358&x-signature=w5KcbuIzS8Z038NWb2Ju8%2FCX5d8%3D" alt="派币未来规划参考图2" class="w-full h-auto rounded-lg border border-blue-500/30 shadow-lg shadow-blue-500/20">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back Button -->
+                <div class="mt-4 mb-4 flex justify-center">
+                    <button class="back-to-ecosystem px-8 py-3 bg-gradient-to-r from-red-500/30 to-red-600/30 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-red-400 text-lg text-white hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
+                        返回上一页
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(futurePlanningPage);
+
+        document.getElementById('future-planning').addEventListener('click', () => {
+            buttonSounds['ecosystem-query'].play();
+            document.getElementById('ecosystem-page').classList.add('hidden');
+            document.getElementById('future-planning-page').classList.remove('hidden');
+        });
+
+        // Add back button listeners after all pages are created
+        setTimeout(addBackButtonListeners, 100);
+
+        // Add copy text functionality
+        function addCopyTextListeners() {
+            document.querySelectorAll('.copy-text').forEach(button => {
+                button.addEventListener('click', function() {
+                    const text = this.getAttribute('data-text');
+                    navigator.clipboard.writeText(text).then(() => {
+                        // Change button text temporarily
+                        const originalText = this.textContent;
+                        this.textContent = '已复制';
+                        this.classList.add('bg-green-500/30');
+                        this.classList.remove('bg-blue-500/30');
+                        
+                        // Play copy sound
+                        buttonSounds['ecosystem-query'].play();
+                        
+                        // Reset button text after 2 seconds
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                            this.classList.remove('bg-green-500/30');
+                            this.classList.add('bg-blue-500/30');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        this.textContent = '复制失败';
+                        this.classList.add('bg-red-500/30');
+                        this.classList.remove('bg-blue-500/30');
+                        
+                        setTimeout(() => {
+                            this.textContent = '复制';
+                            this.classList.remove('bg-red-500/30');
+                            this.classList.add('bg-blue-500/30');
+                        }, 2000);
+                    });
+                });
+            });
+        }
+
+        // Add copy text listeners when free ecosystem page is shown
+        document.getElementById('free-ecosystem').addEventListener('click', () => {
+            setTimeout(addCopyTextListeners, 200);
+        });
+
+        // Create Join Community modal
+        const joinCommunityModal = document.createElement('div');
+        joinCommunityModal.id = 'join-community-modal';
+        joinCommunityModal.className = 'modal';
+        joinCommunityModal.innerHTML = `
+            <div class="modal-content">
+                <span class="close text-white text-2xl absolute top-4 right-4 cursor-pointer">&times;</span>
+                <h2 class="text-2xl font-bold mb-4 text-center" style="color: rgb(245, 207, 39);">加入社群</h2>
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm shadow-lg shadow-blue-500/10 transform transition-all duration-300 hover:shadow-blue-500/20">
+                        <h3 class="text-lg font-bold mb-2 text-cyan-300 flex items-center">
+                            <i class="fa fa-users mr-2"></i>联系负责人
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-center bg-black/30 p-2 rounded-lg">
+                                <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-2 flex-shrink-0">
+                                    <i class="fa fa-user text-blue-400 text-sm"></i>
+                                </div>
+                                <p class="text-gray-100 text-sm"><strong>魏国炳：</strong>15536455536</p>
+                            </div>
+                            <div class="flex items-center bg-black/30 p-2 rounded-lg">
+                                <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-2 flex-shrink-0">
+                                    <i class="fa fa-user text-blue-400 text-sm"></i>
+                                </div>
+                                <p class="text-gray-100 text-sm"><strong>毕尚阳：</strong>15513636709</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center text-sm text-gray-300">
+                            <p class="mb-1"><i class="fa fa-info-circle text-cyan-400 mr-1"></i>使用 TELTLK 软件扫码进群</p>
+                            <p><i class="fa fa-check-circle text-green-400 mr-1"></i>下面为永久群聊</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 山西太原派社区总群 -->
+                        <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm text-center">
+                            <h4 class="text-lg font-bold mb-3 text-green-300">山西太原派社区总群</h4>
+                            <div class="mb-3">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/4445c0b62dbc422c8ae9f8821b6aa945.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=202604232255010B096D667A5164C10AAE&rrcfp=8a172a1a&x-expires=1777560902&x-signature=ihrXWJ593E13FrZxlMiVytHQt8Q%3D" alt="山西太原派社区总群" class="w-40 h-40 mx-auto rounded-lg shadow-lg">
+                            </div>
+                            <p class="text-sm text-gray-300">使用 TELTLK 扫码进群</p>
+                        </div>
+                        
+                        <!-- 派信娱乐股东招募群 -->
+                        <div class="bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 p-4 rounded-xl border border-yellow-500/30 backdrop-blur-sm text-center">
+                            <h4 class="text-lg font-bold mb-3 text-yellow-300">派信娱乐股东招募群</h4>
+                            <div class="mb-3">
+                                <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/27723bbeb7f34a6c829232e64c6bb8ab.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=202604232255010B096D667A5164C10AAE&rrcfp=8a172a1a&x-expires=1777560902&x-signature=UcLSxxBHnqw%2FDRe53AmqCkXvaiE%3D" alt="派信娱乐股东招募群" class="w-40 h-40 mx-auto rounded-lg shadow-lg shadow-blue-500/50 ring-2 ring-blue-400 ring-offset-2 ring-offset-transparent">
+                            </div>
+                            <p class="text-sm text-gray-300">使用 TELTLK 扫码进群</p>
+                        </div>
+                        
+                        <!-- SPACE派空间股东总群 -->
+                        <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 p-4 rounded-xl border border-red-500/30 backdrop-blur-sm text-center md:col-span-2">
+                            <h4 class="text-lg font-bold mb-3 text-red-300">SPACE派空间股东总群</h4>
+                            <div class="mb-3">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/8fea3ba9ef824cf08e6a89bb6fdba00c.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=202604232255010B096D667A5164C10AAE&rrcfp=8a172a1a&x-expires=1777560902&x-signature=8q%2FX%2FisPxTj9pEc7rhUQRrzxoJg%3D" alt="SPACE派空间股东总群" class="w-40 h-40 mx-auto rounded-lg shadow-lg shadow-yellow-500/50 ring-2 ring-yellow-400 ring-offset-2 ring-offset-transparent">
+                            </div>
+                            <p class="text-sm text-gray-300">使用 TELTLK 扫码进群</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(joinCommunityModal);
+
+        const joinCommunityBtn = document.getElementById('friend-planning');
+        const closeJoinCommunityBtn = joinCommunityModal.querySelector('.close');
+
+        joinCommunityBtn.addEventListener('click', () => {
+            buttonSounds['friend-planning'].play();
+            joinCommunityModal.style.display = 'block';
+        });
+
+        closeJoinCommunityBtn.addEventListener('click', () => {
+            joinCommunityModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target == joinCommunityModal) {
+                joinCommunityModal.style.display = 'none';
+            }
+        });
+
+        // Create About Us modal
+        const aboutUsModal = document.createElement('div');
+        aboutUsModal.id = 'about-us-modal';
+        aboutUsModal.className = 'modal';
+        aboutUsModal.innerHTML = `
+            <div class="modal-content">
+                <span class="close text-white text-2xl absolute top-4 right-4 cursor-pointer">&times;</span>
+                <h2 class="text-2xl font-bold mb-4 text-center" style="color: rgb(245, 207, 39);">关于我们</h2>
+                <div class="space-y-4">
+                    <p class="text-lg">本软件主要为派友生态先锋提供：</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li>派生态最新动态宣发</li>
+                        <li>生态项目展示与推广</li>
+                        <li>派友社区交流平台</li>
+                    </ul>
+                    <div class="mt-6 pt-4 border-t border-white/20">
+                        <h3 class="text-xl font-bold mb-3">联系我们</h3>
+                        <p><strong>负责人：</strong>魏国炳 15536455536</p>
+                        <p><strong>负责人：</strong>毕尚阳 15513636709</p>
+                        <p><strong>地址：</strong>山西省太原市尖草坪区迎春优山美郡17号楼2单元负层，负一层0102</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(aboutUsModal);
+
+        const aboutUsBtn = document.getElementById('about-us');
+        const closeBtn = aboutUsModal.querySelector('.close');
+
+        aboutUsBtn.addEventListener('click', () => {
+            buttonSounds['about-us'].play();
+            aboutUsModal.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            aboutUsModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target == aboutUsModal) {
+                aboutUsModal.style.display = 'none';
+            }
+        });
+
+        function speakText(text, voiceType = 'male') {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                
+                // Set voice based on gender
+                if (voiceType === 'female') {
+                    utterance.pitch = 1.2;
+                    utterance.rate = 0.9;
+                } else {
+                    utterance.pitch = 0.8;
+                    utterance.rate = 1.0;
+                }
+                
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Add background click sound
+        document.getElementById('main-container').addEventListener('click', (e) => {
+            // Check if the clicked element is not any of the buttons or interactive elements
+            if (!e.target.closest('button') && 
+                !e.target.closest('.moon') && 
+                !e.target.closest('#earth') &&
+                !e.target.closest('#announcement') &&
+                !e.target.closest('.modal')) {
+                buttonSounds['background-click'].play();
+            }
+        });
+
+        // Add announcement click sound
+        document.getElementById('announcement').addEventListener('click', () => {
+            buttonSounds['announcement-scroll'].play();
+            alert('最新公告：生态招募1000股股东，开启落地。详情请关注我们的官方渠道获取更多信息。');
+        });
+
+        // Carousel image click sounds removed as carousel was deleted
+
+    </script>
+
+    <div id="about-us-modal" class="modal">
+        <!-- 动态背景效果 -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+            <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+            <div class="absolute bottom-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        </div>
+        
+        <div class="modal-content">
+            <!-- 关闭按钮 -->
+            <button class="close absolute top-4 right-4 w-10 h-10 rounded-full bg-white bg-opacity-10 flex items-center justify-center text-white text-xl hover:bg-opacity-20 transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50">
+                <i class="fa fa-times"></i>
+            </button>
+            
+            <!-- 模态框标题 -->
+            <div class="text-center mb-8 relative">
+                <div class="inline-block relative">
+                    <h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300 tracking-wider">派生态建设信息</h2>
+                    <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+                </div>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="space-y-6 relative z-10">
+                <!-- 生态用途 -->
+                <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-5 rounded-xl border border-blue-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-blue-500/10">
+                    <div class="flex items-center mb-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mr-3">
+                            <i class="fa fa-globe text-blue-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-cyan-300">生态用途</h3>
+                    </div>
+                    <p class="text-gray-100 leading-relaxed pl-13">
+                        本生态致力于Pi网络的生态建设与落地应用开发，为派先锋提供全方位的生态参与机会。我们旨在构建一个完整的Pi生态系统，促进Pi币的实际应用与价值实现，打造区块链技术与实体经济深度融合的创新平台。
+                    </p>
+                </div>
+                
+                <!-- 联系方式 -->
+                <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-5 rounded-xl border border-green-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-green-500/10">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center mr-3">
+                            <i class="fa fa-address-card text-green-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-green-300">联系方式</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pl-13">
+                        <div class="flex items-start">
+                            <i class="fa fa-envelope text-green-400 mt-1 mr-3 w-5 text-center"></i>
+                            <p class="text-gray-100">contact@piecocommunity.com</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fa fa-map-marker text-green-400 mt-1 mr-3 w-5 text-center"></i>
+                            <p class="text-gray-100">北京市朝阳区区块链产业园区A座1001室</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fa fa-phone text-green-400 mt-1 mr-3 w-5 text-center"></i>
+                            <p class="text-gray-100">+86 123 4567 8910</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fa fa-user text-green-400 mt-1 mr-3 w-5 text-center"></i>
+                            <p class="text-gray-100">张先生</p>
+                        </div>
+                        <div class="flex items-start md:col-span-2">
+                            <i class="fa fa-twitter text-green-400 mt-1 mr-3 w-5 text-center"></i>
+                            <p class="text-gray-100">@PiEcoCommunity</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 配套服务 -->
+                <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-5 rounded-xl border border-purple-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-purple-500/10">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center mr-3">
+                            <i class="fa fa-cogs text-purple-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-purple-300">配套服务</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-13">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-check text-green-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">生态项目孵化与指导</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-check text-green-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">技术支持与开发资源</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-check text-green-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">社区运营与推广服务</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-check text-green-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">投资对接与资金支持</p>
+                        </div>
+                        <div class="flex items-start md:col-span-2">
+                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-check text-green-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">教育培训与知识分享</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 合作方式 -->
+                <div class="bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 p-5 rounded-xl border border-yellow-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-yellow-500/10">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center mr-3">
+                            <i class="fa fa-handshake-o text-yellow-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-yellow-300">合作方式</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pl-13">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-handshake-o text-blue-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">项目合作与资源共享</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-money text-green-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">Pi币入股与投资机会</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-users text-purple-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">社区共建与治理参与</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center mr-3 mt-0.5">
+                                <i class="fa fa-link text-red-400 text-sm"></i>
+                            </div>
+                            <p class="text-gray-100">资源对接与商务合作</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 结语 -->
+                <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 p-6 rounded-xl border border-red-500/30 backdrop-blur-sm text-center transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-red-500/10">
+                    <p class="text-xl font-bold text-white mb-3">欢迎广大派先锋加入我们</p>
+                    <p class="text-lg text-gray-200 mb-2">共同建设Pi网络的美好未来！</p>
+                    <p class="text-sm text-gray-300">让我们携手共进，开创区块链新时代！</p>
+                </div>
+            </div>
+            
+            <!-- 悬浮装饰点 -->
+            <div class="floating-dot dot-red" style="animation-delay: 0s;"></div>
+            <div class="floating-dot dot-green" style="animation-delay: 2s;"></div>
+            <div class="floating-dot dot-yellow" style="animation-delay: 4s;"></div>
+        </div>
+    </div>
+
+
+</body>
+</html>
