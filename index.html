@@ -304,6 +304,19 @@
         .animation-delay-4000 {
             animation-delay: 4s;
         }
+        
+        .editing-breathing-bg {
+            animation: breathing 2s ease-in-out infinite;
+        }
+        
+        @keyframes breathing {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+            }
+        }
 
         @keyframes modalFadeIn {
             from {opacity: 0; transform: translateY(-50px);}
@@ -416,6 +429,96 @@
     </div>
 
     <script>
+        // About Us Modal Functions
+        function showAboutUs(type) {
+            const modal = document.getElementById('aboutUsModal');
+            const modalContent = document.getElementById('modalContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const closeBtn = modal.querySelector('button:last-child');
+            
+            if (type === 'ecosystem1') {
+                // 派信娱乐 - 绿色光芒
+                modalContent.className = 'w-4/5 max-w-sm p-4 rounded-xl border-2 border-green-500/50 bg-gradient-to-br from-green-900/40 to-black/60 backdrop-blur-sm animate-fadeInUp shadow-lg shadow-green-500/30';
+                modalTitle.className = 'text-lg font-bold bg-gradient-to-r from-green-400 to-teal-300 text-transparent bg-clip-text';
+                modalTitle.textContent = '关于派信娱乐';
+                modalBody.className = 'text-green-100/90 text-sm leading-relaxed';
+                modalBody.innerHTML = `
+                    <p class="mb-3">我们是运行于海外团队的美国硅谷创业派团队共同去开启的一个派生派。</p>
+                    <p class="mb-3">我们现在招募一些先锋为我们的初始资金和生态做一个助力。</p>
+                    <p class="mb-3">我们今年将会开启生态落地的一年，主要生态于斗地主、麻将等老百姓常用的游戏生态开启招募。</p>
+                    <p>我们致力于为派友提供优质的游戏娱乐体验，打造Pi网络上最受欢迎的游戏平台。</p>
+                `;
+                closeBtn.className = 'px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-green-500/40 to-teal-500/40 text-white hover:from-green-500/60 hover:to-teal-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-green-500/20';
+            } else if (type === 'ecosystem2') {
+                // SPACE社区 - 紫色渐变
+                modalContent.className = 'w-4/5 max-w-sm p-4 rounded-xl border-2 border-purple-500/50 bg-gradient-to-br from-purple-900/40 to-black/60 backdrop-blur-sm animate-fadeInUp shadow-lg shadow-purple-500/30';
+                modalTitle.className = 'text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text';
+                modalTitle.textContent = '关于SPACE社区';
+                modalBody.className = 'text-purple-100/90 text-sm leading-relaxed';
+                modalBody.innerHTML = `
+                    <p class="mb-3">我们是由海外团队发起的生态项目，然后目前是针对中华区的项目。</p>
+                    <p class="mb-3">我们将组建一个33个派俱乐部，派生态社区，共同发起联合声明。</p>
+                    <p class="mb-3">发起，然后再加上2万的派友VIP，生态股东共同去创造、去中心化组织。</p>
+                    <p>打造中华区综合性的所有主播、所有节点、所有生态、所有聚会、所有的信息进行全部整合。</p>
+                `;
+                closeBtn.className = 'px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-purple-500/40 to-pink-500/40 text-white hover:from-purple-500/60 hover:to-pink-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-purple-500/20';
+            }
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeAboutUs() {
+            const modal = document.getElementById('aboutUsModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        // About Us Modal Functions
+        function showAboutUs(type) {
+            const modal = document.getElementById('aboutUsModal');
+            const modalContent = document.getElementById('modalContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const closeBtn = modal.querySelector('button:last-child');
+            
+            if (type === 'ecosystem1') {
+                // 派信娱乐 - 绿色光芒
+                modalContent.className = 'w-4/5 max-w-sm p-4 rounded-xl border-2 border-green-500/50 bg-gradient-to-br from-green-900/40 to-black/60 backdrop-blur-sm animate-fadeInUp shadow-lg shadow-green-500/30';
+                modalTitle.className = 'text-lg font-bold bg-gradient-to-r from-green-400 to-teal-300 text-transparent bg-clip-text';
+                modalTitle.textContent = '关于派信娱乐';
+                modalBody.className = 'text-green-100/90 text-sm leading-relaxed';
+                modalBody.innerHTML = `
+                    <p class="mb-3">我们是运行于海外团队的美国硅谷创业派团队共同去开启的一个派生派。</p>
+                    <p class="mb-3">我们现在招募一些先锋为我们的初始资金和生态做一个助力。</p>
+                    <p class="mb-3">我们今年将会开启生态落地的一年，主要生态于斗地主、麻将等老百姓常用的游戏生态开启招募。</p>
+                    <p>我们致力于为派友提供优质的游戏娱乐体验，打造Pi网络上最受欢迎的游戏平台。</p>
+                `;
+                closeBtn.className = 'px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-green-500/40 to-teal-500/40 text-white hover:from-green-500/60 hover:to-teal-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-green-500/20';
+            } else if (type === 'ecosystem2') {
+                // SPACE社区 - 紫色渐变
+                modalContent.className = 'w-4/5 max-w-sm p-4 rounded-xl border-2 border-purple-500/50 bg-gradient-to-br from-purple-900/40 to-black/60 backdrop-blur-sm animate-fadeInUp shadow-lg shadow-purple-500/30';
+                modalTitle.className = 'text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text';
+                modalTitle.textContent = '关于SPACE社区';
+                modalBody.className = 'text-purple-100/90 text-sm leading-relaxed';
+                modalBody.innerHTML = `
+                    <p class="mb-3">我们是由海外团队发起的生态项目，然后目前是针对中华区的项目。</p>
+                    <p class="mb-3">我们将组建一个33个派俱乐部，派生态社区，共同发起联合声明。</p>
+                    <p class="mb-3">发起，然后再加上2万的派友VIP，生态股东共同去创造、去中心化组织。</p>
+                    <p>打造中华区综合性的所有主播、所有节点、所有生态、所有聚会、所有的信息进行全部整合。</p>
+                `;
+                closeBtn.className = 'px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-purple-500/40 to-pink-500/40 text-white hover:from-purple-500/60 hover:to-pink-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-purple-500/20';
+            }
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeAboutUs() {
+            const modal = document.getElementById('aboutUsModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
         const moonSounds = {
             '派节点': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'], volume: 0.5 }),
             '派生态': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3'], volume: 0.5 }),
@@ -433,6 +536,7 @@
             'earth': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'], volume: 0.7 }),
             'background-click': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2575/2575-preview.mp3'], volume: 0.5 }),
             'announcement-scroll': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2576/2576-preview.mp3'], volume: 0.6 }),
+            'dingdong': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'], volume: 0.8 }),
         };
 
         lucide.createIcons();
@@ -541,20 +645,32 @@
             });
         });
 
-        document.getElementById('earth').addEventListener('click', function() {
-            // Play ding sound
-            buttonSounds['earth'].play();
-            
-            // Play welcome voice with male voice first
-            speakText('欢迎来到，welcome to pi network this is good', 'male');
-            
-            // Play female voice after a short delay
-            setTimeout(() => {
-                speakText('欢迎来到，welcome to pi network this is good', 'female');
-            }, 3000);
-            
-            // Start black hole absorption effect
-            startBlackHoleEffect();
+        document.getElementById('earth').addEventListener('click', function(e) {
+            // Only trigger effect when clicking on the text inside
+            if (e.target === this || e.target.nodeType === Node.TEXT_NODE) {
+                // Play ding sound
+                buttonSounds['earth'].play();
+                
+                // 50% chance for each type of effect
+                if (Math.random() > 0.5) {
+                    // Original welcome message (50% chance)
+                    speakText('欢迎来到，welcome to pi network this is good', 'male');
+                    
+                    // Play female voice after a short delay
+                    setTimeout(() => {
+                        speakText('欢迎来到，welcome to pi network this is good', 'female');
+                    }, 3000);
+                    
+                    // Start full black hole absorption effect
+                    startBlackHoleEffect();
+                } else {
+                    // New ecosystem message (50% chance)
+                    speakText('生态来了，欢迎参与生态入股', 'male');
+                    
+                    // Start partial black hole effect (absorb 2 random moons)
+                    startPartialBlackHoleEffect();
+                }
+            }
         });
 
         function startBlackHoleEffect() {
@@ -575,46 +691,54 @@
             const originalStyles = [];
             moons.forEach((moon, index) => {
                 originalStyles[index] = {
-                    animation: moon.style.animation,
-                    transform: moon.style.transform,
-                    opacity: moon.style.opacity
+                    animation: window.getComputedStyle(moon).animation,
+                    transform: window.getComputedStyle(moon).transform,
+                    opacity: window.getComputedStyle(moon).opacity,
+                    display: window.getComputedStyle(moon).display
                 };
                 moon.style.animation = 'none';
+                moon.style.transform = 'translate(0, 0)';
             });
             
             // Animate moons being sucked into the center
             moons.forEach((moon, index) => {
                 setTimeout(() => {
-                    // Play explosion sound
-                    const fireworkSound = new Howl({ 
+                    // Play explosion sound (bang sound)
+                    const bangSound = new Howl({ 
                         src: ['https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'], 
-                        volume: 0.5 
+                        volume: 0.7 
                     });
-                    fireworkSound.play();
+                    bangSound.play();
                     
                     // Create firework at moon position
                     createFireworkAtPosition(moon.offsetLeft, moon.offsetTop);
                     
-                    // Animate moon to center
+                    // Animate moon to center with black hole effect
                     moon.animate([
                         { transform: 'translate(0, 0) scale(1)', opacity: 1 },
                         { transform: `translate(calc(${centerX}px - 50%), calc(${centerY}px - 50%)) scale(0)`, opacity: 0 }
                     ], {
-                        duration: 1000,
+                        duration: 800,
                         easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                         fill: 'forwards'
                     });
-                }, index * 200);
+                    
+                    // Hide moon after animation
+                    setTimeout(() => {
+                        moon.style.display = 'none';
+                    }, 800);
+                }, index * 150);
             });
             
             // Create central explosion after all moons are absorbed
             setTimeout(() => {
                 createCentralExplosion(centerX, centerY);
-            }, moons.length * 200 + 500);
+            }, moons.length * 150 + 300);
             
-            // Restore moons after 3 seconds
+            // Restore moons after 1 second (as requested)
             setTimeout(() => {
                 moons.forEach((moon, index) => {
+                    moon.style.display = originalStyles[index].display;
                     moon.style.animation = originalStyles[index].animation;
                     moon.style.transform = originalStyles[index].transform;
                     moon.style.opacity = originalStyles[index].opacity;
@@ -623,7 +747,97 @@
                 
                 // Re-enable earth click
                 earth.style.pointerEvents = 'auto';
-            }, 3000);
+            }, 1000);
+        }
+
+        function startPartialBlackHoleEffect() {
+            const earth = document.getElementById('earth');
+            const container = document.getElementById('earth-container');
+            const moons = Array.from(document.querySelectorAll('.moon'));
+            
+            // Disable earth click during animation
+            earth.style.pointerEvents = 'none';
+            
+            // Get center coordinates
+            const rect = earth.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2 - containerRect.left;
+            const centerY = rect.top + rect.height / 2 - containerRect.top;
+            
+            // Select 2 random moons
+            const randomMoons = [];
+            const availableIndices = Array.from({length: moons.length}, (_, i) => i);
+            
+            for (let i = 0; i < 2; i++) {
+                const randomIndex = Math.floor(Math.random() * availableIndices.length);
+                const moonIndex = availableIndices.splice(randomIndex, 1)[0];
+                randomMoons.push({
+                    moon: moons[moonIndex],
+                    index: moonIndex
+                });
+            }
+            
+            // Stop selected moon animations and save original styles
+            const originalStyles = {};
+            randomMoons.forEach(({moon, index}) => {
+                originalStyles[index] = {
+                    animation: window.getComputedStyle(moon).animation,
+                    transform: window.getComputedStyle(moon).transform,
+                    opacity: window.getComputedStyle(moon).opacity,
+                    display: window.getComputedStyle(moon).display
+                };
+                moon.style.animation = 'none';
+                moon.style.transform = 'translate(0, 0)';
+            });
+            
+            // Animate selected moons being sucked into the center
+            randomMoons.forEach(({moon, index}, i) => {
+                setTimeout(() => {
+                    // Play firework sound
+                    const fireworkSound = new Howl({ 
+                        src: ['https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'], 
+                        volume: 0.6 
+                    });
+                    fireworkSound.play();
+                    
+                    // Create firework at moon position
+                    createFireworkAtPosition(moon.offsetLeft, moon.offsetTop);
+                    
+                    // Animate moon to center with black hole effect
+                    moon.animate([
+                        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                        { transform: `translate(calc(${centerX}px - 50%), calc(${centerY}px - 50%)) scale(0)`, opacity: 0 }
+                    ], {
+                        duration: 600,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                        fill: 'forwards'
+                    });
+                    
+                    // Hide moon after animation
+                    setTimeout(() => {
+                        moon.style.display = 'none';
+                    }, 600);
+                }, i * 300);
+            });
+            
+            // Create central explosion after selected moons are absorbed
+            setTimeout(() => {
+                createCentralExplosion(centerX, centerY, 10); // Smaller explosion
+            }, randomMoons.length * 300 + 200);
+            
+            // Restore moons after 1 second
+            setTimeout(() => {
+                randomMoons.forEach(({moon, index}) => {
+                    moon.style.display = originalStyles[index].display;
+                    moon.style.animation = originalStyles[index].animation;
+                    moon.style.transform = originalStyles[index].transform;
+                    moon.style.opacity = originalStyles[index].opacity;
+                    moon.style.animationPlayState = 'running';
+                });
+                
+                // Re-enable earth click
+                earth.style.pointerEvents = 'auto';
+            }, 1000);
         }
 
         function createFireworkAtPosition(x, y) {
@@ -650,9 +864,8 @@
             }, 1000);
         }
 
-        function createCentralExplosion(centerX, centerY) {
+        function createCentralExplosion(centerX, centerY, fireworkCount = 20) {
             const container = document.getElementById('earth-container');
-            const fireworkCount = 20;
             
             // Create multiple fireworks from center
             for (let i = 0; i < fireworkCount; i++) {
@@ -802,11 +1015,12 @@
                                 <i class="fa fa-leaf mr-2"></i>SatPi 派游器
                             </h3>
                             <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
-                                <span class="text-gray-200 text-sm flex-1 truncate">https://satpi.app</span>
-                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://satpi.app">复制</button>
+                                <span class="text-gray-200 text-sm flex-1 truncate">satpi.app</span>
+                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="satpi.app">复制</button>
                             </div>
+                            <p class="text-gray-300 text-sm mb-3">探索Pi网络生态的全新浏览器，为派友提供安全便捷的生态访问体验。</p>
                             <div class="mt-3">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/c7aa1b6141004150a6052ff7eb9d7d54.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=rKETlaYCIEyeKctUMHeqEAL2QcM%3D" alt="SatPi 派游器" class="w-full h-auto rounded-lg border border-green-500/30">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/c7aa1b6141004150a6052ff7eb9d7d54.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=rKETlaYCIEyeKctUMHeqEAL2QcM%3D" alt="SatPi 派游器" class="w-full h-auto rounded-lg border border-green-500/30 transform scale-70 rotate-180">
                             </div>
                         </div>
                         
@@ -819,8 +1033,9 @@
                                 <span class="text-gray-200 text-sm flex-1 truncate">hashpi.app</span>
                                 <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="hashpi.app">复制</button>
                             </div>
+                            <p class="text-gray-300 text-sm mb-3">基于区块链技术的安全哈希服务平台，为派生态提供数据安全保障。</p>
                             <div class="mt-3">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/0599eb9256ef486e81589f54ca0f3f8a.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=zudY0bru9Hqdj76Ltqq968RDIPs%3D" alt="Hashpi 哈希派" class="w-full h-auto rounded-lg border border-blue-500/30">
+                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/0599eb9256ef486e81589f54ca0f3f8a.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=zudY0bru9Hqdj76Ltqq968RDIPs%3D" alt="Hashpi 哈希派" class="w-full h-auto rounded-lg border border-blue-500/30 transform scale-70 rotate-180">
                             </div>
                         </div>
                         
@@ -830,11 +1045,12 @@
                                 <i class="fa fa-gift mr-2"></i>Pipet 派宠物
                             </h3>
                             <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
-                                <span class="text-gray-200 text-sm flex-1 truncate">https://pi.net/#/app?launchId=pipetmainnet&x-api-key=pi7419296</span>
-                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://pi.net/#/app?launchId=pipetmainnet&x-api-key=pi7419296">复制</button>
+                                <span class="text-gray-200 text-sm flex-1 truncate">https://pipet.me/#/pages/login/login?invite=419296</span>
+                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://pipet.me/#/pages/login/login?invite=419296">复制</button>
                             </div>
+                            <p class="text-gray-300 text-sm mb-3">区块链宠物养成游戏，让派友在互动中体验数字资产管理的乐趣。</p>
                             <div class="mt-3">
-                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/1e6c8ca338ff49d699723ac5173a9402.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=i71JWORWhx0tOrESqyI6QHuDEaY%3D" alt="Pipet 派宠物" class="w-full h-auto rounded-lg border border-purple-500/30">
+                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/1e6c8ca338ff49d699723ac5173a9402.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=i71JWORWhx0tOrESqyI6QHuDEaY%3D" alt="Pipet 派宠物" class="w-full h-auto rounded-lg border border-purple-500/30 transform scale-70 rotate-180">
                             </div>
                         </div>
                         
@@ -844,11 +1060,12 @@
                                 <i class="fa fa-bank mr-2"></i>timebank 时间银行
                             </h3>
                             <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
-                                <span class="text-gray-200 text-sm flex-1 truncate">https://satpi.app</span>
-                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://satpi.app">复制</button>
+                                <span class="text-gray-200 text-sm flex-1 truncate">satpi.app</span>
+                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="satpi.app">复制</button>
                             </div>
+                            <p class="text-gray-300 text-sm mb-3">创新的时间价值交换平台，让派友的时间和技能得到合理的价值体现。</p>
                             <div class="mt-3">
-                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/00d9153ff1854e44b0973287e08e335b.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=o0kicHJOtPRzqeGAgzIXI4WeokE%3D" alt="timebank 时间银行" class="w-full h-auto rounded-lg border border-yellow-500/30">
+                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/00d9153ff1854e44b0973287e08e335b.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=o0kicHJOtPRzqeGAgzIXI4WeokE%3D" alt="timebank 时间银行" class="w-full h-auto rounded-lg border border-yellow-500/30 transform scale-70 rotate-180">
                             </div>
                         </div>
                         
@@ -861,18 +1078,45 @@
                                 <span class="text-gray-200 text-sm flex-1 truncate">https://www.teltlk.com/#/register?invite=ss444</span>
                                 <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://www.teltlk.com/#/register?invite=ss444">复制</button>
                             </div>
+                            <p class="text-gray-300 text-sm mb-3">专为派友打造的社交通讯平台，连接全球派社区，分享最新生态动态。</p>
                             <div class="mt-3">
-                                <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7143d761387c4f2fb2adcfa8664cec3a.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=acjV2aDxJj2oYmCGWX%2BSH3rjhuQ%3D" alt="TELTLK 派社群" class="w-full h-auto rounded-lg border border-orange-500/30">
+                                <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7143d761387c4f2fb2adcfa8664cec3a.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=acjV2aDxJj2oYmCGWX%2BSH3rjhuQ%3D" alt="TELTLK 派社群" class="w-full h-auto rounded-lg border border-orange-500/30 transform scale-70 rotate-180">
                             </div>
                         </div>
                         
-                        <!-- Reference Images -->
+                        <!-- Announcements -->
                         <div class="mt-6 space-y-4">
-                            <div class="bg-gradient-to-br from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30 backdrop-blur-sm">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/8230bc8e760b4c83a883ef24dac079ab.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235238AAF8542CBAFC7BC4F8E8&rrcfp=8a172a1a&x-expires=1777564358&x-signature=u%2BLGP9nQH4Pp3%2B%2FEzgsCe5H%2Be0M%3D" alt="派币未来规划参考图1" class="w-full h-auto rounded-lg border border-purple-500/30 shadow-lg shadow-purple-500/20">
+                            <!-- Announcement 1 -->
+                            <div class="bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 p-4 rounded-xl border border-yellow-500/30 backdrop-blur-sm animate-pulse">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center mr-2">
+                                        <i class="fa fa-bullhorn text-yellow-400"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-yellow-300">重要公告</h3>
+                                </div>
+                                <p class="text-gray-100 text-center"><strong>主网启动倒计时！</strong> 请所有派友尽快完成 KYC 认证，以免影响后续操作。</p>
                             </div>
-                            <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/38b7bef4bc654c2dbfc2a2da4a415952.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235238AAF8542CBAFC7BC4F8E8&rrcfp=8a172a1a&x-expires=1777564358&x-signature=w5KcbuIzS8Z038NWb2Ju8%2FCX5d8%3D" alt="派币未来规划参考图2" class="w-full h-auto rounded-lg border border-blue-500/30 shadow-lg shadow-blue-500/20">
+
+                            <!-- Announcement 2 -->
+                            <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center mr-2">
+                                        <i class="fa fa-line-chart text-green-400"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-green-300">生态进展</h3>
+                                </div>
+                                <p class="text-gray-100 text-center">Pi 生态建设如火如荼，已有超过 100 个优质项目入驻，涵盖金融、游戏、社交等多个领域。</p>
+                            </div>
+
+                             <!-- Announcement 3 -->
+                            <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-2">
+                                        <i class="fa fa-users text-blue-400"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-blue-300">社区活动</h3>
+                                </div>
+                                <p class="text-gray-100 text-center">全球派友线上交流会即将开始，欢迎各位派先锋积极参与，共商生态发展大计。</p>
                             </div>
                         </div>
                     </div>
@@ -914,38 +1158,58 @@
                 <div class="flex-1 overflow-y-auto pb-4">
                     <div class="space-y-6">
                         <!-- Ecosystem 1 -->
-                        <div class="w-full bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-xl font-bold text-green-300 flex items-center">
-                                    <i class="fa fa-gamepad mr-2"></i>派信娱乐（游戏生态）
+                        <div class="w-full bg-gradient-to-br from-green-900/40 to-green-800/20 p-3 rounded-xl border border-green-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4 shadow-lg shadow-black/20">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-base font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-black text-transparent bg-clip-text animate-pulse flex items-center">
+                                    <i class="fa fa-gamepad mr-1.5 text-xs"></i>派信娱乐
                                 </h3>
-                                <div class="w-6 h-6 rounded-full bg-green-500 animate-pulse-glow flex items-center justify-center" style="animation: pulse-glow-green 2s ease-in-out infinite alternate;"></div>
+                                <div class="px-2 py-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full text-[10px] text-white font-medium animate-pulse shadow-lg shadow-blue-500/50">招募中</div>
                             </div>
-                            <div class="text-gray-100 space-y-2 mb-4">
-                                <p><strong>项目类型：</strong>游戏娱乐生态</p>
-                                <p><strong>招募金额：</strong>900pi</p>
-                                <p><strong>股东数量：</strong>总计1000名股东</p>
+                            <div class="bg-black/40 p-2.5 rounded-lg mb-3">
+                                <p class="bg-gradient-to-r from-blue-400 via-cyan-300 to-black text-transparent bg-clip-text font-medium text-center mb-1.5 text-xs animate-pulse">派信娱乐 · 股东招募</p>
+                                <div class="text-gray-300 space-y-1 text-[10px]">
+                                    <p><span class="text-gray-400">项目类型：</span><span class="bg-gradient-to-r from-green-400 to-teal-500 text-transparent bg-clip-text">游戏娱乐</span></p>
+                                    <p><span class="text-gray-400">招募金额：</span><span class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-transparent bg-clip-text">900pi</span></p>
+                                    <p><span class="text-gray-400">股东数量：</span><span class="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">1000名</span></p>
+                                </div>
                             </div>
-                            <div class="space-y-3">
-                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/904367744524448f9c2f9b2739c1d2e2.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235049FA58B6AAFF559AAE40C3&rrcfp=8a172a1a&x-expires=1777564250&x-signature=pBj%2BYm4QH1rpZ2C1yX7z65CEp4g%3D" alt="派信娱乐参考图1" class="w-full h-auto rounded-lg border border-green-500/30 shadow-lg shadow-green-500/20">
-                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/92f8ff800d1841ad9b9090d98a7ecc8b.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235049FA58B6AAFF559AAE40C3&rrcfp=8a172a1a&x-expires=1777564250&x-signature=qM2Py%2BEjaaAeXedcnC4nl8YUuN8%3D" alt="派信娱乐参考图2" class="w-full h-auto rounded-lg border border-green-500/30 shadow-lg shadow-green-500/20">
+                            <div class="bg-gradient-to-r from-blue-900/40 to-purple-900/40 p-2.5 rounded-xl border border-blue-500/30 mb-3">
+                                <h4 class="text-sm font-bold bg-gradient-to-r from-green-400 to-teal-500 text-transparent bg-clip-text mb-1.5 flex items-center animate-pulse">
+                                    <i class="fa fa-info-circle mr-1.5 text-xs"></i>项目详情
+                                </h4>
+                                <p class="bg-gradient-to-r from-gray-300 via-white to-gray-300 text-transparent bg-clip-text text-[10px] mb-2.5 leading-relaxed animate-pulse">派信娱乐致力于打造Pi网络上最受欢迎的游戏娱乐平台，为派友提供丰富多样的区块链游戏体验。</p>
+                                <div class="flex gap-2">
+                                    <button onclick="buttonSounds['dingdong'].play(); window.location.href='https://pixinyule333.pages.dev/'" class="flex-1 bg-gradient-to-r from-green-500/40 to-teal-500/40 p-1.5 rounded-lg text-center text-white text-[10px] font-medium hover:from-green-500/60 hover:to-teal-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-green-500/20 editing-breathing-bg">生态详情</button>
+                                    <button onclick="buttonSounds['dingdong'].play(); showAboutUs('ecosystem1')" class="flex-1 bg-gradient-to-r from-blue-500/40 to-cyan-500/40 p-1.5 rounded-lg text-center text-white text-[10px] font-medium hover:from-blue-500/60 hover:to-cyan-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-blue-500/20">关于我们</button>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Ecosystem 2 -->
-                        <div class="w-full bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-xl font-bold text-blue-300 flex items-center">
-                                    <i class="fa fa-globe mr-2"></i>SPACE（社区生态）
+                        <div class="w-full bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-3 rounded-xl border border-blue-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] shadow-lg shadow-black/20">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-base font-bold bg-gradient-to-r from-red-500 via-orange-500 to-black text-transparent bg-clip-text animate-pulse flex items-center">
+                                    <i class="fa fa-globe mr-1.5 text-xs"></i>SPACE社区
                                 </h3>
-                                <div class="w-6 h-6 rounded-full bg-yellow-500 animate-pulse-glow flex items-center justify-center" style="animation: pulse-glow-yellow 2s ease-in-out infinite alternate;"></div>
+                                <div class="px-2 py-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-full text-[10px] text-white font-medium animate-pulse shadow-lg shadow-green-500/50">招募中</div>
                             </div>
-                            <div class="text-gray-100 space-y-2">
-                                <p><strong>项目类型：</strong>社区生态平台</p>
-                                <p><strong>参与金额：</strong>628pi</p>
-                                <p><strong>项目特色：</strong>构建派友交流、资源共享的社区平台</p>
-                                <p><strong>发展规划：</strong>打造多元化的社区服务，促进派生态繁荣发展</p>
-                                <p><strong>招募状态：</strong>正在招募中，名额有限，先到先得</p>
+                            <div class="bg-black/40 p-2.5 rounded-lg mb-3">
+                                <p class="bg-gradient-to-r from-red-400 via-orange-300 to-black text-transparent bg-clip-text font-medium text-center mb-1.5 text-xs animate-pulse">SPACE社区 · 股东招募</p>
+                                <div class="text-gray-300 space-y-1 text-[10px]">
+                                    <p><span class="text-gray-400">项目类型：</span><span class="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">社区生态</span></p>
+                                    <p><span class="text-gray-400">参与金额：</span><span class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-transparent bg-clip-text">628pi</span></p>
+                                    <p><span class="text-gray-400">招募状态：</span><span class="bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">名额有限</span></p>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-900/40 to-pink-900/40 p-2.5 rounded-xl border border-purple-500/30 mb-3">
+                                <h4 class="text-sm font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text mb-1.5 flex items-center animate-pulse">
+                                    <i class="fa fa-info-circle mr-1.5 text-xs"></i>项目详情
+                                </h4>
+                                <p class="bg-gradient-to-r from-gray-300 via-white to-gray-300 text-transparent bg-clip-text text-[10px] mb-2.5 leading-relaxed animate-pulse">SPACE是一个专为派友打造的综合性社区平台，致力于构建派友交流、资源共享的生态空间。</p>
+                                <div class="flex gap-2">
+                                    <button onclick="buttonSounds['dingdong'].play(); window.location.href='https://worldland.pages.dev/'" class="flex-1 bg-gradient-to-r from-blue-500/40 to-purple-500/40 p-1.5 rounded-lg text-center text-white text-[10px] font-medium hover:from-blue-500/60 hover:to-purple-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-blue-500/20 editing-breathing-bg">生态详情</button>
+                                    <button onclick="buttonSounds['dingdong'].play(); showAboutUs('ecosystem2')" class="flex-1 bg-gradient-to-r from-pink-500/40 to-red-500/40 p-1.5 rounded-lg text-center text-white text-[10px] font-medium hover:from-pink-500/60 hover:to-red-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-pink-500/20">关于我们</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1014,14 +1278,62 @@
                             </h3>
                             <p class="text-gray-100">与全球企业和机构建立战略合作，推动派币在实体经济中的广泛应用。</p>
                         </div>
-                        
-                        <!-- Reference Images -->
-                        <div class="mt-6 space-y-4">
-                            <div class="bg-gradient-to-br from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30 backdrop-blur-sm">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/8230bc8e760b4c83a883ef24dac079ab.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235238AAF8542CBAFC7BC4F8E8&rrcfp=8a172a1a&x-expires=1777564358&x-signature=u%2BLGP9nQH4Pp3%2B%2FEzgsCe5H%2Be0M%3D" alt="派币未来规划参考图1" class="w-full h-auto rounded-lg border border-purple-500/30 shadow-lg shadow-purple-500/20">
+
+                        <!-- New Phase: Mainnet Launch -->
+                        <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 p-4 rounded-xl border border-red-500/30 backdrop-blur-sm">
+                            <h3 class="text-xl font-bold mb-3 text-red-300 flex items-center">
+                                <i class="fa fa-rocket mr-2"></i>主网启动
+                            </h3>
+                            <p class="text-gray-100">Pi Network 主网正式启动，标志着项目从测试阶段进入到正式运营阶段，为全球派友提供更稳定、更安全的服务。</p>
+                             <div class="mt-3">
+                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/e03e195cb1d44b90962057e61ba65575.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260424163512C1814DD5C9430202C45F&rrcfp=8a172a1a&x-expires=1777624513&x-signature=mx6R8%2BJFMBGYGjd5ZAZG6pLFVGM%3D" alt="Pi Network 主网启动" class="w-full h-auto rounded-lg border border-red-500/30 shadow-lg shadow-red-500/20">
                             </div>
-                            <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/38b7bef4bc654c2dbfc2a2da4a415952.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423235238AAF8542CBAFC7BC4F8E8&rrcfp=8a172a1a&x-expires=1777564358&x-signature=w5KcbuIzS8Z038NWb2Ju8%2FCX5d8%3D" alt="派币未来规划参考图2" class="w-full h-auto rounded-lg border border-blue-500/30 shadow-lg shadow-blue-500/20">
+                        </div>
+
+                        <!-- New Phase: KYC Verification -->
+                        <div class="bg-gradient-to-br from-cyan-900/40 to-cyan-800/20 p-4 rounded-xl border border-cyan-500/30 backdrop-blur-sm">
+                            <h3 class="text-xl font-bold mb-3 text-cyan-300 flex items-center">
+                                <i class="fa fa-id-card mr-2"></i>KYC 认证
+                            </h3>
+                            <p class="text-gray-100">全面启动 KYC 认证流程，确保每一位派友的身份真实有效，为未来的生态应用打下坚实的信任基础。</p>
+                             <div class="mt-3">
+                                <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/a2e38b635990414592e28aa60464c24a.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260424163512C1814DD5C9430202C45F&rrcfp=8a172a1a&x-expires=1777624513&x-signature=H1naTFY5qa%2F7hu6Yczy3LbrdlOI%3D" alt="Pi Network KYC 认证" class="w-full h-auto rounded-lg border border-cyan-500/30 shadow-lg shadow-cyan-500/20">
+                            </div>
+                        </div>
+                        
+                        <!-- Announcements -->
+                        <div class="mt-6 space-y-4">
+                            <!-- Announcement 1 -->
+                            <div class="bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 p-4 rounded-xl border border-yellow-500/30 backdrop-blur-sm animate-pulse">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center mr-2">
+                                        <i class="fa fa-bullhorn text-yellow-400"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-yellow-300">重要公告</h3>
+                                </div>
+                                <p class="text-gray-100 text-center"><strong>主网启动倒计时！</strong> 请所有派友尽快完成 KYC 认证，以免影响后续操作。</p>
+                            </div>
+
+                            <!-- Announcement 2 -->
+                            <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center mr-2">
+                                        <i class="fa fa-line-chart text-green-400"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-green-300">生态进展</h3>
+                                </div>
+                                <p class="text-gray-100 text-center">Pi 生态建设如火如荼，已有超过 100 个优质项目入驻，涵盖金融、游戏、社交等多个领域。</p>
+                            </div>
+
+                             <!-- Announcement 3 -->
+                            <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-2">
+                                        <i class="fa fa-users text-blue-400"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-blue-300">社区活动</h3>
+                                </div>
+                                <p class="text-gray-100 text-center">全球派友线上交流会即将开始，欢迎各位派先锋积极参与，共商生态发展大计。</p>
                             </div>
                         </div>
                     </div>
@@ -1255,6 +1567,22 @@
         // Carousel image click sounds removed as carousel was deleted
 
     </script>
+
+    <!-- About Us Modals -->
+    <div id="aboutUsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div id="modalContent" class="w-4/5 max-w-sm p-4 rounded-xl border-2">
+            <div class="flex justify-between items-center mb-3">
+                <h3 id="modalTitle" class="text-lg font-bold"></h3>
+                <button onclick="closeAboutUs()" class="text-white/80 hover:text-white transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="modalBody" class="text-sm leading-relaxed"></div>
+            <div class="mt-4 flex justify-center">
+                <button onclick="closeAboutUs()" class="px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 active:scale-95">关闭</button>
+            </div>
+        </div>
+    </div>
 
     <div id="about-us-modal" class="modal">
         <!-- 动态背景效果 -->
