@@ -1,1767 +1,1729 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>派生态社区</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>派生态应用中心</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.544.0/dist/umd/lucide.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js"></script>
     <style>
-        @keyframes color-change {
-            0% { background-color: red; }
-            33% { background-color: green; }
-            66% { background-color: yellow; }
-            100% { background-color: red; }
+        body{background:#f8f9fa;}
+        html,body{overflow-x:hidden;}
+        /* 文字滚动公告 */
+        @keyframes scrollNotice {
+            0%{transform: translateX(100%);}
+            100%{transform: translateX(-100%);}
         }
-        .animate-color-change {
-            animation: color-change 2s ease-in-out infinite;
+        .notice-scroll{
+            animation: scrollNotice 18s linear infinite;
+            white-space: nowrap;
+            font-size: 0.875rem; /* 增大文字尺寸 */
+            font-weight: 500;    /* 增加字重，更醒目 */
         }
-        
-        @keyframes rotate3d {
-            0% {
-                transform: rotateY(0deg) rotateX(10deg);
-            }
-            100% {
-                transform: rotateY(360deg) rotateX(10deg);
-            }
+        /* 按钮发光效果 */
+        .btn-light{
+            box-shadow: 0 0 8px #22c55e, 0 0 16px rgba(34,197,94,0.4);
         }
-        .animate-rotate-3d {
-            animation: rotate3d 20s linear infinite;
-            background-image: url('https://p11-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1977001200551591948~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1792495050&x-signature=yKJQsDbLQ%2FOKbXiJ0m6zTr%2BgRcI%3D');
-            background-size: cover;
-            background-position: center;
-            box-shadow: inset -20px -20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(0, 100, 255, 0.5);
-            position: relative;
-            transform-style: preserve-3d;
+        .btn-yellow{
+            box-shadow: 0 0 8px #f59e0b, 0 0 16px rgba(245,158,11,0.4);
         }
-
-        .animate-rotate-3d::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 50%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(255, 255, 255, 0.1) 10px,
-                rgba(255, 255, 255, 0.1) 11px
-            );
-            animation: rotate 10s linear infinite reverse;
+        .btn-detail{
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #4b5563;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
         }
-        @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+        .btn-detail:hover{
+            background-color: #e5e7eb;
+            transform: translateY(-1px);
+        }
+        .status-active{
+            box-shadow: 0 0 8px #22c55e, 0 0 16px rgba(34,197,94,0.3);
+        }
+        .status-inactive{
+            box-shadow: 0 0 8px #ef4444, 0 0 16px rgba(239,68,68,0.3);
+        }
+        .status-pending{
+            box-shadow: 0 0 8px #9ca3af, 0 0 16px rgba(156,163,175,0.3);
+        }
+        /* 渐变动画效果 */
+        @keyframes gradientShift {
+            0% { background: linear-gradient(90deg, #3b82f6, #8b5cf6, #eab308); }
+            33% { background: linear-gradient(90deg, #8b5cf6, #eab308, #3b82f6); }
+            66% { background: linear-gradient(90deg, #eab308, #3b82f6, #8b5cf6); }
+            100% { background: linear-gradient(90deg, #3b82f6, #8b5cf6, #eab308); }
+        }
+        /* 文字颜色动画 */
+        @keyframes textColorShift {
+            0% { color: white; }
+            33% { color: black; }
+            66% { color: white; }
+            100% { color: black; }
         }
         .animate-gradient {
-            animation: gradient 15s ease infinite;
-            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
         }
-        .moon {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            text-shadow: 0 0 2px black;
-            background-color: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor, 0 0 80px currentColor, 0 0 100px currentColor, 0 0 120px currentColor, 0 0 140px currentColor, 0 0 160px currentColor;
-            animation: glow 2s ease-in-out infinite alternate;
+        .animate-text-color {
+            animation: textColorShift 3s ease infinite;
         }
-
-        .moon::before {
-            content: attr(data-name);
-            white-space: nowrap;
+        /* 边框呼吸灯效果 */
+        .animate-border-glow {
+            animation: borderGlow 2s ease-in-out infinite;
         }
-
-        .moon-1 { color: red; animation: orbit 12s linear infinite reverse, glow 2s ease-in-out infinite alternate, color-change-1 5s ease-in-out infinite; }
-        .moon-2 { color: orange; animation: orbit 18s linear infinite, glow 2s ease-in-out infinite alternate, color-change-2 6s ease-in-out infinite; }
-        .moon-3 { color: yellow; animation: orbit 15s linear infinite reverse, glow 2s ease-in-out infinite alternate, color-change-3 7s ease-in-out infinite; }
-        .moon-4 { color: green; animation: orbit 20s linear infinite, glow 2s ease-in-out infinite alternate, color-change-4 8s ease-in-out infinite; }
-        .moon-5 { color: cyan; animation: orbit 22s linear infinite reverse, glow 2s ease-in-out infinite alternate, color-change-5 9s ease-in-out infinite; }
-        .moon-6 { color: blue; animation: orbit 25s linear infinite, glow 2s ease-in-out infinite alternate, color-change-6 10s ease-in-out infinite; }
-        .moon-7 { color: purple; animation: orbit 30s linear infinite reverse, glow 2s ease-in-out infinite alternate, color-change-7 11s ease-in-out infinite; }
-
-        @keyframes orbit {
-            from {
-                transform: rotate(0deg) translateX(100px) rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg) translateX(100px) rotate(-360deg);
-            }
-        }
-
-        @keyframes glow {
-            from {
-                box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
-            }
-            to {
-                box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
-            }
-        }
-
-        @keyframes pulse-glow-green {
-            0% {
-                box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e;
-                background-color: #22c55e;
-            }
-            50% {
-                box-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e, 0 0 30px #22c55e;
-                background-color: #eab308;
-            }
-            100% {
-                box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e;
-                background-color: #22c55e;
-            }
-        }
-
-        @keyframes pulse-glow-yellow {
-            0% {
-                box-shadow: 0 0 5px #eab308, 0 0 10px #eab308;
-                background-color: #eab308;
-            }
-            50% {
-                box-shadow: 0 0 10px #eab308, 0 0 20px #eab308, 0 0 30px #eab308;
-                background-color: #22c55e;
-            }
-            100% {
-                box-shadow: 0 0 5px #eab308, 0 0 10px #eab308;
-                background-color: #eab308;
-            }
-        }
-
-        @keyframes pulse-glow-purple {
-            0% {
-                box-shadow: 0 0 5px #a855f7, 0 0 10px #a855f7;
-            }
-            100% {
-                box-shadow: 0 0 10px #a855f7, 0 0 20px #a855f7, 0 0 30px #a855f7;
-            }
-        }
-
-        @keyframes pulse-glow-pink {
-            0% {
-                box-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899;
-            }
-            100% {
-                box-shadow: 0 0 10px #ec4899, 0 0 20px #ec4899, 0 0 30px #ec4899;
-            }
-        }
-
-        @keyframes earth-color-change {
-            0% { background-color: black; box-shadow: 0 0 50px black; }
-            25% { background-color: white; box-shadow: 0 0 50px white; }
-            50% { background-color: red; box-shadow: 0 0 50px red; }
-            75% { background-color: yellow; box-shadow: 0 0 50px yellow; }
-            100% { background-color: black; box-shadow: 0 0 50px black; }
-        }
-
-        .button-animate {
-            animation: button-color-change 5s ease-in-out infinite;
-        }
-
-        @keyframes button-color-change {
-            0% { color: white; }
-            50% { color: black; }
-            100% { color: yellow; }
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            margin: 5% auto;
-            padding: 2.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            width: 90%;
-            max-width: 600px;
-            border-radius: 20px;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                0 0 60px rgba(0, 255, 255, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: modalSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(15px);
-            color: white;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .modal-content::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .modal-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        
-        .modal-content::-webkit-scrollbar-thumb {
-            background: rgba(0, 255, 255, 0.5);
-            border-radius: 10px;
-        }
-        
-        .modal-content::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 255, 255, 0.7);
-        }
-        
-        .floating-dot {
-            position: absolute;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            opacity: 0.7;
-        }
-        
-        .dot-red {
-            background-color: red;
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .dot-green {
-            background-color: green;
-            animation: float 8s ease-in-out infinite 1s;
-        }
-        
-        .dot-yellow {
-            background-color: yellow;
-            animation: float 7s ease-in-out infinite 2s;
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(20px, -30px) rotate(90deg);
-            }
-            50% {
-                transform: translate(-10px, -10px) rotate(180deg);
-            }
-            75% {
-                transform: translate(-30px, 20px) rotate(270deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
-        }
-        
-        @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
-        }
-        
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
-        
-        .editing-breathing-bg {
-            animation: breathing 2s ease-in-out infinite;
-        }
-        
-        @keyframes breathing {
+        @keyframes borderGlow {
             0%, 100% {
-                box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+                border-color: rgba(59, 130, 246, 0.5);
+                box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
             }
             50% {
-                box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+                border-color: rgba(234, 179, 8, 0.8);
+                box-shadow: 0 0 15px rgba(234, 179, 8, 0.6);
             }
         }
-
-        @keyframes modalFadeIn {
-            from {opacity: 0; transform: translateY(-50px);}
-            to {opacity: 1; transform: translateY(0);}
+        /* 蓝色渐变绿色边框呼吸灯效果 */
+        .animate-border-glow-blue-green {
+            animation: borderGlowBlueGreen 3s ease-in-out infinite;
         }
-        
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        #earth-container {
-            background-image: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
-            border-radius: 50%;
-            padding: 20px;
-            position: relative;
-            overflow: visible;
-        }
-
-        .firework {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background-color: #fff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .firework::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background-color: currentColor;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: firework-burst 1s ease-out forwards;
-            box-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor;
-        }
-
-        @keyframes firework-burst {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 1;
+        @keyframes borderGlowBlueGreen {
+            0%, 100% {
+                border-color: rgba(59, 130, 246, 0.5);
+                box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
             }
             50% {
-                opacity: 1;
+                border-color: rgba(34, 197, 94, 0.8);
+                box-shadow: 0 0 16px rgba(34, 197, 94, 0.6);
             }
-            100% {
-                transform: translate(-50%, -50%) scale(4);
-                opacity: 0;
+        }
+        /* 蓝色渐变绿色背景呼吸灯效果 */
+        .animate-bg-breath-blue-green {
+            animation: bgBreathBlueGreen 3s ease-in-out infinite;
+        }
+        @keyframes bgBreathBlueGreen {
+            0%, 100% {
+                background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), rgba(34, 197, 94, 0.1));
+            }
+            50% {
+                background: linear-gradient(90deg, rgba(34, 197, 94, 0.2), rgba(59, 130, 246, 0.1));
+            }
+        }
+        /* 绿色渐变深绿色背景呼吸灯效果 */
+        .animate-bg-breath-green-dark {
+            animation: bgBreathGreenDark 3s ease-in-out infinite;
+        }
+        @keyframes bgBreathGreenDark {
+            0%, 100% {
+                background: linear-gradient(90deg, rgba(34, 197, 94, 0.8), rgba(22, 163, 74, 0.6));
+            }
+            50% {
+                background: linear-gradient(90deg, rgba(22, 163, 74, 0.8), rgba(34, 197, 94, 0.6));
+            }
+        }
+        /* 绿色渐变紫色背景呼吸灯效果 */
+        .animate-bg-breath-green-purple {
+            animation: bgBreathGreenPurple 3s ease-in-out infinite;
+        }
+        @keyframes bgBreathGreenPurple {
+            0%, 100% {
+                background: linear-gradient(90deg, rgba(34, 197, 94, 0.8), rgba(139, 92, 246, 0.6));
+            }
+            50% {
+                background: linear-gradient(90deg, rgba(139, 92, 246, 0.8), rgba(34, 197, 94, 0.6));
             }
         }
     </style>
-</head>
-<body class="bg-gradient-to-r from-purple-500 to-blue-500 animate-gradient">
-    <div class="container mx-auto p-4 max-w-md h-screen flex flex-col" id="main-container">
-        <!-- Header -->
-        <header class="text-center mt-2 mb-6">
-            <h1 class="text-2xl font-bold" style="color: rgb(245, 207, 39);">派生态社区宣发</h1>
-        </header>
-
-        <div class="flex-1 flex flex-col justify-between">
-            <!-- Earth and Moons Model - Moved further down -->
-            <div class="flex items-center justify-center mb-8 mt-12">
-                <div class="relative w-36 h-36" id="earth-container">
-                    <div id="earth" class="absolute inset-0 rounded-full cursor-pointer flex items-center justify-center" style="background-color: white; transform-style: preserve-3d; animation: earth-color-change 18s infinite; overflow: hidden; color: black; font-size: 18px; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.8);">pi network</div>
-                    <canvas id="earth-canvas" class="absolute inset-0 rounded-full"></canvas>
-                    
-                    <!-- Orbiting Moons -->
-                    <div class="moon moon-1" data-name="派节点"></div>
-                    <div class="moon moon-2" data-name="派生态"></div>
-                    <div class="moon moon-3" data-name="pi币入股"></div>
-                    <div class="moon moon-4" data-name="派先锋"></div>
-                    <div class="moon moon-5" data-name="二八定律"></div>
-                    <div class="moon moon-6" data-name="派社区"></div>
-                    <div class="moon moon-7" data-name="生态公募"></div>
-                </div>
-            </div>
-
-            <!-- Announcement - Moved further down -->
-            <div class="bg-black text-white p-2 rounded-lg shadow-md mb-8 mx-auto w-full max-w-xs cursor-pointer" id="announcement">
-                <p class="text-xs text-center"><strong>公告：</strong>最新派生态招募股东开启，关注最新动态</p>
-            </div>
-
-            <!-- Buttons - Reorganized layout -->
-            <div class="mb-8 px-4">
-                <!-- First row: Ecosystem Query and Join Community -->
-                <div class="flex gap-3 mb-4">
-                    <button id="ecosystem-query" class="flex-1 bg-green-500 bg-opacity-20 p-3 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-green-300 animate-pulse button-animate text-lg">生态查询</button>
-                    <button id="friend-planning" class="flex-1 bg-blue-900 bg-opacity-20 p-3 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-blue-500 animate-pulse button-animate text-lg">加入社群</button>
-                </div>
-                
-                <!-- Second row: About Us -->
-                <div class="w-full">
-                    <button id="about-us" class="w-full bg-yellow-500 bg-opacity-20 p-3 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-yellow-300 animate-pulse button-animate text-lg">关于我们</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // About Us Modal Functions
-        function showAboutUs(type) {
-            const modal = document.getElementById('aboutUsModal');
-            const modalContent = document.getElementById('modalContent');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            const closeBtn = modal.querySelector('button:last-child');
-            
-            if (type === 'ecosystem1') {
-                // 派信娱乐 - 绿色光芒
-                modalContent.className = 'w-4/5 max-w-sm p-4 rounded-xl border-2 border-green-500/50 bg-gradient-to-br from-green-900/40 to-black/60 backdrop-blur-sm animate-fadeInUp shadow-lg shadow-green-500/30';
-                modalTitle.className = 'text-lg font-bold bg-gradient-to-r from-green-400 to-teal-300 text-transparent bg-clip-text';
-                modalTitle.textContent = '关于派信娱乐';
-                modalBody.className = 'text-green-100/90 text-sm leading-relaxed';
-                modalBody.innerHTML = `
-                    <p class="mb-3">我们是运行于海外团队的美国硅谷创业派团队共同去开启的一个派生派。</p>
-                    <p class="mb-3">我们现在招募一些先锋为我们的初始资金和生态做一个助力。</p>
-                    <p class="mb-3">我们今年将会开启生态落地的一年，主要生态于斗地主、麻将等老百姓常用的游戏生态开启招募。</p>
-                    <p>我们致力于为派友提供优质的游戏娱乐体验，打造Pi网络上最受欢迎的游戏平台。</p>
-                `;
-                closeBtn.className = 'px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-green-500/40 to-teal-500/40 text-white hover:from-green-500/60 hover:to-teal-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-green-500/20';
-            } else if (type === 'ecosystem2') {
-                // SPACE社区 - 紫色渐变
-                modalContent.className = 'w-4/5 max-w-sm p-4 rounded-xl border-2 border-purple-500/50 bg-gradient-to-br from-purple-900/40 to-black/60 backdrop-blur-sm animate-fadeInUp shadow-lg shadow-purple-500/30';
-                modalTitle.className = 'text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text';
-                modalTitle.textContent = '关于SPACE社区';
-                modalBody.className = 'text-purple-100/90 text-sm leading-relaxed';
-                modalBody.innerHTML = `
-                    <p class="mb-3">我们是由海外团队发起的生态项目，然后目前是针对中华区的项目。</p>
-                    <p class="mb-3">我们将组建一个33个派俱乐部，派生态社区，共同发起联合声明。</p>
-                    <p class="mb-3">发起，然后再加上2万的派友VIP，生态股东共同去创造、去中心化组织。</p>
-                    <p>打造中华区综合性的所有主播、所有节点、所有生态、所有聚会、所有的信息进行全部整合。</p>
-                `;
-                closeBtn.className = 'px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-purple-500/40 to-pink-500/40 text-white hover:from-purple-500/60 hover:to-pink-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-purple-500/20';
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#22c55e',
+                        paleGreen: '#ecfdf5',
+                        secondary: '#f59e0b'
+                    }
+                }
             }
+        }
+    </script>
+    <script>
+        // 创建音频上下文和音效
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(frequency = 1000) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
             
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // 改为更清脆的音效
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.5, audioContext.currentTime + 0.1);
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.15);
         }
         
-        function closeAboutUs() {
-            const modal = document.getElementById('aboutUsModal');
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-        // About Us Modal Functions
-        function showAboutUs(type) {
-            const modal = document.getElementById('aboutUsModal');
-            const modalContent = document.getElementById('modalContent');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            const closeBtn = modal.querySelector('button:last-child');
+        // 页面切换功能
+        function setupNavigation() {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const pages = document.querySelectorAll('.page-content');
             
-            if (type === 'ecosystem1') {
-                // 派信娱乐 - 绿色光芒
-                modalContent.className = 'w-4/5 max-w-sm p-4 rounded-xl border-2 border-green-500/50 bg-gradient-to-br from-green-900/40 to-black/60 backdrop-blur-sm animate-fadeInUp shadow-lg shadow-green-500/30';
-                modalTitle.className = 'text-lg font-bold bg-gradient-to-r from-green-400 to-teal-300 text-transparent bg-clip-text';
-                modalTitle.textContent = '关于派信娱乐';
-                modalBody.className = 'text-green-100/90 text-sm leading-relaxed';
-                modalBody.innerHTML = `
-                    <p class="mb-3">我们是运行于海外团队的美国硅谷创业派团队共同去开启的一个派生派。</p>
-                    <p class="mb-3">我们现在招募一些先锋为我们的初始资金和生态做一个助力。</p>
-                    <p class="mb-3">我们今年将会开启生态落地的一年，主要生态于斗地主、麻将等老百姓常用的游戏生态开启招募。</p>
-                    <p>我们致力于为派友提供优质的游戏娱乐体验，打造Pi网络上最受欢迎的游戏平台。</p>
-                `;
-                closeBtn.className = 'px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-green-500/40 to-teal-500/40 text-white hover:from-green-500/60 hover:to-teal-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-green-500/20';
-            } else if (type === 'ecosystem2') {
-                // SPACE社区 - 紫色渐变
-                modalContent.className = 'w-4/5 max-w-sm p-4 rounded-xl border-2 border-purple-500/50 bg-gradient-to-br from-purple-900/40 to-black/60 backdrop-blur-sm animate-fadeInUp shadow-lg shadow-purple-500/30';
-                modalTitle.className = 'text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text';
-                modalTitle.textContent = '关于SPACE社区';
-                modalBody.className = 'text-purple-100/90 text-sm leading-relaxed';
-                modalBody.innerHTML = `
-                    <p class="mb-3">我们是由海外团队发起的生态项目，然后目前是针对中华区的项目。</p>
-                    <p class="mb-3">我们将组建一个33个派俱乐部，派生态社区，共同发起联合声明。</p>
-                    <p class="mb-3">发起，然后再加上2万的派友VIP，生态股东共同去创造、去中心化组织。</p>
-                    <p>打造中华区综合性的所有主播、所有节点、所有生态、所有聚会、所有的信息进行全部整合。</p>
-                `;
-                closeBtn.className = 'px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-purple-500/40 to-pink-500/40 text-white hover:from-purple-500/60 hover:to-pink-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-purple-500/20';
-            }
-            
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeAboutUs() {
-            const modal = document.getElementById('aboutUsModal');
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-        const moonSounds = {
-            '派节点': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'], volume: 0.5 }),
-            '派生态': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3'], volume: 0.5 }),
-            'pi币入股': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2002/2002-preview.mp3'], volume: 0.5 }),
-            '派先锋': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'], volume: 0.5 }),
-            '二八定律': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2004/2004-preview.mp3'], volume: 0.5 }),
-            '派社区': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3'], volume: 0.5 }),
-            '生态公募': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2006/2006-preview.mp3'], volume: 0.5 }),
-        };
-
-        const buttonSounds = {
-            'ecosystem-query': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'], volume: 0.7 }),
-            'friend-planning': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2569/2569-preview.mp3'], volume: 0.7 }),
-            'about-us': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3'], volume: 0.7 }),
-            'earth': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'], volume: 0.7 }),
-            'background-click': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2575/2575-preview.mp3'], volume: 0.5 }),
-            'announcement-scroll': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2576/2576-preview.mp3'], volume: 0.6 }),
-            'dingdong': new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'], volume: 0.8 }),
-        };
-
-        lucide.createIcons();
-        
-        // Earth data stream effect
-        function initEarthDataStream() {
-            const canvas = document.getElementById('earth-canvas');
-            const ctx = canvas.getContext('2d');
-            const earth = document.getElementById('earth');
-            
-            // Set canvas size to match earth element
-            function resizeCanvas() {
-                const rect = earth.getBoundingClientRect();
-                canvas.width = rect.width;
-                canvas.height = rect.height;
-            }
-            
-            // Initial resize
-            resizeCanvas();
-            
-            // Handle window resize
-            window.addEventListener('resize', resizeCanvas);
-            
-            // Data stream particles
-            const particles = [];
-            const particleCount = 100;
-            
-            // Create particles
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    speed: Math.random() * 2 + 1,
-                    length: Math.random() * 10 + 5,
-                    width: Math.random() * 2 + 1,
-                    opacity: Math.random() * 0.8 + 0.2,
-                    angle: Math.random() * Math.PI * 2
+            navButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // 阻止事件冒泡，避免触发两次
+                    e.stopPropagation();
+                    
+                    const targetPageId = this.getAttribute('data-target');
+                    
+                    // 隐藏所有页面
+                    pages.forEach(page => {
+                        page.classList.add('hidden');
+                    });
+                    
+                    // 显示目标页面
+                    document.getElementById(targetPageId).classList.remove('hidden');
+                    
+                    // 更新导航按钮样式
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('text-primary');
+                        btn.classList.add('text-gray-400');
+                    });
+                    this.classList.remove('text-gray-400');
+                    this.classList.add('text-primary');
+                    
+                    // 如果切换到首页，确保显示精选落地生态
+                    if (targetPageId === 'home-page') {
+                        switchToSelectedEcosystem();
+                    }
+                    
+                    // 如果切换到社群页面，更新按钮为黄色
+                    if (targetPageId === 'community-page') {
+                        const communityButton = document.querySelector('#community-page .btn-light');
+                        if (communityButton) {
+                            communityButton.classList.remove('btn-light', 'bg-primary');
+                            communityButton.classList.add('btn-yellow', 'bg-secondary');
+                        }
+                    }
+                    
+                    // 播放导航音效
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    playSound(1000);
                 });
+            });
+        }
+
+        // 为所有按钮添加音效
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加页面空白处点击音效
+            document.addEventListener('click', function(e) {
+                // 检查是否点击的是空白区域（不是按钮、链接等可交互元素）
+                const target = e.target;
+                const isWhiteSpace = target === document.body || 
+                                    target.classList.contains('page-content') || 
+                                    target.classList.contains('bg-white') ||
+                                    target.classList.contains('bg-gray-100') ||
+                                    target.classList.contains('bg-paleGreen') ||
+                                    target.classList.contains('rounded-lg') ||
+                                    target.classList.contains('p-4') ||
+                                    target.classList.contains('flex') ||
+                                    target.classList.contains('flex-col') ||
+                                    target.classList.contains('items-center') ||
+                                    target.classList.contains('justify-between');
+                
+                // 避免在点击按钮、输入框、链接等元素时触发空白处音效
+                const isInteractiveElement = target.tagName === 'BUTTON' || 
+                                           target.tagName === 'A' || 
+                                           target.tagName === 'INPUT' || 
+                                           target.tagName === 'TEXTAREA' || 
+                                           target.tagName === 'SELECT' ||
+                                           target.classList.contains('sound-btn') ||
+                                           target.classList.contains('nav-btn') ||
+                                           target.closest('.sound-btn') ||
+                                           target.closest('.nav-btn') ||
+                                           target.closest('button') ||
+                                           target.closest('a');
+                
+                if (isWhiteSpace && !isInteractiveElement) {
+                    // 播放空白处点击音效（使用较低频率，更柔和的声音）
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    playSound(600);
+                }
+            });
+            
+            const soundButtons = document.querySelectorAll('.sound-btn');
+            soundButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 如果音频上下文被挂起，恢复它
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    playSound(1000);
+                    
+                    // 如果是复制按钮，执行复制操作
+                    if (this.textContent.trim() === '复制网址') {
+                        const urlElement = this.closest('.flex').previousElementSibling.querySelector('.text-blue-500');
+                        const url = urlElement.textContent.trim();
+                        navigator.clipboard.writeText(url).then(() => {
+                            const originalText = this.textContent;
+                            this.textContent = '已复制';
+                            setTimeout(() => {
+                                this.textContent = '复制网址';
+                            }, 1000);
+                        });
+                    }
+                    
+                    // 如果是进入详情按钮，显示项目详情模态框
+                    if (this.textContent.trim() === '进入详情') {
+                        const projectItem = this.closest('.flex.items-center');
+                        const projectName = projectItem.querySelector('h4').textContent;
+                        const isFromPublicFunding = this.closest('#publicFundingList') !== null;
+                        showProjectDetails(projectName, isFromPublicFunding);
+                    }
+                    
+                    // 如果是分类按钮
+                    if (this.id === 'selectedEcosystemBtn') {
+                        switchToSelectedEcosystem();
+                    } else if (this.id === 'publicFundingBtn') {
+                        switchToPublicFunding();
+                    }
+                    
+                    // 如果是拨打电话按钮
+                    if (this.textContent.trim().includes('拨打电话')) {
+                        const phoneNumber = this.closest('.bg-white').querySelector('.text-blue-500, .text-green-500').textContent.trim();
+                        alert(`正在拨打 ${phoneNumber}...`);
+                        // 在实际设备上，这将打开拨号应用
+                        // window.location.href = `tel:${phoneNumber}`;
+                    }
+                });
+            });
+
+            // 初始化奖励按钮点击事件
+            setupRewardButtons();
+
+            // 初始化导航
+            setupNavigation();
+            
+            // 初始化飘动数字（当切换到资产页面时）
+            const assetsNavBtn = document.querySelector('[data-target="assets-page"]');
+            assetsNavBtn.addEventListener('click', function() {
+                // 延迟一下，确保页面已经显示
+                setTimeout(setupFloatingNumbers, 100);
+            });
+        });
+        
+        // 设置奖励按钮点击事件
+        function setupRewardButtons() {
+            const rewardButtons = document.querySelectorAll('.reward-btn');
+            const modal = document.getElementById('reward-modal');
+            const closeModal = document.getElementById('close-modal');
+            
+            rewardButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 播放音效
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    playSound(1000);
+                    
+                    // 显示模态框
+                    modal.classList.remove('hidden');
+                });
+            });
+            
+            // 关闭模态框
+            closeModal.addEventListener('click', function() {
+                // 播放音效
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                playSound(800);
+                
+                // 隐藏模态框
+                modal.classList.add('hidden');
+            });
+            
+            // 关闭按钮
+            document.getElementById('close-modal-btn').addEventListener('click', function() {
+                closeModal.click();
+            });
+            
+            // 点击模态框外部关闭
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal.click();
+                }
+            });
+        }
+        
+        // 复制文本功能
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // 播放音效
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                playSound(800);
+                
+                alert('已复制: ' + text);
+            });
+        }
+        
+        // 拨打电话功能
+        function makeCall(phoneNumber) {
+            // 播放音效
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            playSound(1000);
+            
+            alert('正在拨打: ' + phoneNumber);
+            // 在实际设备上，这将打开拨号应用
+            // window.location.href = `tel:${phoneNumber}`;
+        }
+        
+        // 项目数据
+        const projectData = {
+            'TELTLK --- 派社交生态': {
+                description: '派友长期社群生态聊天不限制，为派生态用户提供稳定的社交环境。',
+                image: 'https://img.icons8.com/color/96/000000/social-network.png',
+                contact: {
+                    name: '李明',
+                    phone: '13800138000'
+                }
+            },
+            'Satpi   ---  派链孵化器': {
+                description: '派生态全球节点部署工具，为派生态项目提供基础设施支持。',
+                image: 'https://img.icons8.com/color/96/000000/server.png',
+                contact: {
+                    name: '张华',
+                    phone: '13900139000'
+                }
+            },
+            'Pidayworld元宇宙土地': {
+                description: '元宇宙土地确权，派购买土地，为派友提供虚拟资产确权服务。',
+                image: 'https://img.icons8.com/color/96/000000/property.png',
+                contact: {
+                    name: '王强',
+                    phone: '13700137000'
+                }
+            },
+            'Hashpi    ---哈希派': {
+                description: '链上哈希加密&资产确权，为派生态提供安全可靠的资产确权服务。',
+                image: 'https://img.icons8.com/color/96/000000/lock.png',
+                contact: {
+                    name: '赵丽',
+                    phone: '13600136000'
+                }
+            },
+            'Pi pet---派宠物': {
+                description: '生态链游养成挖矿应用，让用户在游戏中体验区块链的乐趣。',
+                image: 'https://img.icons8.com/color/96/000000/paw-print.png',
+                contact: {
+                    name: '刘芳',
+                    phone: '13500135000'
+                }
+            },
+            '米洛斯卡牌': {
+                description: '生态链游养成挖矿应用，集换式卡牌游戏，支持卡牌交易和对战。',
+                image: 'https://img.icons8.com/color/96/000000/cards.png',
+                contact: {
+                    name: '陈杰',
+                    phone: '13400134000'
+                }
+            },
+            '多派元宇宙': {
+                description: '平台，打造多元化的元宇宙生态，支持虚拟资产交易和社交互动。',
+                image: 'https://img.icons8.com/color/96/000000/universe.png',
+                contact: {
+                    name: '吴伟',
+                    phone: '13300133000'
+                }
+            },
+            '对接中': {
+                description: '钱包，为派生态用户提供安全便捷的资产管理服务。',
+                image: 'https://img.icons8.com/color/96/000000/wallet.png',
+                contact: {
+                    name: '郑海',
+                    phone: '13200132000'
+                }
+            },
+            '派信娱乐': {
+                description: '派游戏生态开启公募中，为派友提供丰富的游戏娱乐体验。',
+                image: 'https://img.icons8.com/color/96/000000/game-controller.png',
+                contact: {
+                    name: '周明',
+                    phone: '13100131000'
+                }
+            },
+            'SPACE派社区生态': {
+                description: '派33俱乐部发起生态招募VIP用户，共建派生态社区。',
+                image: 'https://img.icons8.com/color/96/000000/community.png',
+                contact: {
+                    name: '吴华',
+                    phone: '13000130000'
+                }
+            },
+            '新生态对接中': {
+                description: '新项目首发上线平台，为派友带来更多优质的生态应用。',
+                image: 'https://img.icons8.com/color/96/000000/new-product.png',
+                contact: {
+                    name: '孙丽',
+                    phone: '12900129000'
+                }
+            }
+        };
+        
+        // 显示项目详情
+        function showProjectDetails(projectName, isFromPublicFunding) {
+            const modal = document.getElementById('projectModal');
+            const modalContainer = document.getElementById('modalContainer');
+            const modalContent = document.getElementById('modalContent');
+            
+            // 设置最大的弹窗尺寸和黑色背景
+            modalContainer.className = 'bg-black rounded-2xl w-[98%] max-w-xl h-[90vh] flex flex-col relative';
+            
+            const project = projectData[projectName] || {
+                description: '项目详情正在更新中...',
+                image: 'https://img.icons8.com/color/96/000000/information.png',
+                contact: {
+                    name: '项目负责人',
+                    phone: '暂未提供'
+                }
+            };
+            
+            // 填充模态框内容 - 优化布局使标题与关闭按钮平行，内容整体上移
+            modalContent.innerHTML = `
+                <div class="flex flex-col h-full p-2 pb-6">
+                    <!-- 标题区域 - 与关闭按钮平行 -->
+                    <div class="flex items-center justify-center mb-3 relative">
+                        <h3 class="text-xl font-bold text-white">生态详情</h3>
+                    </div>
+                    
+                    <!-- 副标题介绍 - 紧跟标题下方且紧凑 -->
+                    <div class="text-center mb-3">
+                        <p class="text-gray-300 text-sm mb-1">${project.description}</p>
+                        <p class="text-gray-400 text-sm">探索派生态的无限可能</p>
+                    </div>
+                    
+                    <!-- 项目图片 - 长方形且位于中部，仅作为展示 -->
+                    <div class="w-full h-60 bg-gray-900 rounded-lg mb-2 overflow-hidden flex items-center justify-center">
+                        <img src="${project.image}" alt="项目图片" class="max-w-full max-h-full object-contain p-4">
+                    </div>
+                    
+                    <!-- 底部按钮 - 紧随图片下方，向上微调 -->
+                    <button class="w-full bg-green-500 text-white py-3 rounded-lg font-bold transform -translate-y-0.5">
+                        点击进入详情
+                    </button>
+                </div>
+            `;
+            
+            // 添加与标题平行的关闭按钮
+            const closeButton = document.createElement('button');
+            closeButton.id = 'closeProjectModal';
+            closeButton.className = 'absolute top-2 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold shadow-lg hover:bg-red-500 transform hover:scale-110 transition-all duration-300 z-10';
+            closeButton.innerHTML = '×';
+            closeButton.onclick = function() {
+                modal.classList.add('hidden');
+                // 播放音效
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                playSound(800);
+            };
+            
+            // 清除之前的关闭按钮
+            const oldCloseButton = modalContainer.querySelector('#closeProjectModal');
+            if (oldCloseButton) {
+                oldCloseButton.remove();
             }
             
-            // Animation loop
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // 添加新的关闭按钮
+            modalContainer.appendChild(closeButton);
+            
+            // 显示模态框
+            modal.classList.remove('hidden');
+            playSound(600);
+        }
+        
+        // 更换项目图片
+        function changeProjectImage(imgElement, projectName) {
+            const project = projectData[projectName];
+            if (!project) return;
+            
+            // 定义每个项目的备用图片
+            const alternativeImages = {
+                'TELTLK --- 派社交生态': 'https://img.icons8.com/color/256/000000/chat.png',
+                'Satpi   ---  派链孵化器': 'https://img.icons8.com/color/256/000000/cloud-server.png',
+                'Pidayworld元宇宙土地': 'https://img.icons8.com/color/256/000000/land.png',
+                'Hashpi    ---哈希派': 'https://img.icons8.com/color/256/000000/password.png',
+                'Pi pet---派宠物': 'https://img.icons8.com/color/256/000000/dog.png',
+                '米洛斯卡牌': 'https://img.icons8.com/color/256/000000/gaming.png',
+                '多派元宇宙': 'https://img.icons8.com/color/256/000000/metaverse.png',
+                '对接中': 'https://img.icons8.com/color/256/000000/crypto-wallet.png',
+                '派信娱乐': 'https://img.icons8.com/color/256/000000/entertainment.png',
+                'SPACE派社区生态': 'https://img.icons8.com/color/256/000000/users.png',
+                '新生态对接中': 'https://img.icons8.com/color/256/000000/new.png'
+            };
+            
+            // 获取当前图片和备用图片
+            const currentImage = imgElement.src;
+            const originalImage = project.image;
+            const alternativeImage = alternativeImages[projectName] || 'https://img.icons8.com/color/256/000000/application.png';
+            
+            // 切换图片
+            if (currentImage.includes(originalImage)) {
+                imgElement.src = alternativeImage;
+            } else {
+                imgElement.src = originalImage;
+            }
+            
+            // 播放音效
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            playSound(800);
+            
+            // 添加切换动画
+            imgElement.style.transition = 'transform 0.3s ease';
+            imgElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                imgElement.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // 处理图片上传
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgElement = document.querySelector('#modalContent img');
+                if (imgElement) {
+                    // 保存原始图片以便恢复
+                    if (!imgElement.dataset.originalSrc) {
+                        imgElement.dataset.originalSrc = imgElement.src;
+                    }
+                    imgElement.src = e.target.result;
+                    
+                    // 播放音效
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    playSound(1000);
+                    
+                    // 显示上传成功提示
+                    showToast('图片上传成功');
+                    
+                    // 添加上传动画
+                    imgElement.style.transition = 'transform 0.5s ease';
+                    imgElement.style.transform = 'scale(1.1) rotate(5deg)';
+                    setTimeout(() => {
+                        imgElement.style.transform = 'scale(1) rotate(0deg)';
+                    }, 500);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // 触发文件上传
+        function triggerFileUpload() {
+            document.getElementById('imageUpload').click();
+        }
+        
+        // 显示提示消息
+        function showToast(message) {
+            // 移除之前的提示
+            const oldToast = document.querySelector('.toast-message');
+            if (oldToast) {
+                oldToast.remove();
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message fixed top-1/4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg z-50 shadow-lg';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // 添加显示动画
+            toast.style.opacity = '0';
+            toast.style.transform = 'translate(-50%, -20px)';
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '1';
+                toast.style.transform = 'translate(-50%, 0)';
+            }, 10);
+            
+            setTimeout(() => {
+                // 添加隐藏动画
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, -20px)';
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 2000);
+        }
+        
+        // 进入生态详情
+        function enterEcoDetail() {
+            // 关闭模态框
+            document.getElementById('projectModal').classList.add('hidden');
+            // 显示确认提示
+            alert('确认进入生态详情');
+            playSound(800);
+        }
+        
+        // 复制到剪贴板
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // 显示复制成功提示
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-lg z-50';
+                toast.textContent = '复制成功';
+                document.body.appendChild(toast);
                 
-                // Draw and update particles
-                particles.forEach(particle => {
-                    // Calculate center of the circle
-                    const centerX = canvas.width / 2;
-                    const centerY = canvas.height / 2;
-                    const radius = canvas.width / 2;
+                setTimeout(function() {
+                    document.body.removeChild(toast);
+                }, 2000);
+                
+                playSound(800);
+            }, function(err) {
+                console.error('复制失败:', err);
+            });
+        }
+        
+        // 切换到精选落地生态
+        function switchToSelectedEcosystem() {
+            document.getElementById('selectedEcosystemList').classList.remove('hidden');
+            document.getElementById('publicFundingList').classList.add('hidden');
+            document.getElementById('selectedEcosystemBtn').classList.add('btn-light', 'bg-primary', 'text-white');
+            document.getElementById('selectedEcosystemBtn').classList.remove('bg-gray-100', 'text-gray-600');
+            document.getElementById('publicFundingBtn').classList.remove('btn-light', 'bg-primary', 'text-white');
+            document.getElementById('publicFundingBtn').classList.add('bg-gray-100', 'text-gray-600');
+            document.querySelector('.px-4.mb-2 h3').textContent = '派生态推荐应用';
+        }
+        
+        // 切换到公募生态
+        function switchToPublicFunding() {
+            document.getElementById('selectedEcosystemList').classList.add('hidden');
+            document.getElementById('publicFundingList').classList.remove('hidden');
+            document.getElementById('selectedEcosystemBtn').classList.remove('btn-light', 'bg-primary', 'text-white');
+            document.getElementById('selectedEcosystemBtn').classList.add('bg-gray-100', 'text-gray-600');
+            document.getElementById('publicFundingBtn').classList.add('btn-light', 'bg-primary', 'text-white');
+            document.getElementById('publicFundingBtn').classList.remove('bg-gray-100', 'text-gray-600');
+            document.querySelector('.px-4.mb-2 h3').textContent = '公募生态推荐应用';
+        }
+        
+        // 为先锋划分页面的5个阶段方框添加随机飘动的数字
+        function setupFloatingNumbers() {
+            const stageBoxes = document.querySelectorAll('#assets-page .stage-canvas');
+            
+            stageBoxes.forEach(canvas => {
+                const ctx = canvas.getContext('2d');
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+                
+                // 获取阶段和颜色
+                const stage = canvas.getAttribute('data-stage');
+                const color = canvas.getAttribute('data-color');
+                
+                // 各阶段的特殊文本
+                const stageTexts = {
+                    phone: ['派币减产', '普通用户', '2019年', '手机点击', '基础操作', '2026年', 'web3'],
+                    node: ['电脑节点', '操作复杂', '禁止克隆', '爆发期', '项目方规划', '超越手机', '真金白银'],
+                    ecosystem: ['生态入股', '生态开发', '派币参与', '生态分红', '认知觉醒', '万里挑一', '二八定律'],
+                    code: ['开源代码', '交易所', '智能合约', '链上发币', '生态变现', '代码分叉', '生态爆发'],
+                    market: ['派骗局消失', '助记词被盗', '随时价格', '九绿无限制', '映射币流通', '购买派激增', '派先锋醒悟']
+                };
+                
+                // 创建7个数字对象
+                const numbers = [];
+                for (let i = 1; i <= 7; i++) {
+                    // 根据阶段使用不同的显示内容
+                    const displayValue = stageTexts[stage] ? stageTexts[stage][i-1] : i;
                     
-                    // Calculate distance from center
-                    const dx = particle.x - centerX;
-                    const dy = particle.y - centerY;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    numbers.push({
+                        value: displayValue,
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        originalX: 0, // 存储原始位置
+                        originalY: 0, // 存储原始位置
+                        size: 16 + Math.random() * 8,
+                        originalSize: 0, // 存储原始大小
+                        speedX: (Math.random() - 0.5) * 1,
+                        speedY: (Math.random() - 0.5) * 1,
+                        opacity: 0.5 + Math.random() * 0.5,
+                        originalOpacity: 0, // 存储原始透明度
+                        color: color === 'white' ? '#ffffff' : 
+                               color === 'green' ? '#20a827' : 
+                               color === 'yellow' ? '#e4eb2a' : 
+                               color === 'purple' ? '#ac30d9' : 
+                               color === 'red' ? '#ba1d14' : '#ffffff',
+                        isActive: true, // 是否活跃（未被点击）
+                        isAnimating: false, // 是否正在动画中
+                        animationPhase: 0, // 动画阶段：0-正常，1-变大消失，2-重新出现
+                        animationProgress: 0, // 动画进度
+                        animationDuration: 2000, // 动画持续时间（毫秒）
+                        reappearDelay: 1000 // 重新出现延迟（毫秒）
+                    });
+                }
+                
+                // 保存原始属性
+                numbers.forEach(num => {
+                    num.originalX = num.x;
+                    num.originalY = num.y;
+                    num.originalSize = num.size;
+                    num.originalOpacity = num.opacity;
+                });
+                
+                // 播放数字点击音效
+                function playNumberClickSound() {
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
                     
-                    // Only draw particles inside the circle
-                    if (distance < radius) {
-                        // Draw particle
-                        ctx.beginPath();
-                        ctx.moveTo(particle.x, particle.y);
-                        
-                        // Calculate end point based on angle and length
-                        const endX = particle.x + Math.cos(particle.angle) * particle.length;
-                        const endY = particle.y + Math.sin(particle.angle) * particle.length;
-                        
-                        ctx.lineTo(endX, endY);
-                        ctx.strokeStyle = `rgba(0, 255, 0, ${particle.opacity})`;
-                        ctx.lineWidth = particle.width;
-                        ctx.stroke();
-                        
-                        // Update position (move in a circular pattern)
-                        particle.angle += 0.02;
-                        particle.x += Math.cos(particle.angle) * particle.speed * 0.2;
-                        particle.y += Math.sin(particle.angle) * particle.speed * 0.2;
-                        
-                        // Wrap around if particle goes outside canvas
-                        if (particle.x < 0) particle.x = canvas.width;
-                        if (particle.x > canvas.width) particle.x = 0;
-                        if (particle.y < 0) particle.y = canvas.height;
-                        if (particle.y > canvas.height) particle.y = 0;
-                    } else {
-                        // Reset particle inside the circle if it goes outside
-                        const angle = Math.random() * Math.PI * 2;
-                        const distance = Math.random() * radius * 0.8;
-                        particle.x = centerX + Math.cos(angle) * distance;
-                        particle.y = centerY + Math.sin(angle) * distance;
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    // 数字点击音效
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                }
+                
+                // 检查点击是否命中数字
+                function isPointInNumber(x, y, num) {
+                    const distance = Math.sqrt(Math.pow(x - num.x, 2) + Math.pow(y - num.y, 2));
+                    return distance < num.size;
+                }
+                
+                // 处理数字点击
+                function handleNumberClick(num) {
+                    if (!num.isActive || num.isAnimating) return;
+                    
+                    // 播放音效
+                    playNumberClickSound();
+                    
+                    // 开始动画
+                    num.isAnimating = true;
+                    num.animationPhase = 1;
+                    num.animationProgress = 0;
+                }
+                
+                // 重置数字状态
+                function resetNumber(num) {
+                    num.isActive = true;
+                    num.isAnimating = false;
+                    num.animationPhase = 0;
+                    num.animationProgress = 0;
+                    num.x = num.originalX;
+                    num.y = num.originalY;
+                    num.size = num.originalSize;
+                    num.opacity = num.originalOpacity;
+                }
+                
+                // 动画函数
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    const currentTime = Date.now();
+                    
+                    numbers.forEach(num => {
+                        if (num.isActive) {
+                            if (num.isAnimating) {
+                                // 更新动画进度
+                                num.animationProgress += 16; // 假设60fps，每帧约16ms
+                                
+                                if (num.animationPhase === 1) {
+                                    // 变大消失阶段
+                                    const progress = Math.min(num.animationProgress / num.animationDuration, 1);
+                                    
+                                    // 变大
+                                    num.size = num.originalSize + (num.originalSize * 2 * progress);
+                                    
+                                    // 淡出
+                                    num.opacity = num.originalOpacity * (1 - progress);
+                                    
+                                    if (progress >= 1) {
+                                        // 变大消失完成，准备重新出现
+                                        num.animationPhase = 2;
+                                        num.animationProgress = 0;
+                                        num.isActive = false;
+                                        
+                                        // 设置重新出现的定时器
+                                        setTimeout(() => {
+                                            num.isActive = true;
+                                            num.animationPhase = 0;
+                                            num.isAnimating = false;
+                                            resetNumber(num);
+                                        }, num.reappearDelay);
+                                    }
+                                }
+                            } else {
+                                // 正常移动
+                                num.x += num.speedX;
+                                num.y += num.speedY;
+                                
+                                // 边界检测
+                                if (num.x < 0 || num.x > canvas.width) num.speedX *= -1;
+                                if (num.y < 0 || num.y > canvas.height) num.speedY *= -1;
+                            }
+                            
+                            // 绘制数字
+                            ctx.save();
+                            ctx.globalAlpha = num.opacity;
+                            ctx.fillStyle = num.color;
+                            ctx.font = `${num.size}px Arial`;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(num.value, num.x, num.y);
+                            ctx.restore();
+                        }
+                    });
+                    
+                    requestAnimationFrame(animate);
+                }
+                
+                // 添加点击事件监听
+                canvas.addEventListener('click', function(e) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // 检查是否点击了数字
+                    for (let i = numbers.length - 1; i >= 0; i--) {
+                        if (isPointInNumber(x, y, numbers[i])) {
+                            handleNumberClick(numbers[i]);
+                            break;
+                        }
                     }
                 });
                 
-                requestAnimationFrame(animate);
-            }
-            
-            // Start animation
-            animate();
-        }
-        
-        // Initialize earth data stream after page loads
-        window.addEventListener('load', initEarthDataStream);
-
-        document.querySelectorAll('.moon').forEach(moon => {
-            moon.addEventListener('click', () => {
-                const name = moon.dataset.name;
-                moonSounds[name].play();
-                speakText(name);
-            });
-        });
-
-        document.getElementById('earth').addEventListener('click', function(e) {
-            // Only trigger effect when clicking on the text inside
-            if (e.target === this || e.target.nodeType === Node.TEXT_NODE) {
-                // Play ding sound
-                buttonSounds['earth'].play();
-                
-                // 50% chance for each type of effect
-                if (Math.random() > 0.5) {
-                    // Original welcome message (50% chance)
-                    speakText('欢迎来到，welcome to pi network this is good', 'male');
-                    
-                    // Play female voice after a short delay
-                    setTimeout(() => {
-                        speakText('欢迎来到，welcome to pi network this is good', 'female');
-                    }, 3000);
-                    
-                    // Start full black hole absorption effect
-                    startBlackHoleEffect();
-                } else {
-                    // New ecosystem message (50% chance)
-                    speakText('生态来了，欢迎参与生态入股', 'male');
-                    
-                    // Start partial black hole effect (absorb 2 random moons)
-                    startPartialBlackHoleEffect();
-                }
-            }
-        });
-
-        function startBlackHoleEffect() {
-            const earth = document.getElementById('earth');
-            const container = document.getElementById('earth-container');
-            const moons = document.querySelectorAll('.moon');
-            
-            // Disable earth click during animation
-            earth.style.pointerEvents = 'none';
-            
-            // Get center coordinates
-            const rect = earth.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2 - containerRect.left;
-            const centerY = rect.top + rect.height / 2 - containerRect.top;
-            
-            // Stop all moon animations and save original styles
-            const originalStyles = [];
-            moons.forEach((moon, index) => {
-                originalStyles[index] = {
-                    animation: window.getComputedStyle(moon).animation,
-                    transform: window.getComputedStyle(moon).transform,
-                    opacity: window.getComputedStyle(moon).opacity,
-                    display: window.getComputedStyle(moon).display
-                };
-                moon.style.animation = 'none';
-                moon.style.transform = 'translate(0, 0)';
-            });
-            
-            // Animate moons being sucked into the center
-            moons.forEach((moon, index) => {
-                setTimeout(() => {
-                    // Play explosion sound (bang sound)
-                    const bangSound = new Howl({ 
-                        src: ['https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'], 
-                        volume: 0.7 
-                    });
-                    bangSound.play();
-                    
-                    // Create firework at moon position
-                    createFireworkAtPosition(moon.offsetLeft, moon.offsetTop);
-                    
-                    // Animate moon to center with black hole effect
-                    moon.animate([
-                        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                        { transform: `translate(calc(${centerX}px - 50%), calc(${centerY}px - 50%)) scale(0)`, opacity: 0 }
-                    ], {
-                        duration: 800,
-                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                        fill: 'forwards'
-                    });
-                    
-                    // Hide moon after animation
-                    setTimeout(() => {
-                        moon.style.display = 'none';
-                    }, 800);
-                }, index * 150);
-            });
-            
-            // Create central explosion after all moons are absorbed
-            setTimeout(() => {
-                createCentralExplosion(centerX, centerY);
-            }, moons.length * 150 + 300);
-            
-            // Restore moons after 1 second (as requested)
-            setTimeout(() => {
-                moons.forEach((moon, index) => {
-                    moon.style.display = originalStyles[index].display;
-                    moon.style.animation = originalStyles[index].animation;
-                    moon.style.transform = originalStyles[index].transform;
-                    moon.style.opacity = originalStyles[index].opacity;
-                    moon.style.animationPlayState = 'running';
-                });
-                
-                // Re-enable earth click
-                earth.style.pointerEvents = 'auto';
-            }, 1000);
-        }
-
-        function startPartialBlackHoleEffect() {
-            const earth = document.getElementById('earth');
-            const container = document.getElementById('earth-container');
-            const moons = Array.from(document.querySelectorAll('.moon'));
-            
-            // Disable earth click during animation
-            earth.style.pointerEvents = 'none';
-            
-            // Get center coordinates
-            const rect = earth.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2 - containerRect.left;
-            const centerY = rect.top + rect.height / 2 - containerRect.top;
-            
-            // Select 2 random moons
-            const randomMoons = [];
-            const availableIndices = Array.from({length: moons.length}, (_, i) => i);
-            
-            for (let i = 0; i < 2; i++) {
-                const randomIndex = Math.floor(Math.random() * availableIndices.length);
-                const moonIndex = availableIndices.splice(randomIndex, 1)[0];
-                randomMoons.push({
-                    moon: moons[moonIndex],
-                    index: moonIndex
-                });
-            }
-            
-            // Stop selected moon animations and save original styles
-            const originalStyles = {};
-            randomMoons.forEach(({moon, index}) => {
-                originalStyles[index] = {
-                    animation: window.getComputedStyle(moon).animation,
-                    transform: window.getComputedStyle(moon).transform,
-                    opacity: window.getComputedStyle(moon).opacity,
-                    display: window.getComputedStyle(moon).display
-                };
-                moon.style.animation = 'none';
-                moon.style.transform = 'translate(0, 0)';
-            });
-            
-            // Animate selected moons being sucked into the center
-            randomMoons.forEach(({moon, index}, i) => {
-                setTimeout(() => {
-                    // Play firework sound
-                    const fireworkSound = new Howl({ 
-                        src: ['https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'], 
-                        volume: 0.6 
-                    });
-                    fireworkSound.play();
-                    
-                    // Create firework at moon position
-                    createFireworkAtPosition(moon.offsetLeft, moon.offsetTop);
-                    
-                    // Animate moon to center with black hole effect
-                    moon.animate([
-                        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                        { transform: `translate(calc(${centerX}px - 50%), calc(${centerY}px - 50%)) scale(0)`, opacity: 0 }
-                    ], {
-                        duration: 600,
-                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                        fill: 'forwards'
-                    });
-                    
-                    // Hide moon after animation
-                    setTimeout(() => {
-                        moon.style.display = 'none';
-                    }, 600);
-                }, i * 300);
-            });
-            
-            // Create central explosion after selected moons are absorbed
-            setTimeout(() => {
-                createCentralExplosion(centerX, centerY, 10); // Smaller explosion
-            }, randomMoons.length * 300 + 200);
-            
-            // Restore moons after 1 second
-            setTimeout(() => {
-                randomMoons.forEach(({moon, index}) => {
-                    moon.style.display = originalStyles[index].display;
-                    moon.style.animation = originalStyles[index].animation;
-                    moon.style.transform = originalStyles[index].transform;
-                    moon.style.opacity = originalStyles[index].opacity;
-                    moon.style.animationPlayState = 'running';
-                });
-                
-                // Re-enable earth click
-                earth.style.pointerEvents = 'auto';
-            }, 1000);
-        }
-
-        function createFireworkAtPosition(x, y) {
-            const container = document.getElementById('earth-container');
-            const firework = document.createElement('div');
-            firework.className = 'firework';
-            
-            // Random color
-            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            firework.style.color = color;
-            
-            // Position at moon
-            firework.style.left = `${x}px`;
-            firework.style.top = `${y}px`;
-            
-            container.appendChild(firework);
-            
-            // Remove after animation
-            setTimeout(() => {
-                if (firework.parentNode) {
-                    firework.parentNode.removeChild(firework);
-                }
-            }, 1000);
-        }
-
-        function createCentralExplosion(centerX, centerY, fireworkCount = 20) {
-            const container = document.getElementById('earth-container');
-            
-            // Create multiple fireworks from center
-            for (let i = 0; i < fireworkCount; i++) {
-                setTimeout(() => {
-                    const firework = document.createElement('div');
-                    firework.className = 'firework';
-                    
-                    // Random color
-                    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff'];
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    firework.style.color = color;
-                    
-                    // Start at center
-                    firework.style.left = `${centerX}px`;
-                    firework.style.top = `${centerY}px`;
-                    
-                    container.appendChild(firework);
-                    
-                    // Animate firework outward
-                    const angle = Math.random() * Math.PI * 2;
-                    const distance = Math.random() * 150 + 50;
-                    const duration = Math.random() * 0.5 + 0.5;
-                    
-                    const targetX = centerX + Math.cos(angle) * distance;
-                    const targetY = centerY + Math.sin(angle) * distance;
-                    
-                    firework.animate([
-                        { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
-                        { transform: `translate(calc(-50% + ${targetX - centerX}px), calc(-50% + ${targetY - centerY}px)) scale(1)`, opacity: 1 },
-                        { transform: `translate(calc(-50% + ${targetX - centerX}px), calc(-50% + ${targetY - centerY}px)) scale(0)`, opacity: 0 }
-                    ], {
-                        duration: duration * 1000,
-                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-                    });
-                    
-                    // Remove firework after animation
-                    setTimeout(() => {
-                        if (firework.parentNode) {
-                            firework.parentNode.removeChild(firework);
-                        }
-                    }, (duration + 1) * 1000);
-                }, i * 50);
-            }
-        }
-
-        // Create ecosystem query page
-        const ecosystemPage = document.createElement('div');
-        ecosystemPage.id = 'ecosystem-page';
-        ecosystemPage.className = 'fixed inset-0 bg-gradient-to-r from-purple-500 to-blue-500 animate-gradient z-50 hidden';
-        ecosystemPage.innerHTML = `
-            <div class="container mx-auto p-4 max-w-md h-screen flex flex-col">
-                <!-- Header -->
-                <header class="text-center mt-6 mb-8">
-                    <h1 class="text-3xl font-bold" style="color: rgb(245, 207, 39);">派生态详情</h1>
-                </header>
-
-                <!-- Content -->
-                <div class="flex-1 flex flex-col justify-center items-center space-y-6">
-                    <!-- Free Ecosystem Button -->
-                    <button id="free-ecosystem" class="w-full bg-gradient-to-r from-green-500/30 to-green-600/30 p-6 rounded-xl text-center font-bold backdrop-blur-sm shadow-lg border-2 border-green-400 text-xl text-white hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105">
-                        免费派生态 <span class="text-sm opacity-80">（宣传）</span>
-                    </button>
-                    
-                    <!-- Investment Ecosystem Button -->
-                    <button id="investment-ecosystem" class="w-full bg-gradient-to-r from-blue-500/30 to-blue-600/30 p-6 rounded-xl text-center font-bold backdrop-blur-sm shadow-lg border-2 border-blue-400 text-xl text-white hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
-                        派币招募生态 <span class="text-sm opacity-80">（宣发）</span>
-                    </button>
-                    
-                    <!-- Future Planning Button -->
-                    <button id="future-planning" class="w-full bg-gradient-to-r from-purple-500/30 to-purple-600/30 p-6 rounded-xl text-center font-bold backdrop-blur-sm shadow-lg border-2 border-purple-400 text-xl text-white hover:shadow-purple-500/50 transition-all duration-300 transform hover:scale-105 relative overflow-hidden">
-                        派币未来规划路线 <span class="inline-block w-3 h-3 rounded-full ml-2 animate-color-change"></span>
-                    </button>
-                </div>
-
-                <!-- Back Button -->
-                <div class="mt-6 mb-4 flex justify-center">
-                    <button id="back-to-main" class="px-8 py-3 bg-gradient-to-r from-red-500/30 to-red-600/30 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-red-400 text-lg text-white hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
-                        返回主页
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(ecosystemPage);
-
-        document.getElementById('ecosystem-query').addEventListener('click', () => {
-            buttonSounds['ecosystem-query'].play();
-            document.getElementById('main-container').classList.add('hidden');
-            document.getElementById('ecosystem-page').classList.remove('hidden');
-        });
-
-        // Back to main page
-        document.getElementById('back-to-main').addEventListener('click', () => {
-            buttonSounds['ecosystem-query'].play();
-            document.getElementById('ecosystem-page').classList.add('hidden');
-            document.getElementById('main-container').classList.remove('hidden');
-        });
-
-        // Add event listeners for back to ecosystem buttons after pages are created
-        function addBackButtonListeners() {
-            const backButtons = document.querySelectorAll('.back-to-ecosystem');
-            backButtons.forEach(button => {
-                // Remove any existing event listeners
-                button.replaceWith(button.cloneNode(true));
-            });
-            
-            // Add fresh event listeners
-            document.querySelectorAll('.back-to-ecosystem').forEach(button => {
-                button.addEventListener('click', function() {
-                    console.log('Back button clicked');
-                    buttonSounds['ecosystem-query'].play();
-                    // Hide all sub-pages
-                    document.getElementById('free-ecosystem-page').classList.add('hidden');
-                    document.getElementById('investment-ecosystem-page').classList.add('hidden');
-                    document.getElementById('future-planning-page').classList.add('hidden');
-                    // Show ecosystem page
-                    document.getElementById('ecosystem-page').classList.remove('hidden');
-                });
+                // 开始动画
+                animate();
             });
         }
-
-        // Ecosystem buttons functionality
-        // Create Free Ecosystem Page
-        const freeEcosystemPage = document.createElement('div');
-        freeEcosystemPage.id = 'free-ecosystem-page';
-        freeEcosystemPage.className = 'fixed inset-0 bg-gradient-to-r from-blue-500 to-green-500 animate-gradient z-50 hidden';
-        freeEcosystemPage.innerHTML = `
-            <div class="container mx-auto p-4 max-w-md h-screen flex flex-col">
-                <!-- Header -->
-                <header class="text-center mt-6 mb-4">
-                    <h1 class="text-3xl font-bold" style="color: rgb(245, 207, 39);">社区生态宣传</h1>
-                </header>
-
-                <!-- Notice -->
-                <div class="bg-yellow-500/20 p-3 rounded-lg border border-yellow-400/30 mb-6 backdrop-blur-sm">
-                    <p class="text-yellow-100 text-sm text-center">
-                        <i class="fa fa-info-circle mr-1"></i>
-                        欢迎访问派碧生态，请粘贴下面网址进入派浏览器进行操作
-                    </p>
-                </div>
-
-                <!-- Content -->
-                <div class="flex-1 overflow-y-auto pb-4">
-                    <div class="space-y-6">
-                        <!-- Ecosystem Item 1 -->
-                        <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
-                            <h3 class="text-lg font-bold text-green-300 mb-2 flex items-center">
-                                <i class="fa fa-leaf mr-2"></i>SatPi 派游器
-                            </h3>
-                            <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
-                                <span class="text-gray-200 text-sm flex-1 truncate">satpi.app</span>
-                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="satpi.app">复制</button>
-                            </div>
-                            <p class="text-gray-300 text-sm mb-3">探索Pi网络生态的全新浏览器，为派友提供安全便捷的生态访问体验。</p>
-                            <div class="mt-3">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/c7aa1b6141004150a6052ff7eb9d7d54.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=rKETlaYCIEyeKctUMHeqEAL2QcM%3D" alt="SatPi 派游器" class="w-full h-auto rounded-lg border border-green-500/30 transform scale-70 rotate-180">
-                            </div>
-                        </div>
-                        
-                        <!-- Ecosystem Item 2 -->
-                        <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
-                            <h3 class="text-lg font-bold text-blue-300 mb-2 flex items-center">
-                                <i class="fa fa-shield mr-2"></i>Hashpi 哈希派
-                            </h3>
-                            <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
-                                <span class="text-gray-200 text-sm flex-1 truncate">hashpi.app</span>
-                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="hashpi.app">复制</button>
-                            </div>
-                            <p class="text-gray-300 text-sm mb-3">基于区块链技术的安全哈希服务平台，为派生态提供数据安全保障。</p>
-                            <div class="mt-3">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/0599eb9256ef486e81589f54ca0f3f8a.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=zudY0bru9Hqdj76Ltqq968RDIPs%3D" alt="Hashpi 哈希派" class="w-full h-auto rounded-lg border border-blue-500/30 transform scale-70 rotate-180">
-                            </div>
-                        </div>
-                        
-                        <!-- Ecosystem Item 3 -->
-                        <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-4 rounded-xl border border-purple-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4">
-                            <h3 class="text-lg font-bold text-purple-300 mb-2 flex items-center">
-                                <i class="fa fa-gift mr-2"></i>Pipet 派宠物
-                            </h3>
-                            <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg mb-3">
-                                <span class="text-gray-200 text-sm flex-1 truncate">https://pipet.me/#/pages/login/login?invite=419296</span>
-                                <button class="copy-text px-3 py-1 bg-blue-500/30 rounded text-xs text-white hover:bg-blue-500/50 transition-colors" data-text="https://pipet.me/#/pages/login/login?invite=419296">复制</button>
-                            </div>
-                            <p class="text-gray-300 text-sm mb-3">区块链宠物养成游戏，让派友在互动中体验数字资产管理的乐趣。</p>
-                            <div class="mt-3">
-                                <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/1e6c8ca338ff49d699723ac5173a9402.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=20260423234307B1963C7F3C7D82B214C1&rrcfp=8a172a1a&x-expires=1777563787&x-signature=i71JWORWhx0tOrESqyI6QHuDEaY%3D" alt="Pipet 派宠物" class="w-full h-auto rounded-lg border border-purple-500/30 transform scale-70 rotate-180">
-                            </div>
-                        </div>
-                        
-                        <!-- Announcements -->
-                        <div class="mt-6 space-y-4">
-                            <!-- Announcement 2 -->
-                            <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm">
-                                <div class="flex items-center mb-2">
-                                    <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center mr-2">
-                                        <i class="fa fa-line-chart text-green-400"></i>
-                                    </div>
-                                    <h3 class="text-lg font-bold text-green-300">派未来发展路线</h3>
-                                </div>
-                                <p class="text-gray-100 text-center">Pi 集合未来所有道路，所有发展路线，包括但不限于派先锋在pi项目中的所有参与身份选择，盈亏方向，生态道路，指导基本道路，成就一部分先锋一番伟业。</p>
-                            </div>
-                        </div>
-
-                        <!-- Development Routes Chart -->
-                        <div class="mt-8 mb-4">
-                            <div class="relative w-full h-[400px] bg-gradient-to-br from-gray-900/60 to-gray-800/60 rounded-xl border border-gray-700/50 backdrop-blur-sm p-4">
-                                <!-- Central Origin Point -->
-                                <div class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center shadow-lg shadow-purple-500/50 animate-pulse z-10">
-                                    <span class="text-white font-bold text-sm text-center">路线<br>pi network</span>
-                                </div>
-
-                                <!-- Connection Lines -->
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <!-- Line to Mobile Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-transparent top-[15%] left-1/2 transform -translate-x-1/2 rotate-0"></div>
-                                    <!-- Line to Node Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-transparent top-[35%] left-1/2 transform -translate-x-1/2 rotate-0"></div>
-                                    <!-- Line to Ecosystem Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-gradient-to-r from-red-400 to-red-600 top-[55%] left-[10%] transform origin-left"></div>
-                                    <!-- Line to Contract Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-gradient-to-r from-orange-400 to-orange-600 top-[75%] left-1/2 transform -translate-x-1/2 rotate-0"></div>
-                                    <!-- Line to Monetization Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-gradient-to-r from-purple-400 to-purple-600 top-[95%] left-1/2 transform -translate-x-1/2 rotate-0"></div>
-                                </div>
-
-                                <!-- Stage 1: Mobile Stage -->
-                                <div class="absolute top-[15%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-3 rounded-lg border border-blue-500/30 backdrop-blur-sm shadow-lg shadow-blue-500/20">
-                                        <h4 class="text-sm font-bold text-blue-300 mb-1">手机阶段</h4>
-                                        <p class="text-xs text-gray-300">通过手机pi挖矿，建立用户基础</p>
-                                    </div>
-                                </div>
-
-                                <!-- Stage 2: Node Stage -->
-                                <div class="absolute top-[30%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-3 rounded-lg border border-green-500/30 backdrop-blur-sm shadow-lg shadow-green-500/20">
-                                        <h4 class="text-sm font-bold text-green-300 mb-1">节点阶段</h4>
-                                        <p class="text-xs text-gray-300">建立pi网络搭建，确保网络安全</p>
-                                    </div>
-                                </div>
-
-                                <!-- Stage 3: Ecosystem Stage -->
-                                <div class="absolute top-[50%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 p-3 rounded-lg border border-red-500/30 backdrop-blur-sm shadow-lg shadow-red-500/20">
-                                        <h4 class="text-sm font-bold text-red-300 mb-1">生态阶段</h4>
-                                        <p class="text-xs text-gray-300">参与生态落地，先锋可pi币入股</p>
-                                    </div>
-                                </div>
-
-                                <!-- Stage 4: Contract Stage -->
-                                <div class="absolute top-[70%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-orange-900/40 to-orange-800/20 p-3 rounded-lg border border-orange-500/30 backdrop-blur-sm shadow-lg shadow-orange-500/20">
-                                        <h4 class="text-sm font-bold text-orange-300 mb-1">合约阶段</h4>
-                                        <p class="text-xs text-gray-300">实现合约功能，有DeFi应用开发</p>
-                                    </div>
-                                </div>
-
-                                <!-- Stage 5: Monetization Stage -->
-                                <div class="absolute top-[85%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-3 rounded-lg border border-purple-500/30 backdrop-blur-sm shadow-lg shadow-purple-500/20">
-                                        <h4 class="text-sm font-bold text-purple-300 mb-1">变现阶段</h4>
-                                        <p class="text-xs text-gray-300">实现价值提升《用户随时pi变现</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Back Button -->
-                <div class="mt-4 mb-4 flex justify-center">
-                    <button class="back-to-ecosystem px-8 py-3 bg-gradient-to-r from-red-500/30 to-red-600/30 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-red-400 text-lg text-white hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
-                        返回上一页
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(freeEcosystemPage);
-
-        document.getElementById('free-ecosystem').addEventListener('click', () => {
-            buttonSounds['ecosystem-query'].play();
-            document.getElementById('ecosystem-page').classList.add('hidden');
-            document.getElementById('free-ecosystem-page').classList.remove('hidden');
-        });
-
-        // Create Investment Ecosystem Page
-        const investmentEcosystemPage = document.createElement('div');
-        investmentEcosystemPage.id = 'investment-ecosystem-page';
-        investmentEcosystemPage.className = 'fixed inset-0 bg-gradient-to-r from-yellow-500 to-orange-500 animate-gradient z-50 hidden';
-        investmentEcosystemPage.innerHTML = `
-            <div class="container mx-auto p-4 max-w-md h-screen flex flex-col">
-                <!-- Header -->
-                <header class="text-center mt-6 mb-4">
-                    <h1 class="text-2xl font-bold" style="color: rgb(245, 207, 39);">派币招募生态</h1>
-                </header>
-
-                <!-- Subtitle -->
-                <div class="text-center mb-6">
-                    <p class="text-lg text-white font-semibold" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">以下生态正在公布招募中</p>
-                </div>
-
-                <!-- Content -->
-                <div class="flex-1 overflow-y-auto pb-4">
-                    <div class="space-y-6">
-                        <!-- Ecosystem 1 -->
-                        <div class="w-full bg-gradient-to-br from-green-900/40 to-green-800/20 p-3 rounded-xl border border-green-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] mb-4 shadow-lg shadow-black/20">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-base font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-black text-transparent bg-clip-text animate-pulse flex items-center">
-                                    <i class="fa fa-gamepad mr-1.5 text-xs"></i>派信娱乐
-                                </h3>
-                                <div class="px-2 py-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full text-[10px] text-white font-medium animate-pulse shadow-lg shadow-blue-500/50">招募中</div>
-                            </div>
-                            <div class="bg-black/40 p-2.5 rounded-lg mb-3">
-                                <p class="bg-gradient-to-r from-blue-400 via-cyan-300 to-black text-transparent bg-clip-text font-medium text-center mb-1.5 text-xs animate-pulse">派信娱乐 · 股东招募</p>
-                                <div class="text-gray-300 space-y-1 text-[10px]">
-                                    <p><span class="text-gray-400">项目类型：</span><span class="bg-gradient-to-r from-green-400 to-teal-500 text-transparent bg-clip-text">游戏娱乐</span></p>
-                                    <p><span class="text-gray-400">招募金额：</span><span class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-transparent bg-clip-text">900pi</span></p>
-                                    <p><span class="text-gray-400">股东数量：</span><span class="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">1000名</span></p>
-                                </div>
-                            </div>
-                            <div class="bg-gradient-to-r from-blue-900/40 to-purple-900/40 p-2.5 rounded-xl border border-blue-500/30 mb-3">
-                                <h4 class="text-sm font-bold bg-gradient-to-r from-green-400 to-teal-500 text-transparent bg-clip-text mb-1.5 flex items-center animate-pulse">
-                                    <i class="fa fa-info-circle mr-1.5 text-xs"></i>项目详情
-                                </h4>
-                                <p class="bg-gradient-to-r from-gray-300 via-white to-gray-300 text-transparent bg-clip-text text-[10px] mb-2.5 leading-relaxed animate-pulse">派信娱乐致力于打造Pi网络上最受欢迎的游戏娱乐平台，为派友提供丰富多样的区块链游戏体验。</p>
-                                <div class="flex gap-2">
-                                    <button onclick="buttonSounds['dingdong'].play(); window.location.href='https://pixinyule333.pages.dev/'" class="flex-1 bg-gradient-to-r from-green-500/40 to-teal-500/40 p-1.5 rounded-lg text-center text-white text-[10px] font-medium hover:from-green-500/60 hover:to-teal-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-green-500/20 editing-breathing-bg">生态详情</button>
-                                    <button onclick="buttonSounds['dingdong'].play(); showAboutUs('ecosystem1')" class="flex-1 bg-gradient-to-r from-blue-500/40 to-cyan-500/40 p-1.5 rounded-lg text-center text-white text-[10px] font-medium hover:from-blue-500/60 hover:to-cyan-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-blue-500/20">关于我们</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Ecosystem 2 -->
-                        <div class="w-full bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-3 rounded-xl border border-blue-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] shadow-lg shadow-black/20">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-base font-bold bg-gradient-to-r from-red-500 via-orange-500 to-black text-transparent bg-clip-text animate-pulse flex items-center">
-                                    <i class="fa fa-globe mr-1.5 text-xs"></i>SPACE社区
-                                </h3>
-                                <div class="px-2 py-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-full text-[10px] text-white font-medium animate-pulse shadow-lg shadow-green-500/50">招募中</div>
-                            </div>
-                            <div class="bg-black/40 p-2.5 rounded-lg mb-3">
-                                <p class="bg-gradient-to-r from-red-400 via-orange-300 to-black text-transparent bg-clip-text font-medium text-center mb-1.5 text-xs animate-pulse">SPACE社区 · 股东招募</p>
-                                <div class="text-gray-300 space-y-1 text-[10px]">
-                                    <p><span class="text-gray-400">项目类型：</span><span class="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">社区生态</span></p>
-                                    <p><span class="text-gray-400">参与金额：</span><span class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-transparent bg-clip-text">628pi</span></p>
-                                    <p><span class="text-gray-400">招募状态：</span><span class="bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">名额有限</span></p>
-                                </div>
-                            </div>
-                            <div class="bg-gradient-to-r from-purple-900/40 to-pink-900/40 p-2.5 rounded-xl border border-purple-500/30 mb-3">
-                                <h4 class="text-sm font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text mb-1.5 flex items-center animate-pulse">
-                                    <i class="fa fa-info-circle mr-1.5 text-xs"></i>项目详情
-                                </h4>
-                                <p class="bg-gradient-to-r from-gray-300 via-white to-gray-300 text-transparent bg-clip-text text-[10px] mb-2.5 leading-relaxed animate-pulse">SPACE是一个专为派友打造的综合性社区平台，致力于构建派友交流、资源共享的生态空间。</p>
-                                <div class="flex gap-2">
-                                    <button onclick="buttonSounds['dingdong'].play(); window.location.href='https://worldland.pages.dev/'" class="flex-1 bg-gradient-to-r from-blue-500/40 to-purple-500/40 p-1.5 rounded-lg text-center text-white text-[10px] font-medium hover:from-blue-500/60 hover:to-purple-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-blue-500/20 editing-breathing-bg">生态详情</button>
-                                    <button onclick="buttonSounds['dingdong'].play(); showAboutUs('ecosystem2')" class="flex-1 bg-gradient-to-r from-pink-500/40 to-red-500/40 p-1.5 rounded-lg text-center text-white text-[10px] font-medium hover:from-pink-500/60 hover:to-red-500/60 transition-all duration-300 active:scale-95 shadow-lg shadow-pink-500/20">关于我们</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <!-- Back Button -->
-                <div class="mt-2 mb-4 flex justify-center">
-                    <button class="back-to-ecosystem px-8 py-3 bg-gradient-to-r from-red-500/30 to-red-600/30 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-red-400 text-lg text-white hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
-                        返回上一页
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(investmentEcosystemPage);
-
-        document.getElementById('investment-ecosystem').addEventListener('click', () => {
-            buttonSounds['ecosystem-query'].play();
-            document.getElementById('ecosystem-page').classList.add('hidden');
-            document.getElementById('investment-ecosystem-page').classList.remove('hidden');
-        });
-
-        // Create Future Planning Page
-        const futurePlanningPage = document.createElement('div');
-        futurePlanningPage.id = 'future-planning-page';
-        futurePlanningPage.className = 'fixed inset-0 bg-gradient-to-r from-purple-500 to-blue-500 animate-gradient z-50 hidden';
-        futurePlanningPage.innerHTML = `
-            <div class="container mx-auto p-4 max-w-md h-screen flex flex-col">
-                <!-- Header -->
-                <header class="text-center mt-6 mb-6">
-                    <h1 class="text-2xl font-bold" style="color: rgb(245, 207, 39);">派币未来规划路线</h1>
-                </header>
-
-                <!-- Content -->
-                <div class="flex-1 overflow-y-auto pb-4">
-                    <div class="space-y-6">
-                        <!-- Announcements -->
-                        <div class="mt-6 space-y-4">
-                            <!-- Announcement 2 -->
-                            <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm">
-                                <div class="flex items-center mb-2">
-                                    <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center mr-2">
-                                        <i class="fa fa-line-chart text-green-400"></i>
-                                    </div>
-                                    <h3 class="text-lg font-bold text-green-300">派未来发展路线</h3>
-                                </div>
-                                <p class="text-gray-100 text-center">Pi 集合未来所有道路，所有发展路线，包括但不限于派先锋在pi项目中的所有参与身份选择，盈亏方向，生态道路，指导基本道路，成就一部分先锋一番伟业。</p>
-                            </div>
-                        </div>
-
-                        <!-- Development Routes Chart -->
-                        <div class="mt-8 mb-4">
-                            <div class="relative w-full h-[400px] bg-gradient-to-br from-gray-900/60 to-gray-800/60 rounded-xl border border-gray-700/50 backdrop-blur-sm p-4">
-                                <!-- Central Origin Point -->
-                                <div class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center shadow-lg shadow-purple-500/50 animate-pulse z-10">
-                                    <span class="text-white font-bold text-sm text-center">路线<br>pi network</span>
-                                </div>
-
-                                <!-- Connection Lines -->
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <!-- Line to Mobile Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-transparent top-[15%] left-1/2 transform -translate-x-1/2 rotate-0"></div>
-                                    <!-- Line to Node Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-transparent top-[35%] left-1/2 transform -translate-x-1/2 rotate-0"></div>
-                                    <!-- Line to Ecosystem Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-gradient-to-r from-red-400 to-red-600 top-[55%] left-[10%] transform origin-left"></div>
-                                    <!-- Line to Contract Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-gradient-to-r from-orange-400 to-orange-600 top-[75%] left-1/2 transform -translate-x-1/2 rotate-0"></div>
-                                    <!-- Line to Monetization Stage -->
-                                    <div class="absolute w-[60%] h-1 bg-gradient-to-r from-purple-400 to-purple-600 top-[95%] left-1/2 transform -translate-x-1/2 rotate-0"></div>
-                                </div>
-
-                                <!-- Stage 1: Mobile Stage -->
-                                <div class="absolute top-[15%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-3 rounded-lg border border-blue-500/30 backdrop-blur-sm shadow-lg shadow-blue-500/20">
-                                        <h4 class="text-sm font-bold text-blue-300 mb-1">手机阶段</h4>
-                                        <p class="text-xs text-gray-300">通过手机pi挖矿，建立用户基础</p>
-                                    </div>
-                                </div>
-
-                                <!-- Stage 2: Node Stage -->
-                                <div class="absolute top-[30%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-3 rounded-lg border border-green-500/30 backdrop-blur-sm shadow-lg shadow-green-500/20">
-                                        <h4 class="text-sm font-bold text-green-300 mb-1">节点阶段</h4>
-                                        <p class="text-xs text-gray-300">建立pi网络搭建，确保网络安全</p>
-                                    </div>
-                                </div>
-
-                                <!-- Stage 3: Ecosystem Stage -->
-                                <div class="absolute top-[50%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 p-3 rounded-lg border border-red-500/30 backdrop-blur-sm shadow-lg shadow-red-500/20">
-                                        <h4 class="text-sm font-bold text-red-300 mb-1">生态阶段</h4>
-                                        <p class="text-xs text-gray-300">参与生态落地，先锋可pi币入股</p>
-                                    </div>
-                                </div>
-
-                                <!-- Stage 4: Contract Stage -->
-                                <div class="absolute top-[70%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-orange-900/40 to-orange-800/20 p-3 rounded-lg border border-orange-500/30 backdrop-blur-sm shadow-lg shadow-orange-500/20">
-                                        <h4 class="text-sm font-bold text-orange-300 mb-1">合约阶段</h4>
-                                        <p class="text-xs text-gray-300">实现合约功能，有DeFi应用开发</p>
-                                    </div>
-                                </div>
-
-                                <!-- Stage 5: Monetization Stage -->
-                                <div class="absolute top-[85%] right-[10%] transform -translate-y-1/2">
-                                    <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-3 rounded-lg border border-purple-500/30 backdrop-blur-sm shadow-lg shadow-purple-500/20">
-                                        <h4 class="text-sm font-bold text-purple-300 mb-1">变现阶段</h4>
-                                        <p class="text-xs text-gray-300">全球价值提升价格，派用户随时pi变现</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Back Button -->
-                <div class="mt-4 mb-4 flex justify-center">
-                    <button class="back-to-ecosystem px-8 py-3 bg-gradient-to-r from-red-500/30 to-red-600/30 rounded-full text-center font-bold backdrop-blur-sm shadow-lg border-2 border-red-400 text-lg text-white hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
-                        返回上一页
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(futurePlanningPage);
-
-        document.getElementById('future-planning').addEventListener('click', () => {
-            buttonSounds['ecosystem-query'].play();
-            document.getElementById('ecosystem-page').classList.add('hidden');
-            document.getElementById('future-planning-page').classList.remove('hidden');
-        });
-
-        // Add back button listeners after all pages are created
-        setTimeout(addBackButtonListeners, 100);
-
-        // Add route sound functionality
-        window.playRouteSound = function(type) {
-            const routeSounds = {
-                main: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3'], volume: 0.5 }),
-                mobile: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3'], volume: 0.5 }),
-                node: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'], volume: 0.5 }),
-                ecosystem: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3'], volume: 0.5 }),
-                contract: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3'], volume: 0.5 }),
-                monetization: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2022/2022-preview.mp3'], volume: 0.5 })
-            };
-            
-            if (routeSounds[type]) {
-                routeSounds[type].play();
-            }
-        };
-
-        // Add copy text functionality
-        function addCopyTextListeners() {
-            document.querySelectorAll('.copy-text').forEach(button => {
-                button.addEventListener('click', function() {
-                    const text = this.getAttribute('data-text');
-                    navigator.clipboard.writeText(text).then(() => {
-                        // Change button text temporarily
-                        const originalText = this.textContent;
-                        this.textContent = '已复制';
-                        this.classList.add('bg-green-500/30');
-                        this.classList.remove('bg-blue-500/30');
-                        
-                        // Play copy sound
-                        buttonSounds['ecosystem-query'].play();
-                        
-                        // Reset button text after 2 seconds
-                        setTimeout(() => {
-                            this.textContent = originalText;
-                            this.classList.remove('bg-green-500/30');
-                            this.classList.add('bg-blue-500/30');
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Failed to copy: ', err);
-                        this.textContent = '复制失败';
-                        this.classList.add('bg-red-500/30');
-                        this.classList.remove('bg-blue-500/30');
-                        
-                        setTimeout(() => {
-                            this.textContent = '复制';
-                            this.classList.remove('bg-red-500/30');
-                            this.classList.add('bg-blue-500/30');
-                        }, 2000);
-                    });
-                });
-            });
-        }
-
-        // Add copy text listeners when free ecosystem page is shown
-        document.getElementById('free-ecosystem').addEventListener('click', () => {
-            setTimeout(addCopyTextListeners, 200);
-        });
-
-        // Create Join Community modal
-        const joinCommunityModal = document.createElement('div');
-        joinCommunityModal.id = 'join-community-modal';
-        joinCommunityModal.className = 'modal';
-        joinCommunityModal.innerHTML = `
-            <div class="modal-content">
-                <span class="close text-white text-2xl absolute top-4 right-4 cursor-pointer">&times;</span>
-                <h2 class="text-2xl font-bold mb-4 text-center" style="color: rgb(245, 207, 39);">加入社群</h2>
-                <div class="space-y-6">
-                    <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-4 rounded-xl border border-blue-500/30 backdrop-blur-sm shadow-lg shadow-blue-500/10 transform transition-all duration-300 hover:shadow-blue-500/20">
-                        <h3 class="text-lg font-bold mb-2 text-cyan-300 flex items-center">
-                            <i class="fa fa-users mr-2"></i>联系负责人
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div class="flex items-center bg-black/30 p-2 rounded-lg">
-                                <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-2 flex-shrink-0">
-                                    <i class="fa fa-user text-blue-400 text-sm"></i>
-                                </div>
-                                <p class="text-gray-100 text-sm"><strong>魏国炳：</strong>15536455536</p>
-                            </div>
-                            <div class="flex items-center bg-black/30 p-2 rounded-lg">
-                                <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-2 flex-shrink-0">
-                                    <i class="fa fa-user text-blue-400 text-sm"></i>
-                                </div>
-                                <p class="text-gray-100 text-sm"><strong>毕尚阳：</strong>15513636709</p>
-                            </div>
-                        </div>
-                        <div class="mt-3 text-center text-sm text-gray-300">
-                            <p class="mb-1"><i class="fa fa-info-circle text-cyan-400 mr-1"></i>使用 TELTLK 软件扫码进群</p>
-                            <p><i class="fa fa-check-circle text-green-400 mr-1"></i>下面为永久群聊</p>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- 山西太原派社区总群 -->
-                        <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-4 rounded-xl border border-green-500/30 backdrop-blur-sm text-center">
-                            <h4 class="text-lg font-bold mb-3 text-green-300">山西太原派社区总群</h4>
-                            <div class="mb-3">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/4445c0b62dbc422c8ae9f8821b6aa945.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=202604232255010B096D667A5164C10AAE&rrcfp=8a172a1a&x-expires=1777560902&x-signature=ihrXWJ593E13FrZxlMiVytHQt8Q%3D" alt="山西太原派社区总群" class="w-40 h-40 mx-auto rounded-lg shadow-lg">
-                            </div>
-                            <p class="text-sm text-gray-300">使用 TELTLK 扫码进群</p>
-                        </div>
-                        
-                        <!-- 派信娱乐股东招募群 -->
-                        <div class="bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 p-4 rounded-xl border border-yellow-500/30 backdrop-blur-sm text-center">
-                            <h4 class="text-lg font-bold mb-3 text-yellow-300">派信娱乐股东招募群</h4>
-                            <div class="mb-3">
-                                <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/27723bbeb7f34a6c829232e64c6bb8ab.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=202604232255010B096D667A5164C10AAE&rrcfp=8a172a1a&x-expires=1777560902&x-signature=UcLSxxBHnqw%2FDRe53AmqCkXvaiE%3D" alt="派信娱乐股东招募群" class="w-40 h-40 mx-auto rounded-lg shadow-lg shadow-blue-500/50 ring-2 ring-blue-400 ring-offset-2 ring-offset-transparent">
-                            </div>
-                            <p class="text-sm text-gray-300">使用 TELTLK 扫码进群</p>
-                        </div>
-                        
-                        <!-- SPACE派空间股东总群 -->
-                        <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 p-4 rounded-xl border border-red-500/30 backdrop-blur-sm text-center md:col-span-2">
-                            <h4 class="text-lg font-bold mb-3 text-red-300">SPACE派空间股东总群</h4>
-                            <div class="mb-3">
-                                <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/8fea3ba9ef824cf08e6a89bb6fdba00c.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&rcl=202604232255010B096D667A5164C10AAE&rrcfp=8a172a1a&x-expires=1777560902&x-signature=8q%2FX%2FisPxTj9pEc7rhUQRrzxoJg%3D" alt="SPACE派空间股东总群" class="w-40 h-40 mx-auto rounded-lg shadow-lg shadow-yellow-500/50 ring-2 ring-yellow-400 ring-offset-2 ring-offset-transparent">
-                            </div>
-                            <p class="text-sm text-gray-300">使用 TELTLK 扫码进群</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(joinCommunityModal);
-
-        const joinCommunityBtn = document.getElementById('friend-planning');
-        const closeJoinCommunityBtn = joinCommunityModal.querySelector('.close');
-
-        joinCommunityBtn.addEventListener('click', () => {
-            buttonSounds['friend-planning'].play();
-            joinCommunityModal.style.display = 'block';
-        });
-
-        closeJoinCommunityBtn.addEventListener('click', () => {
-            joinCommunityModal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target == joinCommunityModal) {
-                joinCommunityModal.style.display = 'none';
-            }
-        });
-
-        // Create About Us modal
-        const aboutUsModal = document.createElement('div');
-        aboutUsModal.id = 'about-us-modal';
-        aboutUsModal.className = 'modal';
-        aboutUsModal.innerHTML = `
-            <div class="modal-content">
-                <span class="close text-white text-2xl absolute top-4 right-4 cursor-pointer">&times;</span>
-                <h2 class="text-2xl font-bold mb-4 text-center" style="color: rgb(245, 207, 39);">关于我们</h2>
-                <div class="space-y-4">
-                    <p class="text-lg">本软件主要为派友生态先锋提供：</p>
-                    <ul class="list-disc pl-6 space-y-2">
-                        <li>派生态最新动态宣发</li>
-                        <li>生态项目展示与推广</li>
-                        <li>派友社区交流平台</li>
-                    </ul>
-                    <div class="mt-6 pt-4 border-t border-white/20">
-                        <h3 class="text-xl font-bold mb-3">联系我们</h3>
-                        <p><strong>负责人：</strong>魏国炳 15536455536</p>
-                        <p><strong>负责人：</strong>毕尚阳 15513636709</p>
-                        <p><strong>地址：</strong>山西省太原市尖草坪区迎春优山美郡17号楼2单元负层，负一层0102</p>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(aboutUsModal);
-
-        const aboutUsBtn = document.getElementById('about-us');
-        const closeBtn = aboutUsModal.querySelector('.close');
-
-        aboutUsBtn.addEventListener('click', () => {
-            buttonSounds['about-us'].play();
-            aboutUsModal.style.display = 'block';
-        });
-
-        closeBtn.addEventListener('click', () => {
-            aboutUsModal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target == aboutUsModal) {
-                aboutUsModal.style.display = 'none';
-            }
-        });
-
-        function speakText(text, voiceType = 'male') {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'zh-CN';
-                
-                // Set voice based on gender
-                if (voiceType === 'female') {
-                    utterance.pitch = 1.2;
-                    utterance.rate = 0.9;
-                } else {
-                    utterance.pitch = 0.8;
-                    utterance.rate = 1.0;
-                }
-                
-                speechSynthesis.speak(utterance);
-            }
-        }
-
-        // Add background click sound
-        document.getElementById('main-container').addEventListener('click', (e) => {
-            // Check if the clicked element is not any of the buttons or interactive elements
-            if (!e.target.closest('button') && 
-                !e.target.closest('.moon') && 
-                !e.target.closest('#earth') &&
-                !e.target.closest('#announcement') &&
-                !e.target.closest('.modal')) {
-                buttonSounds['background-click'].play();
-            }
-        });
-
-        // Add announcement click sound
-        document.getElementById('announcement').addEventListener('click', () => {
-            buttonSounds['announcement-scroll'].play();
-            alert('最新公告：生态招募1000股股东，开启落地。详情请关注我们的官方渠道获取更多信息。');
-        });
-
-        // Carousel image click sounds removed as carousel was deleted
-
     </script>
+</head>
+<body class="max-w-md mx-auto bg-white min-h-screen flex flex-col">
 
-    <!-- About Us Modals -->
-    <div id="aboutUsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div id="modalContent" class="w-4/5 max-w-sm p-4 rounded-xl border-2">
-            <div class="flex justify-between items-center mb-3">
-                <h3 id="modalTitle" class="text-lg font-bold"></h3>
-                <button onclick="closeAboutUs()" class="text-white/80 hover:text-white transition-colors">
+<!-- 页面容器 -->
+<div id="page-container" class="flex-1">
+    <!-- 首页 -->
+    <div id="home-page" class="page-content">
+        <!-- 顶部滚动公告栏 -->
+        <div class="bg-primary text-white py-2 overflow-hidden">
+            <div class="notice-scroll">
+                <span class="emoji emoji1f525"></span> 派生态全球股东火热招募中｜生态落地全面推进｜全球节点同步部署｜多生态应用持续上线｜共建Web3超级生态
+            </div>
+        </div>
+
+        <!-- 顶部绿色横幅 -->
+        <div class="p-4">
+            <div class="rounded-2xl p-5 bg-green-500">
+                <h2 class="text-xl font-bold text-gray-800">派生态 — 全球Web3超级入口</h2>
+                <p class="text-sm text-gray-700 mt-2" style="font-size: 16px; font-weight: bold;">一站式，派生态最新资讯，抢先看！</p>
+            </div>
+        </div>
+
+        <!-- 发光按钮：精选 + 生态 -->
+        <div class="px-4 mb-3 flex gap-4">
+            <button class="btn-light bg-primary text-white px-5 py-2 rounded-full text-sm font-medium sound-btn" id="selectedEcosystemBtn">
+                精选生态
+            </button>
+            <button class="bg-gray-100 text-gray-600 px-5 py-2 rounded-full text-sm sound-btn" id="publicFundingBtn">
+                生态公募
+            </button>
+        </div>
+
+        <!-- 应用列表标题 -->
+        <div class="px-4 mb-2">
+            <h3 class="font-bold text-base">派生态推荐应用</h3>
+        </div>
+
+        <!-- 应用列表容器 -->
+        <div class="flex-1 px-4 pb-24">
+            <!-- 精选落地生态列表 -->
+            <div id="selectedEcosystemList">
+                <!-- PiLearn (移到第一个位置) -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-teal-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-graduation-cap"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">TELTLK --- 派社交生态</h4>
+                        <p class="text-xs text-gray-500 mt-1">派友长期社群生态聊天不限制</p>
+                        <p class="text-xs text-blue-500 mt-1">pilearn.app</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+
+                <!-- Satpi (原来的第一个移到第二个位置) -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-green-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-globe"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">Satpi   ---  派链孵化器</h4>
+                        <p class="text-xs text-gray-500 mt-1">派生态全球节点部署工具</p>
+                        <p class="text-xs text-blue-500 mt-1">start.app</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+
+                <!-- Hashpi (原来的第二个移到第三个位置) -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-600 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-key"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">Pidayworld元宇宙土地</h4>
+                        <p class="text-xs text-gray-500 mt-1">元宇宙土地确权，派购买土地</p>
+                        <p class="text-xs text-blue-500 mt-1">hashpi.app</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+
+                <!-- 派空间 SPACE (原来的第三个移到第四个位置) -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-rocket"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">Hashpi    ---哈希派</h4>
+                        <p class="text-xs text-gray-500 mt-1">链上哈希加密&amp;资产确权</p>
+                        <p class="text-xs text-blue-500 mt-1">hashpi.app</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+
+                <!-- 派信娱乐 (原来的第四个移到第五个位置) -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-pink-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-comments"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">Pi pet---派宠物</h4>
+                        <p class="text-xs text-gray-500 mt-1">生态链游 养成挖矿应用</p>
+                        <p class="text-xs text-blue-500 mt-1">pixin.app</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+
+                <!-- 派宠物 (原来的第五个移到第六个位置) -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-paw"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">米洛斯卡牌</h4>
+                        <p class="text-xs text-gray-500 mt-1">生态链游 养成挖矿应用</p>
+                        <p class="text-xs text-blue-500 mt-1">p敬请期待正在递交</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+
+                <!-- PiTrade -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-line-chart"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">多派元宇宙</h4>
+                        <p class="text-xs text-gray-500 mt-1">平台</p>
+                        <p class="text-xs text-blue-500 mt-1">p敬请期待正在递交</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+
+                <!-- PiWallet -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-purple-600 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-wallet"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">对接中</h4>
+                        <p class="text-xs text-gray-500 mt-1">钱包</p>
+                        <p class="text-xs text-blue-500 mt-1">p敬请期待正在递交</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+
+                <!-- PiVote -->
+                <div class="flex items-center py-4">
+                    <div class="w-16 h-16 rounded-2xl bg-red-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-check-square-o"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">对接中</h4>
+                        <p class="text-xs text-gray-500 mt-1">系统</p>
+                        <p class="text-xs text-blue-500 mt-1">p敬请期待正在递交</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn">复制网址</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 公募生态列表（默认隐藏） -->
+            <div id="publicFundingList" class="hidden">
+                <!-- PiFund -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-purple-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-money"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">派信娱乐</h4>
+                        <p class="text-xs text-gray-500 mt-1">派游戏生态开启公募中</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="text-green-500 text-xs flex items-center justify-center">
+                            <span class="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>进行中
+                        </span>
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                    </div>
+                </div>
+
+                <!-- EcoStarter -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-rocket"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">SPACE派社区生态</h4>
+                        <p class="text-xs text-gray-500 mt-1">派33俱乐部发起生态招募VIP用户</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="text-green-500 text-xs flex items-center justify-center">
+                            <span class="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>进行中
+                        </span>
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                    </div>
+                </div>
+
+                <!-- PiLaunch -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-paper-plane"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">新生态对接中</h4>
+                        <p class="text-xs text-gray-500 mt-1">新项目首发上线平台</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="text-yellow-500 text-xs flex items-center justify-center">
+                            <span class="w-2 h-2 bg-yellow-500 rounded-full mr-1 animate-pulse"></span>对接中
+                        </span>
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                    </div>
+                </div>
+
+                <!-- TokenMarket -->
+                <div class="flex items-center py-4 border-b border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-area-chart"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">新生态对接中</h4>
+                        <p class="text-xs text-gray-500 mt-1">代币市场行情分析工具</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="text-yellow-500 text-xs flex items-center justify-center">
+                            <span class="w-2 h-2 bg-yellow-500 rounded-full mr-1 animate-pulse"></span>对接中
+                        </span>
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                    </div>
+                </div>
+
+                <!-- CrowdPool -->
+                <div class="flex items-center py-4">
+                    <div class="w-16 h-16 rounded-2xl bg-teal-500 flex items-center justify-center text-white text-2xl mr-3">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-base">新生态对接中</h4>
+                        <p class="text-xs text-gray-500 mt-1">最新官方生态</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="text-gray-600 text-xs flex items-center justify-center">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-1"></span>未开始
+                        </span>
+                        <button class="rounded-full sound-btn btn-detail">进入详情</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加入社群页面 -->
+    <div id="community-page" class="page-content hidden px-4 pb-24 bg-amber-600">
+        <!-- 顶部绿色横幅 -->
+        <div class="p-4">
+            <div class="rounded-2xl p-5 bg-green-500">
+                <h2 class="text-xl font-bold text-gray-800" style="font-size: 18px; font-family: KaiTi, STKaiti, KaiTi_GB2312, sans-serif; font-weight: bold;">欢迎加入永不封禁的先锋社群</h2>
+                <p class="text-sm text-gray-700 mt-2">派友群聊，生态资讯 ，先锋必备神器。<br>请您使用teltlk进行扫码进群。</p>
+            </div>
+        </div>
+
+        <!-- 联系我们 -->
+        <div class="px-4 mt-4">
+            <h3 class="text-lg font-bold mb-3">联系我们</h3>
+            <p class="text-sm text-gray-600 mb-4" style="color: rgb(5, 7, 8); font-weight: bold;">生态咨询，和派生态入股，随时咨询我们。</p>
+            
+            <!-- 联系人信息 -->
+            <div class="bg-white rounded-xl p-4 shadow-sm mb-4 border-2 border-transparent animate-border-glow-blue-green">
+                <div class="flex justify-between mb-3">
+                    <div class="text-center">
+                        <p class="font-bold text-sm">毕尚阳</p>
+                        <p class="text-xs text-gray-500" style="color: rgb(8, 11, 13); font-weight: bold; font-size: 14px;">155  13636  7089</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="font-bold text-sm">魏国炳</p>
+                        <p class="text-xs text-gray-500" style="font-weight: bold; color: rgb(7, 9, 10); font-size: 14px;">155  3645  5536</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-xs text-gray-500" style="color: rgb(5, 6, 8); font-weight: bold;">地址：山西省太原市尖草坪区营村优山美郡17号楼2单元-负1层-0102。</p>
+                </div>
+            </div>
+            
+            <!-- 社区图片卡片网格布局 -->
+            <h4 class="font-bold text-sm mb-2">本地社区</h4>
+            <div class="grid grid-cols-2 gap-3">
+                <!-- 社区卡片1 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/af45abbf8a5d42c489e762c68cadf98d~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260425183629509FC4505CFB6F5778FB&amp;rrcfp=e75484ac&amp;x-expires=1777718189&amp;x-signature=fdPwtJvO0VTzzmW%2FAsVENjwj9Ko%3D" alt="山西太原派友本地社区" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-xs text-center" style="font-weight: bold;">山西太原派友本地社区</p>
+                </div>
+                <!-- 社区卡片2 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
+                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/1ffb5d813ee4486fb12923c656b0ecb6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604251836554CC6657A02C14B4281AB&amp;rrcfp=e75484ac&amp;x-expires=1777718216&amp;x-signature=RIrT51UQCiEfJhExz%2BeKNx%2F1Wao%3D" alt="派信娱乐生态群" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-xs text-center" style="font-weight: bold;">派信娱乐生态群</p>
+                </div>
+                <!-- 社区卡片3 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/81bdfc1c4a0c4613943b28bbec236894~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604251837055E957492A4AC68296CA0&amp;rrcfp=e75484ac&amp;x-expires=1777718225&amp;x-signature=u6gjrS89tdIt5pslGu4%2FrOF9MfE%3D" alt="派空间生态总群" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-xs text-center" style="font-weight: bold;">SPACE派空间生态总群</p>
+                </div>
+                <!-- 社区卡片4 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-full aspect-square rounded-lg flex items-center justify-center mb-1 p-2 bg-white/80 backdrop-blur-sm border-2 border-transparent animate-border-glow">
+                        <p class="font-bold text-center text-lg text-gray-800">派友群聊<br>随时更新</p>
+                    </div>
+                    <p class="text-xs text-center" style="font-weight: bold;">生态群公告</p>
+                </div>
+                <!-- 社区卡片5 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
+                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/1b08570d153d4878806ca094f2f87462~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260425204446B1EEFFBF14858124B2DA&amp;rrcfp=e75484ac&amp;x-expires=1777725887&amp;x-signature=R92au%2BwuYpv4Q9EM5gPsx%2BtulHw%3D" alt="派币派友节点群聊" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-xs text-center" style="font-weight: bold;">派节点搭建群聊</p>
+                </div>
+                <!-- 社区卡片6 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/33a6a73086fd414c9d5944a753ec2cb2~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260425204504B1EEFFBF14858124B79A&amp;rrcfp=e75484ac&amp;x-expires=1777725904&amp;x-signature=lB0yb9ocTgrrvvw1yCCTKkypHNM%3D" alt="10名 did 群聊" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-xs text-center" style="font-weight: bold;">实名DID群聊</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 派未来路线页面 -->
+    <div id="roadmap-page" class="page-content hidden px-4 pb-24 bg-green-50">
+        <!-- 顶部绿色横幅 -->
+        <div class="p-4">
+            <div class="rounded-2xl p-5 bg-green-500">
+                <h2 class="text-xl font-bold text-gray-800" style="color: rgb(5, 15, 33); font-size: 24px;">派生态节点搭建</h2>
+                <p class="text-sm text-gray-700 mt-2" style="color: rgb(15, 17, 20); font-weight: bold; font-size: 16px;">共建去中心化网络，共享生态收益</p>
+            </div>
+        </div>
+
+        <!-- 公告框 -->
+        <div class="px-4 mt-4">
+            <div class="bg-white rounded-xl p-5 shadow-sm border-2 border-transparent animate-border-glow-blue-green">
+                <h3 class="text-lg font-bold mb-3 flex items-center">
+                    <i class="fa fa-bullhorn text-primary mr-2"></i>
+                    节点搭建的好处
+                </h3>
+                <ul class="text-sm text-gray-700 space-y-2">
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>参与派生态网络维护，获得节点奖励</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>提升交易处理优先级，享受更低手续费</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>获得生态治理投票权，参与重要决策</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>优先体验新功能，与生态共同成长</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>建立技术影响力，拓展行业人脉</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 联系负责人 -->
+        <div class="px-4 mt-4">
+            <h3 class="text-lg font-bold mb-3">联系负责人</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <!-- 联系人1 -->
+                <div class="bg-white rounded-xl p-3 shadow-sm text-center border-2 border-transparent animate-border-glow">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-1">
+                        <i class="fa fa-user text-blue-500 text-base"></i>
+                    </div>
+                    <h4 class="font-bold text-xs">魏国炳</h4>
+                    <p class="text-xs text-gray-500 mt-0.5">派社区人员</p>
+                    <p class="text-xs text-blue-500 mt-1 font-bold">155 3645 5536</p>
+                    <button class="mt-1 bg-blue-500 text-white px-2 py-0.5 rounded-full text-xs sound-btn">
+                        <i class="fa fa-phone mr-1"></i> 拨打电话
+                    </button>
+                </div>
+                
+                <!-- 联系人2 -->
+                <div class="bg-white rounded-xl p-3 shadow-sm text-center border-2 border-transparent animate-border-glow">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-1">
+                        <i class="fa fa-user text-green-500 text-base"></i>
+                    </div>
+                    <h4 class="font-bold text-xs">毕尚阳</h4>
+                    <p class="text-xs text-gray-500 mt-0.5">派社区人员</p>
+                    <p class="text-xs text-green-500 mt-1 font-bold">155 1363 6709</p>
+                    <button class="mt-1 bg-green-500 text-white px-2 py-0.5 rounded-full text-xs sound-btn">
+                        <i class="fa fa-phone mr-1"></i> 拨打电话
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 节点搭建说明 -->
+        <div class="px-4 mt-4">
+            <div class="bg-white rounded-xl p-5 shadow-sm">
+                <h3 class="text-lg font-bold mb-3">节点搭建流程</h3>
+                <div class="space-y-4">
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mr-3">
+                            1
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm">准备阶段</h4>
+                            <p class="text-xs text-gray-600 mt-1">请联系派社区人员预约及登记意向</p>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mr-3">
+                            2
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm">安装节点软件</h4>
+                            <p class="text-xs text-gray-600 mt-1">联系技术负责人获取最新版本的节点安装包和教程及服务器相关事宜</p>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mr-3">
+                            3
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm">配置节点信息</h4>
+                            <p class="text-xs text-gray-600 mt-1">按照教程配置节点参数，确保安全稳定运行，节点老师专业行为勿动</p>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mr-3">
+                            4
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm">加入节点网络</h4>
+                            <p class="text-xs text-gray-600 mt-1">完成配置后，节点将自动连接到派生态网络，链接派用户手机端</p>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mr-3">
+                            5
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm">开始获得奖励</h4>
+                            <p class="text-xs text-gray-600 mt-1">1-3月算力低，3-6月跑数据，节点稳定运行后，即可开始获得生态奖励</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 节点服务器图片 -->
+        <div class="px-4 mt-4 mb-4">
+            <div class="rounded-xl overflow-hidden shadow-sm">
+                <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/1d2e19c8309440428356175f915db256~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604252151410D2CAF44D8D2092B2543&amp;rrcfp=e75484ac&amp;x-expires=1777729903&amp;x-signature=reW%2BbLUPCZeOthjWuYHzclDSWZ8%3D" alt="派生态节点服务器集群" class="w-full h-auto">
+                <div class="bg-white p-3">
+                    <p class="text-sm font-bold text-center">派生态全球节点服务器集群</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 额外的节点服务器图片 -->
+        <div class="px-4 mt-2 mb-4">
+            <div class="rounded-xl overflow-hidden shadow-sm">
+                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/abb853325354434b9141891a3c7ec39c~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260425205930E4B59B2EFB036A6736F5&amp;rrcfp=f06b921b&amp;x-expires=1779714016&amp;x-signature=yjQ9c1QkPhjfAdORe8vRFeZ0U48%3D" alt="派生态全球节点网络" class="w-full h-auto">
+                <div class="bg-white p-3">
+                    <p class="text-sm font-bold text-center">加入全球节点网络，共建去中心化未来</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 资产页面 -->
+    <div id="assets-page" class="page-content hidden px-4 pb-24 bg-black">
+        <!-- 紫色边框方框 -->
+        <div class="p-3 mt-3">
+            <div class="rounded-xl p-3 bg-white border-2 border-purple-500 shadow-sm">
+                <h3 class="text-base font-bold text-center text-purple-700">先锋行为划分，看看你在哪一层？</h3>
+            </div>
+        </div>
+        
+        <!-- 顶部蓝色横幅 -->
+        <div class="p-3">
+            <div class="rounded-xl p-4 bg-blue-600 shadow-md">
+                <h2 class="text-sm font-bold text-white text-center" style="font-family: KaiTi, STKaiti, KaiTi_GB2312, sans-serif; line-height: 1.4;">先锋千千万，生态万万千。             
+ 纸上得来终觉浅，绝知此事要躬行。</h2>
+            </div>
+        </div>
+
+        <!-- 五个白色长方形方框 -->
+        <div class="space-y-3 mt-4">
+            <div class="w-full h-36 rounded-lg border-2 border-white relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full flex items-center justify-center p-2 z-10">
+                    <div class="text-white font-bold text-lg">手机阶段（使命结束）</div>
+                </div>
+                <canvas class="stage-canvas absolute top-0 left-0 w-full h-full" data-stage="phone" data-color="white"></canvas>
+            </div>
+            <div class="w-full h-36 rounded-lg border-2 border-white relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full flex items-center justify-center p-2 z-10">
+                    <div class="text-white font-bold text-lg" style="color: rgb(32, 168, 39);">节点阶段（爆发认可）</div>
+                </div>
+                <canvas class="stage-canvas absolute top-0 left-0 w-full h-full" data-stage="node" data-color="green"></canvas>
+            </div>
+            <div class="w-full h-36 rounded-lg border-2 border-white relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full flex items-center justify-center p-2 z-10">
+                    <div class="text-white font-bold text-lg" style="color: rgb(228, 235, 42);">生态阶段（认知参与）</div>
+                </div>
+                <canvas class="stage-canvas absolute top-0 left-0 w-full h-full" data-stage="ecosystem" data-color="yellow"></canvas>
+            </div>
+            <div class="w-full h-36 rounded-lg border-2 border-white relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full flex items-center justify-center p-2 z-10">
+                    <div class="text-white font-bold text-lg" style="color: rgb(172, 48, 217);">代码阶段（运筹布局）</div>
+                </div>
+                <canvas class="stage-canvas absolute top-0 left-0 w-full h-full" data-stage="code" data-color="purple"></canvas>
+            </div>
+            <div class="w-full h-36 rounded-lg border-2 border-white relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full flex items-center justify-center p-2 z-10">
+                    <div class="text-white font-bold text-lg" style="color: rgb(186, 29, 20);">变现阶段（二八定律）</div>
+                </div>
+                <canvas class="stage-canvas absolute top-0 left-0 w-full h-full" data-stage="market" data-color="red"></canvas>
+            </div>
+        </div>
+
+        <!-- 评语 -->
+        <div class="mt-4 px-4">
+            <p class="text-white text-center text-sm">评论和总结</p>
+        </div>
+
+        <!-- 随机颜色小球方框 -->
+        <div class="mt-4 px-4">
+            <div class="w-full h-36 rounded-lg border-2 border-white relative overflow-hidden">
+                <canvas id="random-balls-canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <p class="text-white text-center text-sm">1.当你助记词丢失的时候，这便是派圈的残酷。2.在派区块链的世界里，只能也必须要靠自己。  3.永远不要幻想一夜暴富，这是个理性的社会。  4.千万不要人云亦云，盲从是这最可怕的选择。 5.不要相信任何人，这是最后的忠告！！！！！</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- 我的页面 -->
+    <div id="profile-page" class="page-content hidden px-4 pb-24 bg-orange-50">
+        <!-- 橘黄色方框 -->
+        <div class="p-3 mt-3">
+            <div class="rounded-xl p-4 bg-orange-500 shadow-md">
+                <h2 class="text-base font-bold text-white text-center" style="font-size: 18px;">福利空投</h2>
+                <p class="text-xs text-orange-100 mt-1 text-center" style="font-size: 14px;">对接福利奖励活动，参与即可获得丰厚回报</p>
+            </div>
+        </div>
+        
+        <!-- 正方形按钮网格 -->
+        <div class="px-4 mt-4">
+            <div class="grid grid-cols-2 gap-4">
+                <!-- 按钮1 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-green-500 reward-btn" data-reward="contributor">
+                    <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-2">
+                        <i class="fa fa-gift text-red-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">湖南顶俏</h4>
+                    <p class="text-xs text-gray-500 mt-1">超便宜100元八件套</p>
+                </div>
+                
+                <!-- 按钮2 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-green-500 reward-btn" data-reward="node">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                        <i class="fa fa-server text-blue-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">清蓝山泉</h4>
+                    <p class="text-xs text-gray-500 mt-1">免费喝水签到红包</p>
+                </div>
+                
+                <!-- 按钮3 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-yellow-500 reward-btn" data-reward="invite">
+                    <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-2">
+                        <i class="fa fa-users text-green-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">OPA免费挖矿</h4>
+                    <p class="text-xs text-gray-500 mt-1">8月份之前开启变现</p>
+                </div>
+                
+                <!-- 按钮4 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-yellow-500 reward-btn" data-reward="beta">
+                    <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-2">
+                        <i class="fa fa-rocket text-purple-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">其他免费挖矿</h4>
+                    <p class="text-xs text-gray-500 mt-1">敬请期待</p>
+                </div>
+                
+                <!-- 按钮5 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-purple-500 reward-btn" data-reward="task">
+                    <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-2">
+                        <i class="fa fa-calendar-check-o text-yellow-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">对接中</h4>
+                    <p class="text-xs text-gray-500 mt-1">敬请期待</p>
+                </div>
+                
+                <!-- 按钮6 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-purple-500 reward-btn" data-reward="competition">
+                    <div class="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-2">
+                        <i class="fa fa-trophy text-pink-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">派生态对接中</h4>
+                    <p class="text-xs text-gray-500 mt-1">敬请期待</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 奖励详情模态框 -->
+    <div id="reward-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">项目详情</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 sound-btn">
                     <i class="fa fa-times text-xl"></i>
                 </button>
             </div>
-            <div id="modalBody" class="text-sm leading-relaxed"></div>
-            <div class="mt-4 flex justify-center">
-                <button onclick="closeAboutUs()" class="px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 active:scale-95">关闭</button>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-4">派生态应用中心是全球领先的Web3超级入口。</p>
+                
+                <!-- 两张可替换的长方形图片 -->
+                <div class="flex justify-between gap-3 mb-6">
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://picsum.photos/seed/pi1/300/400" alt="项目图片1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://picsum.photos/seed/pi2/300/400" alt="项目图片2" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <!-- 负责人信息 -->
+                <div class="space-y-2 mt-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">负责人姓名：</span>
+                        <span class="text-sm font-medium text-gray-900">张先生</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">手机号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">13812345678</span>
+                            <button class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded sound-btn" onclick="makeCall('13812345678')">拨打</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">微信号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">PiEcoOfficial</span>
+                            <button class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded sound-btn" onclick="copyText('PiEcoOfficial')">复制</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div id="about-us-modal" class="modal">
-        <!-- 动态背景效果 -->
-        <div class="absolute inset-0 overflow-hidden">
-            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-            <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-            <div class="absolute bottom-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-        </div>
-        
-        <div class="modal-content">
-            <!-- 关闭按钮 -->
-            <button class="close absolute top-4 right-4 w-10 h-10 rounded-full bg-white bg-opacity-10 flex items-center justify-center text-white text-xl hover:bg-opacity-20 transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50">
-                <i class="fa fa-times"></i>
+            <button id="close-modal-btn" class="w-full py-2 bg-gray-200 text-gray-800 rounded-lg font-medium sound-btn">
+                关闭
             </button>
-            
-            <!-- 模态框标题 -->
-            <div class="text-center mb-8 relative">
-                <div class="inline-block relative">
-                    <h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300 tracking-wider">派生态建设信息</h2>
-                    <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
-                </div>
+        </div>
+    </div>
+    
+    <!-- 项目详情模态框 -->
+    <div id="projectModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div id="modalContainer" class="bg-yellow-50 rounded-2xl w-[90%] max-w-md max-h-[90vh] overflow-y-auto">
+            <!-- 关闭按钮 -->
+            <div class="flex justify-end p-4">
+                <button id="closeProjectModal" class="text-gray-500 text-2xl">×</button>
             </div>
             
-            <!-- 内容区域 -->
-            <div class="space-y-6 relative z-10">
-                <!-- 生态用途 -->
-                <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-5 rounded-xl border border-blue-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-blue-500/10">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mr-3">
-                            <i class="fa fa-globe text-blue-400 text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-cyan-300">生态用途</h3>
-                    </div>
-                    <p class="text-gray-100 leading-relaxed pl-13">
-                        本生态致力于Pi网络的生态建设与落地应用开发，为派先锋提供全方位的生态参与机会。我们旨在构建一个完整的Pi生态系统，促进Pi币的实际应用与价值实现，打造区块链技术与实体经济深度融合的创新平台。
-                    </p>
-                </div>
-                
-                <!-- 联系方式 -->
-                <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 p-5 rounded-xl border border-green-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-green-500/10">
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center mr-3">
-                            <i class="fa fa-address-card text-green-400 text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-green-300">联系方式</h3>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pl-13">
-                        <div class="flex items-start">
-                            <i class="fa fa-envelope text-green-400 mt-1 mr-3 w-5 text-center"></i>
-                            <p class="text-gray-100">contact@piecocommunity.com</p>
-                        </div>
-                        <div class="flex items-start">
-                            <i class="fa fa-map-marker text-green-400 mt-1 mr-3 w-5 text-center"></i>
-                            <p class="text-gray-100">北京市朝阳区区块链产业园区A座1001室</p>
-                        </div>
-                        <div class="flex items-start">
-                            <i class="fa fa-phone text-green-400 mt-1 mr-3 w-5 text-center"></i>
-                            <p class="text-gray-100">+86 123 4567 8910</p>
-                        </div>
-                        <div class="flex items-start">
-                            <i class="fa fa-user text-green-400 mt-1 mr-3 w-5 text-center"></i>
-                            <p class="text-gray-100">张先生</p>
-                        </div>
-                        <div class="flex items-start md:col-span-2">
-                            <i class="fa fa-twitter text-green-400 mt-1 mr-3 w-5 text-center"></i>
-                            <p class="text-gray-100">@PiEcoCommunity</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 配套服务 -->
-                <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-5 rounded-xl border border-purple-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-purple-500/10">
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center mr-3">
-                            <i class="fa fa-cogs text-purple-400 text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-purple-300">配套服务</h3>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-13">
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-check text-green-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">生态项目孵化与指导</p>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-check text-green-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">技术支持与开发资源</p>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-check text-green-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">社区运营与推广服务</p>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-check text-green-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">投资对接与资金支持</p>
-                        </div>
-                        <div class="flex items-start md:col-span-2">
-                            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-check text-green-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">教育培训与知识分享</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 合作方式 -->
-                <div class="bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 p-5 rounded-xl border border-yellow-500/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-yellow-500/10">
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center mr-3">
-                            <i class="fa fa-handshake-o text-yellow-400 text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-yellow-300">合作方式</h3>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pl-13">
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-handshake-o text-blue-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">项目合作与资源共享</p>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-money text-green-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">Pi币入股与投资机会</p>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-users text-purple-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">社区共建与治理参与</p>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center mr-3 mt-0.5">
-                                <i class="fa fa-link text-red-400 text-sm"></i>
-                            </div>
-                            <p class="text-gray-100">资源对接与商务合作</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 结语 -->
-                <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 p-6 rounded-xl border border-red-500/30 backdrop-blur-sm text-center transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-red-500/10">
-                    <p class="text-xl font-bold text-white mb-3">欢迎广大派先锋加入我们</p>
-                    <p class="text-lg text-gray-200 mb-2">共同建设Pi网络的美好未来！</p>
-                    <p class="text-sm text-gray-300">让我们携手共进，开创区块链新时代！</p>
-                </div>
+            <!-- 项目详情内容 -->
+            <div id="modalContent" class="px-6 pb-6">
+                <!-- 内容将通过JavaScript动态填充 -->
             </div>
-            
-            <!-- 悬浮装饰点 -->
-            <div class="floating-dot dot-red" style="animation-delay: 0s;"></div>
-            <div class="floating-dot dot-green" style="animation-delay: 2s;"></div>
-            <div class="floating-dot dot-yellow" style="animation-delay: 4s;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 底部导航 -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 py-2">
+    <div class="flex justify-around">
+        <div class="flex flex-col items-center text-primary sound-btn nav-btn" data-target="home-page">
+            <i class="fa fa-home text-lg"></i>
+            <span class="text-xs mt-1" style="color: rgb(3, 11, 18); font-weight: bold;">首页</span>
+        </div>
+        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="community-page">
+            <i class="fa fa-database text-lg"></i>
+            <span class="text-xs mt-1" style="color: rgb(10, 12, 13); font-weight: bold;">加入社群</span>
+        </div>
+        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="roadmap-page">
+            <i class="fa fa-map text-lg"></i>
+            <span class="text-xs mt-1" style="color: rgb(7, 186, 7); font-weight: bold;">节点搭建</span>
+        </div>
+        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="assets-page">
+            <i class="fa fa-bank text-lg"></i>
+            <span class="text-xs mt-1" style="font-family: KaiTi, STKaiti, KaiTi_GB2312, sans-serif; font-weight: bold; color: rgb(8, 5, 5); font-size: 14px;">先锋划分</span>
+        </div>
+        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="profile-page">
+            <i class="fa fa-user text-lg"></i>
+            <span class="text-xs mt-1" style="color: rgba(8, 1, 1, 0.85); font-weight: bold;">福利空投</span>
         </div>
     </div>
 
+    <!-- 奖励详情模态框 -->
+    <div id="reward-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">项目详情</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 sound-btn">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-4">派生态应用中心是全球领先的Web3超级入口。</p>
+                
+                <!-- 两张可替换的长方形图片 -->
+                <div class="flex justify-between gap-3 mb-6">
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://picsum.photos/seed/pi1/300/400" alt="项目图片1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://picsum.photos/seed/pi2/300/400" alt="项目图片2" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <!-- 负责人信息 -->
+                <div class="space-y-2 mt-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">负责人姓名：</span>
+                        <span class="text-sm font-medium text-gray-900">张先生</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">手机号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">13812345678</span>
+                            <button class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded sound-btn" onclick="makeCall('13812345678')">拨打</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">微信号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">PiEcoOfficial</span>
+                            <button class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded sound-btn" onclick="copyText('PiEcoOfficial')">复制</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="close-modal-btn" class="w-full py-2 bg-gray-200 text-gray-800 rounded-lg font-medium sound-btn">
+                关闭
+            </button>
+        </div>
+    </div>
+    
+    <!-- 项目详情模态框 -->
+    <div id="projectModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div id="modalContainer" class="bg-yellow-50 rounded-2xl w-[90%] max-w-md max-h-[90vh] overflow-y-auto">
+            <!-- 关闭按钮 -->
+            <div class="flex justify-end p-4">
+                <button id="closeProjectModal" class="text-gray-500 text-2xl">×</button>
+            </div>
+            
+            <!-- 项目详情内容 -->
+            <div id="modalContent" class="px-6 pb-6">
+                <!-- 内容将通过JavaScript动态填充 -->
+            </div>
+        </div>
+    </div>
+</div>
 
-</body>
-</html>
+
+
+</body></html>
