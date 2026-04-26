@@ -1,4 +1,6 @@
-<html lang="zh-CN"><head>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <title>派生态应用中心</title>
@@ -374,6 +376,159 @@
                         audioContext.resume();
                     }
                     playSound(1000);
+                    
+                    // 获取奖励类型
+                    const rewardType = this.getAttribute('data-reward');
+                    const modalContent = document.getElementById('modalContent');
+                    
+                    // 随机数据生成函数
+                    function getRandomImage(prefix) {
+                        const randomId = Math.floor(Math.random() * 1000);
+                        return `https://picsum.photos/seed/${prefix}${randomId}/300/400`;
+                    }
+                    
+                    function getRandomName() {
+                        const surnames = ['张', '王', '李', '赵', '陈', '刘', '杨', '黄', '周', '吴'];
+                        const names = ['经理', '主管', '顾问', '运营', '客服', '专员', '代表', '负责人'];
+                        return surnames[Math.floor(Math.random() * surnames.length)] + names[Math.floor(Math.random() * names.length)];
+                    }
+                    
+                    function getRandomPhone() {
+                        const prefixes = ['130', '131', '132', '133', '134', '135', '136', '137', '138', '139', '150', '151', '152', '153', '155', '156', '157', '158', '159', '170', '171', '172', '173', '175', '176', '177', '178', '180', '181', '182', '183', '184', '185', '186', '187', '188', '189'];
+                        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                        const suffix = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+                        return prefix + suffix;
+                    }
+                    
+                    function getRandomWechat() {
+                        const prefixes = ['Wechat', 'Crypto', 'Pi', 'Eco', 'App', 'User', 'Admin', 'Service'];
+                        const suffix = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        return prefixes[Math.floor(Math.random() * prefixes.length)] + suffix;
+                    }
+                    
+                    // 根据奖励类型显示不同的内容
+                    const rewardData = {
+                        hunan: {
+                            title: '湖南顶俏',
+                            description: '湖南顶俏洗衣液，采用天然植物配方，温和不伤手，强效去污去渍，持久留香。现在推出超值优惠活动，100元即可购买八件套洗衣液套装，包含4瓶正装和4袋补充装，家庭必备清洁用品！',
+                            getImages: () => [getRandomImage('hunan'), getRandomImage('detergent')],
+                            getContact: () => ({
+                                name: getRandomName(),
+                                phone: getRandomPhone(),
+                                wechat: getRandomWechat()
+                            })
+                        },
+                        qinglan: {
+                            title: '清蓝山泉',
+                            description: '清蓝山泉是一个创新的喝水免费返红包平台，用户每天签到喝水即可获得现金红包奖励。平台与多家矿泉水品牌合作，用户购买指定产品扫码即可获得红包，累计签到天数越多，红包金额越大，真正实现喝水不花钱还能赚钱！',
+                            getImages: () => [getRandomImage('qinglan'), getRandomImage('water')],
+                            getContact: () => ({
+                                name: getRandomName(),
+                                phone: getRandomPhone(),
+                                wechat: getRandomWechat()
+                            })
+                        },
+                        opa: {
+                            title: 'OPA',
+                            description: '免费空投，任何人可以免费领取加密货币空投项目，这个项目将会在8月份之后开启，变现在属于免费挖矿期。每日正常完成签到任务，领取空投的按钮就可以获取免费的空投。8月份之后开启征值变现，因为挖矿期目前暂停是4个月。',
+                            getImages: () => [getRandomImage('opa'), getRandomImage('crypto')],
+                            getContact: () => ({
+                                name: getRandomName(),
+                                phone: getRandomPhone(),
+                                wechat: getRandomWechat()
+                            })
+                        },
+                        other: {
+                            title: '其他免费挖矿',
+                            description: '多个加密货币免费挖矿项目同时进行，包括比特币、以太坊等主流币种的挖矿机会。无需投资，零成本参与，轻松获取数字资产。项目涵盖DeFi、NFT、元宇宙等多个领域，为用户提供多元化的挖矿体验。',
+                            getImages: () => [getRandomImage('mining'), getRandomImage('bitcoin')],
+                            getContact: () => ({
+                                name: getRandomName(),
+                                phone: getRandomPhone(),
+                                wechat: getRandomWechat()
+                            })
+                        },
+                        daily: {
+                            title: '对接中',
+                            description: '该项目正在积极对接中，敬请期待更多精彩内容。我们正在努力为用户带来更好的服务和体验，感谢您的理解和支持！',
+                            getImages: () => [getRandomImage('coming'), getRandomImage('soon')],
+                            getContact: () => ({
+                                name: getRandomName(),
+                                phone: getRandomPhone(),
+                                wechat: getRandomWechat()
+                            })
+                        },
+                        competition: {
+                            title: '派生态对接中',
+                            description: '派生态项目正在火热对接中，敬请期待更多优质应用加入。我们致力于为用户提供丰富多样的生态服务，打造完善的派生态体系。',
+                            getImages: () => [getRandomImage('pi'), getRandomImage('ecosystem')],
+                            getContact: () => ({
+                                name: getRandomName(),
+                                phone: getRandomPhone(),
+                                wechat: getRandomWechat()
+                            })
+                        }
+                    };
+                    
+                    const dataTemplate = rewardData[rewardType] || {
+                        title: '活动详情',
+                        description: '活动详情正在更新中，请稍后再试。',
+                        getImages: () => [],
+                        getContact: () => ({
+                            name: '暂未提供',
+                            phone: '暂未提供',
+                            wechat: '暂未提供'
+                        })
+                    };
+                    
+                    // 生成随机数据
+                    const data = {
+                        title: dataTemplate.title,
+                        description: dataTemplate.description,
+                        images: dataTemplate.getImages(),
+                        contact: dataTemplate.getContact()
+                    };
+                    
+                    // 构建详情内容
+                    let detailContent = `
+                        <div class="flex flex-col h-full">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-lg font-bold text-white">${data.title}</h3>
+                                <button id="close-modal-btn" class="text-white text-2xl">&times;</button>
+                            </div>
+                            <div class="flex-1 overflow-y-auto">
+                                <div class="bg-white rounded-lg p-3 mb-3">
+                                    <p class="text-sm">${data.description}</p>
+                                </div>
+                    `;
+                    
+                    // 添加图片
+                    if (data.images && data.images.length > 0) {
+                        detailContent += `
+                            <div class="mb-3 grid grid-cols-2 gap-2">
+                                ${data.images.map(img => `<img src="${img}" alt="${data.title}" class="w-full h-auto rounded-lg">`).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    // 添加联系方式
+                    detailContent += `
+                                <div class="bg-white rounded-lg p-3">
+                                    <h4 class="font-bold text-sm mb-2">联系方式</h4>
+                                    <p class="text-sm">联系人: ${data.contact.name}</p>
+                                    <p class="text-sm">电话: ${data.contact.phone}</p>
+                                    <p class="text-sm">微信: ${data.contact.wechat}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    modalContent.innerHTML = detailContent;
+                    
+                    // 重新绑定关闭按钮事件
+                    document.getElementById('close-modal-btn').addEventListener('click', function() {
+                        closeModal.click();
+                    });
                     
                     // 显示模态框
                     modal.classList.remove('hidden');
@@ -1586,50 +1741,295 @@
         <div class="px-4 mt-4">
             <div class="grid grid-cols-2 gap-4">
                 <!-- 按钮1 -->
-                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-green-500 reward-btn" data-reward="contributor">
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-green-500 reward-btn" data-reward="hunan">
                     <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-2">
                         <i class="fa fa-gift text-red-500 text-xl"></i>
                     </div>
                     <h4 class="font-bold text-sm">湖南顶俏</h4>
                     <p class="text-xs text-gray-500 mt-1">超便宜100元八件套</p>
                 </div>
+                <!-- 奖励详情模态框 -->
+    <div id="reward-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">项目详情</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 sound-btn">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-4">OPA这是一个免费可以领取的加密货币空投项目，   号
+    每日111111111正常完成签到任务，领取空投的按钮就可以获取免费的空投。8月份之后开启征值变现，因为挖矿期目前暂停是4个月。</p>
                 
+                <!-- 两张可替换的长方形图片 -->
+                <div class="flex justify-between gap-3 mb-6">
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/d528cf9b12cb4095bf905e107b2fb4b6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604261815006CB62151226B188D9E6F&amp;rrcfp=e75484ac&amp;x-expires=1777803300&amp;x-signature=GtzFqvTHH9lO9ah3nTYDPUpl%2Bz0%3D" alt="项目图片1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f003a15bfa3644a5b0197e41938b6f81~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260426175402D98501B312E772547634&amp;rrcfp=e75484ac&amp;x-expires=1777802042&amp;x-signature=DNt%2FQ%2BFm%2FmWiV1pQIP4FMkpxVhg%3D" alt="项目图片2" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <!-- 负责人信息 -->
+                <div class="space-y-2 mt-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">负责人姓名：</span>
+                        <span class="text-sm font-medium text-gray-900">魏先生</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">手机号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">155  3645  5536</span>
+                            <button class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded sound-btn" onclick="makeCall('13812345678')">拨打</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">微信号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">天空之城15536455536</span>
+                            <button class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded sound-btn" onclick="copyText('PiEcoOfficial')">复制</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="close-modal-btn" class="w-full py-2 bg-gray-200 text-gray-800 rounded-lg font-medium sound-btn">
+                关闭
+            </button>
+        </div>
+    </div>
                 <!-- 按钮2 -->
-                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-green-500 reward-btn" data-reward="node">
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-green-500 reward-btn" data-reward="qinglan">
                     <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
                         <i class="fa fa-server text-blue-500 text-xl"></i>
                     </div>
                     <h4 class="font-bold text-sm">清蓝山泉</h4>
                     <p class="text-xs text-gray-500 mt-1">免费喝水签到红包</p>
                 </div>
+                <!-- 奖励详情模态框 -->
+    <div id="reward-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">项目详情</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 sound-btn">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-4">OPA这是一个免费可以领取的加密货币空投项目，   号
+    每日正常完成签到任务，领取空投的按钮就可以获取免费的空投。8月份之后开启征值变现，因为挖矿期目前暂停是4个月。</p>
                 
+                <!-- 两张可替换的长方形图片 -->
+                <div class="flex justify-between gap-3 mb-6">
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/d528cf9b12cb4095bf905e107b2fb4b6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604261815006CB62151226B188D9E6F&amp;rrcfp=e75484ac&amp;x-expires=1777803300&amp;x-signature=GtzFqvTHH9lO9ah3nTYDPUpl%2Bz0%3D" alt="项目图片1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f003a15bfa3644a5b0197e41938b6f81~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260426175402D98501B312E772547634&amp;rrcfp=e75484ac&amp;x-expires=1777802042&amp;x-signature=DNt%2FQ%2BFm%2FmWiV1pQIP4FMkpxVhg%3D" alt="项目图片2" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <!-- 负责人信息 -->
+                <div class="space-y-2 mt-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">负责人姓名：</span>
+                        <span class="text-sm font-medium text-gray-900">魏先生</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">手机号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">155  3645  5536</span>
+                            <button class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded sound-btn" onclick="makeCall('13812345678')">拨打</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">微信号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">天空之城15536455536</span>
+                            <button class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded sound-btn" onclick="copyText('PiEcoOfficial')">复制</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="close-modal-btn" class="w-full py-2 bg-gray-200 text-gray-800 rounded-lg font-medium sound-btn">
+                关闭
+            </button>
+        </div>
+    </div>
                 <!-- 按钮3 -->
-                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-yellow-500 reward-btn" data-reward="invite">
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-yellow-500 reward-btn" data-reward="opa">
                     <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-2">
                         <i class="fa fa-users text-green-500 text-xl"></i>
                     </div>
                     <h4 class="font-bold text-sm">OPA免费挖矿</h4>
-                    <p class="text-xs text-gray-500 mt-1">8月份之前开启变现</p>
+                    <p class="text-xs text-gray-500 mt-1">免费空投，8月份开启变现</p>
+                </div>
+                <!-- 奖励详情模态框 -->
+    <div id="reward-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">项目详情</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 sound-btn">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-4">OPA这是一个免费可以领取的加密货币空投项目，   号
+    每日正常完成签到任务，领取空投的按钮就可以获取免费的空投。8月份之后开启征值变现，因为挖矿期目前暂停是4个月。</p>
+                
+                <!-- 两张可替换的长方形图片 -->
+                <div class="flex justify-between gap-3 mb-6">
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/d528cf9b12cb4095bf905e107b2fb4b6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604261815006CB62151226B188D9E6F&amp;rrcfp=e75484ac&amp;x-expires=1777803300&amp;x-signature=GtzFqvTHH9lO9ah3nTYDPUpl%2Bz0%3D" alt="项目图片1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f003a15bfa3644a5b0197e41938b6f81~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260426175402D98501B312E772547634&amp;rrcfp=e75484ac&amp;x-expires=1777802042&amp;x-signature=DNt%2FQ%2BFm%2FmWiV1pQIP4FMkpxVhg%3D" alt="项目图片2" class="w-full h-full object-cover">
+                    </div>
                 </div>
                 
+                <!-- 负责人信息 -->
+                <div class="space-y-2 mt-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">负责人姓名：</span>
+                        <span class="text-sm font-medium text-gray-900">魏先生</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">手机号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">155  3645  5536</span>
+                            <button class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded sound-btn" onclick="makeCall('13812345678')">拨打</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">微信号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">天空之城15536455536</span>
+                            <button class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded sound-btn" onclick="copyText('PiEcoOfficial')">复制</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="close-modal-btn" class="w-full py-2 bg-gray-200 text-gray-800 rounded-lg font-medium sound-btn">
+                关闭
+            </button>
+        </div>
+    </div>
                 <!-- 按钮4 -->
-                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-yellow-500 reward-btn" data-reward="beta">
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-yellow-500 reward-btn" data-reward="other">
                     <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-2">
                         <i class="fa fa-rocket text-purple-500 text-xl"></i>
                     </div>
                     <h4 class="font-bold text-sm">其他免费挖矿</h4>
                     <p class="text-xs text-gray-500 mt-1">敬请期待</p>
                 </div>
+                <!-- 奖励详情模态框 -->
+    <div id="reward-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">项目详情</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 sound-btn">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-4">OPA这是一个免费可以领取的加密货币空投项目，   号
+    每日正常完成签到任务，领取空投的按钮就可以获取免费的空投。8月份之后开启征值变现，因为挖矿期目前暂停是4个月。</p>
                 
+                <!-- 两张可替换的长方形图片 -->
+                <div class="flex justify-between gap-3 mb-6">
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/d528cf9b12cb4095bf905e107b2fb4b6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604261815006CB62151226B188D9E6F&amp;rrcfp=e75484ac&amp;x-expires=1777803300&amp;x-signature=GtzFqvTHH9lO9ah3nTYDPUpl%2Bz0%3D" alt="项目图片1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f003a15bfa3644a5b0197e41938b6f81~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260426175402D98501B312E772547634&amp;rrcfp=e75484ac&amp;x-expires=1777802042&amp;x-signature=DNt%2FQ%2BFm%2FmWiV1pQIP4FMkpxVhg%3D" alt="项目图片2" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <!-- 负责人信息 -->
+                <div class="space-y-2 mt-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">负责人姓名：</span>
+                        <span class="text-sm font-medium text-gray-900">魏先生</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">手机号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">155  3645  5536</span>
+                            <button class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded sound-btn" onclick="makeCall('13812345678')">拨打</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">微信号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">天空之城15536455536</span>
+                            <button class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded sound-btn" onclick="copyText('PiEcoOfficial')">复制</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="close-modal-btn" class="w-full py-2 bg-gray-200 text-gray-800 rounded-lg font-medium sound-btn">
+                关闭
+            </button>
+        </div>
+    </div>
                 <!-- 按钮5 -->
-                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-purple-500 reward-btn" data-reward="task">
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-purple-500 reward-btn" data-reward="daily">
                     <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-2">
                         <i class="fa fa-calendar-check-o text-yellow-500 text-xl"></i>
                     </div>
                     <h4 class="font-bold text-sm">对接中</h4>
                     <p class="text-xs text-gray-500 mt-1">敬请期待</p>
                 </div>
+                <!-- 奖励详情模态框 -->
+    <div id="reward-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">项目详情</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 sound-btn">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-4">OPA这是一个免费可以领取的加密货币空投项目，   号
+    每日正常完成签到任务，领取空投的按钮就可以获取免费的空投。8月份之后开启征值变现，因为挖矿期目前暂停是4个月。</p>
                 
+                <!-- 两张可替换的长方形图片 -->
+                <div class="flex justify-between gap-3 mb-6">
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/d528cf9b12cb4095bf905e107b2fb4b6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604261815006CB62151226B188D9E6F&amp;rrcfp=e75484ac&amp;x-expires=1777803300&amp;x-signature=GtzFqvTHH9lO9ah3nTYDPUpl%2Bz0%3D" alt="项目图片1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f003a15bfa3644a5b0197e41938b6f81~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260426175402D98501B312E772547634&amp;rrcfp=e75484ac&amp;x-expires=1777802042&amp;x-signature=DNt%2FQ%2BFm%2FmWiV1pQIP4FMkpxVhg%3D" alt="项目图片2" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <!-- 负责人信息 -->
+                <div class="space-y-2 mt-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">负责人姓名：</span>
+                        <span class="text-sm font-medium text-gray-900">魏先生</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">手机号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">155  3645  5536</span>
+                            <button class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded sound-btn" onclick="makeCall('13812345678')">拨打</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">微信号：</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-900">天空之城15536455536</span>
+                            <button class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded sound-btn" onclick="copyText('PiEcoOfficial')">复制</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="close-modal-btn" class="w-full py-2 bg-gray-200 text-gray-800 rounded-lg font-medium sound-btn">
+                关闭
+            </button>
+        </div>
+    </div>
                 <!-- 按钮6 -->
                 <div class="bg-white rounded-xl p-4 shadow-sm text-center border-2 border-purple-500 reward-btn" data-reward="competition">
                     <div class="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-2">
@@ -1652,15 +2052,16 @@
                 </button>
             </div>
             <div class="mb-4">
-                <p class="text-sm text-gray-600 mb-4">派生态应用中心是全球领先的Web3超级入口。</p>
+                <p class="text-sm text-gray-600 mb-4">OPA这是一个免费可以领取的加密货币空投项目，   号
+    每日正常完成签到任务，领取空投的按钮就可以获取免费的空投。8月份之后开启征值变现，因为挖矿期目前暂停是4个月。</p>
                 
                 <!-- 两张可替换的长方形图片 -->
                 <div class="flex justify-between gap-3 mb-6">
                     <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
-                        <img src="https://picsum.photos/seed/pi1/300/400" alt="项目图片1" class="w-full h-full object-cover">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/d528cf9b12cb4095bf905e107b2fb4b6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202604261815006CB62151226B188D9E6F&amp;rrcfp=e75484ac&amp;x-expires=1777803300&amp;x-signature=GtzFqvTHH9lO9ah3nTYDPUpl%2Bz0%3D" alt="项目图片1" class="w-full h-full object-cover">
                     </div>
                     <div class="w-1/2 h-40 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
-                        <img src="https://picsum.photos/seed/pi2/300/400" alt="项目图片2" class="w-full h-full object-cover">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f003a15bfa3644a5b0197e41938b6f81~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260426175402D98501B312E772547634&amp;rrcfp=e75484ac&amp;x-expires=1777802042&amp;x-signature=DNt%2FQ%2BFm%2FmWiV1pQIP4FMkpxVhg%3D" alt="项目图片2" class="w-full h-full object-cover">
                     </div>
                 </div>
                 
@@ -1668,19 +2069,19 @@
                 <div class="space-y-2 mt-6">
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-700">负责人姓名：</span>
-                        <span class="text-sm font-medium text-gray-900">张先生</span>
+                        <span class="text-sm font-medium text-gray-900">魏先生</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-700">手机号：</span>
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm font-medium text-gray-900">13812345678</span>
+                            <span class="text-sm font-medium text-gray-900">155  3645  5536</span>
                             <button class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded sound-btn" onclick="makeCall('13812345678')">拨打</button>
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-700">微信号：</span>
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm font-medium text-gray-900">PiEcoOfficial</span>
+                            <span class="text-sm font-medium text-gray-900">天空之城15536455536</span>
                             <button class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded sound-btn" onclick="copyText('PiEcoOfficial')">复制</button>
                         </div>
                     </div>
@@ -1798,7 +2199,5 @@
         </div>
     </div>
 </div>
-
-
-
-</body></html>
+</body>
+</html>
