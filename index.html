@@ -10,6 +10,15 @@
         }
         html, body {
             overflow-x: hidden;
+            /* 隐藏滚动条但保留滚动功能 */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* 隐藏WebKit浏览器的滚动条 */
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
         }
         /* 文字滚动公告 */
         @keyframes scrollNotice {
@@ -285,6 +294,32 @@
             object-fit: cover;
         }
     </style>
+
+
+
+    <!-- 福利空投弹窗 -->
+    </head><body class="max-w-md mx-auto bg-white min-h-screen flex flex-col"><div id="welfareModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 w-[60vw] h-[60vh] border-2 border-[#a85f7] overflow-auto mx-auto flex flex-col">
+            <!-- 可滚动内容区域 -->
+            <div class="flex-1 overflow-auto mb-4" style="margin-bottom: 80px; max-height: 50vh; overflow-y: auto; padding-right: 10px;">
+                <div class="text-center">
+                    <h3 id="welfareModalTitle" class="text-lg font-bold text-gray-800"></h3>
+                    <div class="w-32 h-32 mx-auto my-4 bg-gray-100 rounded-lg overflow-hidden">
+                        <img id="welfareModalImage" src="" alt="社区图片" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">联系人：魏国炳</p>
+                    <p class="text-sm text-gray-600">电话：15536455536</p>
+                </div>
+            </div>
+            <!-- 固定在底部的按钮区域 -->
+            <div class="flex justify-center w-full pt-2 border-t border-gray-200">
+                <button id="closeWelfareModal" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn" style="position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; font-size: 20px; z-index: 99999;">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 生态详情模态框
         function openEcosystemDetail(name, description, image1, image2, category = 'featured') {
@@ -308,8 +343,8 @@
                 
                 // 存储当前项目的URL
                 const urlMap = {
-                    '派信娱乐': 'https://pixinyule.com',
-                    'SPACE派社区生态': 'https://spacepi.com',
+                    '派信娱乐': 'https://pixinyule333.pages.dev/',
+                    'SPACE派社区生态': 'https://worldland.pages.dev/',
                     '新生态对接中': 'https://pilunch.com'
                 };
                 window.currentEcosystemUrl = urlMap[name] || 'https://pi.com';
@@ -358,6 +393,32 @@
             return projectUrls[projectName] || '#';
         }
     </script>
+
+
+
+    <!-- 福利空投弹窗 -->
+    <div id="welfareModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 w-[60vw] h-[60vh] border-2 border-[#a85f7] overflow-auto mx-auto flex flex-col">
+            <!-- 可滚动内容区域 -->
+            <div class="flex-1 overflow-auto mb-4" style="margin-bottom: 80px; max-height: 50vh; overflow-y: auto; padding-right: 10px;">
+                <div class="text-center">
+                    <h3 id="welfareModalTitle" class="text-lg font-bold text-gray-800"></h3>
+                    <div class="w-32 h-32 mx-auto my-4 bg-gray-100 rounded-lg overflow-hidden">
+                        <img id="welfareModalImage" src="" alt="社区图片" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">联系人：魏国炳</p>
+                    <p class="text-sm text-gray-600">电话：15536455536</p>
+                </div>
+            </div>
+            <!-- 固定在底部的按钮区域 -->
+            <div class="flex justify-center w-full pt-2 border-t border-gray-200">
+                <button id="closeWelfareModal" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn" style="position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; font-size: 20px; z-index: 99999;">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 生态详情模态框
         function openEcosystemDetail(name, description, image1, image2, category = 'featured') {
@@ -381,8 +442,8 @@
                 
                 // 存储当前项目的URL
                 const urlMap = {
-                    '派信娱乐': 'https://pixinyule.com',
-                    'SPACE派社区生态': 'https://spacepi.com',
+                    '派信娱乐': 'https://pixinyule333.pages.dev/',
+                    'SPACE派社区生态': 'https://worldland.pages.dev/',
                     '新生态对接中': 'https://pilunch.com'
                 };
                 window.currentEcosystemUrl = urlMap[name] || 'https://pi.com';
@@ -462,23 +523,27 @@
                     navButtons.forEach(btn => {
                         btn.classList.remove('text-primary', 'bg-primary', 'text-white');
                         btn.classList.add('text-gray-400');
-                        // 确保图标也恢复默认颜色
+                        // 确保图标也恢复默认颜色并移除发光效果
                         const icon = btn.querySelector('i');
                         if (icon) {
                             icon.classList.remove('text-primary', 'text-white');
                             icon.classList.add('text-gray-400');
+                            // 移除发光效果
+                            icon.style.boxShadow = 'none';
                         }
                     });
                     
                     // 设置当前按钮为绿色样式
                     this.classList.remove('text-gray-400');
-                    this.classList.add('text-primary', 'bg-primary', 'text-white');
+                    this.classList.add('text-primary');
                     
-                    // 确保当前按钮的图标也变成绿色
+                    // 确保当前按钮的图标也变成绿色并添加发光效果
                     const currentIcon = this.querySelector('i');
                     if (currentIcon) {
                         currentIcon.classList.remove('text-gray-400');
-                        currentIcon.classList.add('text-primary', 'text-white');
+                        currentIcon.classList.add('text-primary');
+                        // 添加发光效果
+                        currentIcon.style.boxShadow = '0 0 8px #21c713 inset 5px rgba(46, 204, 113, 0.5)';
                     }
                     
                     // 如果切换到首页，确保显示精选落地生态
@@ -562,8 +627,8 @@
                 document.getElementById('countdown-seconds').textContent = seconds;
             }
             
-            // 派信娱乐倒计时 - 199天后
-            const pixinyuleDate = new Date(Date.now() + (199 * 24 * 60 * 60 * 1000)).getTime();
+            // 派信娱乐倒计时 - 199天13小时26分钟18秒后
+            const pixinyuleDate = new Date(Date.now() + (199 * 24 * 60 * 60 * 1000) + (13 * 60 * 60 * 1000) + (26 * 60 * 1000) + (18 * 1000)).getTime();
             
             function updatePixinyuleCountdown() {
                 const now = new Date().getTime();
@@ -580,8 +645,8 @@
                 document.getElementById('seconds-pixinyule').textContent = seconds.toString().padStart(2, '0');
             }
             
-            // SPACE派社区生态倒计时 - 227天13小时16分56秒后
-            const spacepiDate = new Date(Date.now() + (227 * 24 * 60 * 60 * 1000) + (13 * 60 * 60 * 1000) + (16 * 60 * 1000) + (56 * 1000)).getTime();
+            // SPACE派社区生态倒计时 - 227天15小时13分钟13秒后
+            const spacepiDate = new Date(Date.now() + (227 * 24 * 60 * 60 * 1000) + (15 * 60 * 60 * 1000) + (13 * 60 * 1000) + (13 * 1000)).getTime();
             
             function updateSpacepiCountdown() {
                 const now = new Date().getTime();
@@ -598,8 +663,8 @@
                 document.getElementById('seconds-spacepi').textContent = seconds.toString().padStart(2, '0');
             }
             
-            // 生态1倒计时 - 55天后
-            const ecosystem1Date = new Date(Date.now() + (55 * 24 * 60 * 60 * 1000)).getTime();
+            // PI对接倒计时 - 50天后
+            const ecosystem1Date = new Date(Date.now() + (50 * 24 * 60 * 60 * 1000)).getTime();
             
             function updateEcosystem1Countdown() {
                 const now = new Date().getTime();
@@ -616,8 +681,8 @@
                 document.getElementById('seconds-ecosystem1').textContent = seconds.toString().padStart(2, '0');
             }
             
-            // 生态2倒计时 - 66天后
-            const ecosystem2Date = new Date(Date.now() + (66 * 24 * 60 * 60 * 1000)).getTime();
+            // 新生代对接中倒计时 - 60天后
+            const ecosystem2Date = new Date(Date.now() + (60 * 24 * 60 * 60 * 1000)).getTime();
             
             function updateEcosystem2Countdown() {
                 const now = new Date().getTime();
@@ -634,7 +699,7 @@
                 document.getElementById('seconds-ecosystem2').textContent = seconds.toString().padStart(2, '0');
             }
             
-            // 生态3倒计时 - 90天后
+            // 最后一个新生代倒计时 - 90天后
             const ecosystem3Date = new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)).getTime();
             
             function updateEcosystem3Countdown() {
@@ -652,10 +717,29 @@
                 document.getElementById('seconds-ecosystem3').textContent = seconds.toString().padStart(2, '0');
             }
             
+            // Pi对接倒计时 - 50天后
+            const pisocialDate = new Date(Date.now() + (50 * 24 * 60 * 60 * 1000)).getTime();
+            
+            function updatePisocialCountdown() {
+                const now = new Date().getTime();
+                const distance = pisocialDate - now;
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById('days-pisocial').textContent = days;
+                document.getElementById('hours-pisocial').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes-pisocial').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds-pisocial').textContent = seconds.toString().padStart(2, '0');
+            }
+            
             // 立即更新一次
             updateCountdown();
             updatePixinyuleCountdown();
             updateSpacepiCountdown();
+            updatePisocialCountdown();
             updateEcosystem1Countdown();
             updateEcosystem2Countdown();
             updateEcosystem3Countdown();
@@ -665,14 +749,323 @@
                 updateCountdown();
                 updatePixinyuleCountdown();
                 updateSpacepiCountdown();
+                updatePisocialCountdown();
                 updateEcosystem1Countdown();
                 updateEcosystem2Countdown();
                 updateEcosystem3Countdown();
             }, 1000);
         }
         
-        // 为所有按钮添加音效
+        // 福利弹窗功能
+        function showWelfareModal(title) {
+            const modal = document.getElementById('welfareModal');
+            const modalTitle = document.getElementById('welfareModalTitle');
+            const modalImage = document.getElementById('welfareModalImage');
+            
+            modalTitle.textContent = title;
+            
+            // 设置对应的图片
+            const imageMap = {
+                '山西太原派友本地社区': 'https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/35928329caab425a8eef9e66c8538ff3~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=202605010138211F8AB606FD72B2180F5A&rrcfp=e75484ac&x-expires=1778175502&x-signature=eFu%2F0J%2B7R%2FnX%2Ba53qa8zZ0zcc9g%3D',
+                '派信娱乐生态群': 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/53ad83af32c746039a607e3bedb23ed8~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026050101341689F385B6F9D593EB7C8A&rrcfp=e75484ac&x-expires=1778175256&x-signature=K8pXdSakG%2B3ttJwSn1PRCG748U4%3D',
+                'SPACE派空间生态总群': 'https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e9cd610b8c8247afada7e7e059601b38~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260501013429F1019FDA60110A7EF097&rrcfp=e75484ac&x-expires=1778175269&x-signature=1Kgovb%2FGUJ6fFSWgea3GCYui4R8%3D',
+                '派节点搭建群聊': 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/cacc99bf6c03403e94deb61282eabe6c~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260501013443BC5058A01DA564E03B55&rrcfp=e75484ac&x-expires=1778175284&x-signature=gmoQ1ZhOQ%2BkdsJ2IJ2MAF8dRRec%3D',
+                '实名DID群聊': 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/c6d8626fc96c43178e5c04ff6602a1e6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026050101350929D991813216747D44B2&rrcfp=e75484ac&x-expires=1778175309&x-signature=Zb1FBHiMcPtFHrzgphEJBlb4HGY%3D'
+            };
+            
+            modalImage.src = imageMap[title] || '';
+            modal.classList.remove('hidden');
+            
+            // 播放音效
+            if (audioContext) {
+                playSound(800);
+            }
+        }
+        
+        function closeWelfareModal() {
+            const modal = document.getElementById('welfareModal');
+            modal.classList.add('hidden');
+            
+            // 播放音效
+            if (audioContext) {
+                playSound(600);
+            }
+        }
+        
+        // 倒计时功能
+        function updateCountdowns() {
+            // 首页山西太原派线下社区聚会倒计时
+            const homeDays = document.getElementById('countdown-days');
+            const homeHours = document.getElementById('countdown-hours');
+            const homeMinutes = document.getElementById('countdown-minutes');
+            const homeSeconds = document.getElementById('countdown-seconds');
+            
+            if (homeDays && homeHours && homeMinutes && homeSeconds) {
+                let days = parseInt(homeDays.textContent);
+                let hours = parseInt(homeHours.textContent);
+                let minutes = parseInt(homeMinutes.textContent);
+                let seconds = parseInt(homeSeconds.textContent);
+                
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        
+                        if (hours < 0) {
+                            hours = 23;
+                            days--;
+                            
+                            if (days < 0) {
+                                days = 0;
+                                hours = 0;
+                                minutes = 0;
+                                seconds = 0;
+                            }
+                        }
+                    }
+                }
+                
+                homeDays.textContent = days.toString().padStart(2, '0');
+                homeHours.textContent = hours.toString().padStart(2, '0');
+                homeMinutes.textContent = minutes.toString().padStart(2, '0');
+                homeSeconds.textContent = seconds.toString().padStart(2, '0');
+            }
+            // 派信娱乐倒计时
+            const pixinyuleDays = document.getElementById('days-pixinyule');
+            const pixinyuleHours = document.getElementById('hours-pixinyule');
+            const pixinyuleMinutes = document.getElementById('minutes-pixinyule');
+            const pixinyuleSeconds = document.getElementById('seconds-pixinyule');
+            
+            if (pixinyuleDays && pixinyuleHours && pixinyuleMinutes && pixinyuleSeconds) {
+                let days = parseInt(pixinyuleDays.textContent);
+                let hours = parseInt(pixinyuleHours.textContent);
+                let minutes = parseInt(pixinyuleMinutes.textContent);
+                let seconds = parseInt(pixinyuleSeconds.textContent);
+                
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        
+                        if (hours < 0) {
+                            hours = 23;
+                            days--;
+                            
+                            if (days < 0) {
+                                days = 0;
+                                hours = 0;
+                                minutes = 0;
+                                seconds = 0;
+                            }
+                        }
+                    }
+                }
+                
+                pixinyuleDays.textContent = days.toString().padStart(2, '0');
+                pixinyuleHours.textContent = hours.toString().padStart(2, '0');
+                pixinyuleMinutes.textContent = minutes.toString().padStart(2, '0');
+                pixinyuleSeconds.textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            // SPACE派社区生态倒计时
+            const spacepiDays = document.getElementById('days-spacepi');
+            const spacepiHours = document.getElementById('hours-spacepi');
+            const spacepiMinutes = document.getElementById('minutes-spacepi');
+            const spacepiSeconds = document.getElementById('seconds-spacepi');
+            
+            if (spacepiDays && spacepiHours && spacepiMinutes && spacepiSeconds) {
+                let days = parseInt(spacepiDays.textContent);
+                let hours = parseInt(spacepiHours.textContent);
+                let minutes = parseInt(spacepiMinutes.textContent);
+                let seconds = parseInt(spacepiSeconds.textContent);
+                
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        
+                        if (hours < 0) {
+                            hours = 23;
+                            days--;
+                            
+                            if (days < 0) {
+                                days = 0;
+                                hours = 0;
+                                minutes = 0;
+                                seconds = 0;
+                            }
+                        }
+                    }
+                }
+                
+                spacepiDays.textContent = days.toString().padStart(2, '0');
+                spacepiHours.textContent = hours.toString().padStart(2, '0');
+                spacepiMinutes.textContent = minutes.toString().padStart(2, '0');
+                spacepiSeconds.textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            // PiSocial社交生态倒计时
+            const pisocialDays = document.getElementById('days-pisocial');
+            const pisocialHours = document.getElementById('hours-pisocial');
+            const pisocialMinutes = document.getElementById('minutes-pisocial');
+            const pisocialSeconds = document.getElementById('seconds-pisocial');
+            
+            if (pisocialDays && pisocialHours && pisocialMinutes && pisocialSeconds) {
+                let days = parseInt(pisocialDays.textContent);
+                let hours = parseInt(pisocialHours.textContent);
+                let minutes = parseInt(pisocialMinutes.textContent);
+                let seconds = parseInt(pisocialSeconds.textContent);
+                
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        
+                        if (hours < 0) {
+                            hours = 23;
+                            days--;
+                            
+                            if (days < 0) {
+                                days = 0;
+                                hours = 0;
+                                minutes = 0;
+                                seconds = 0;
+                            }
+                        }
+                    }
+                }
+                
+                pisocialDays.textContent = days.toString().padStart(2, '0');
+                pisocialHours.textContent = hours.toString().padStart(2, '0');
+                pisocialMinutes.textContent = minutes.toString().padStart(2, '0');
+                pisocialSeconds.textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            // 生态正在对接中倒计时1
+            const ecosystem2Days = document.getElementById('days-ecosystem2');
+            const ecosystem2Hours = document.getElementById('hours-ecosystem2');
+            const ecosystem2Minutes = document.getElementById('minutes-ecosystem2');
+            const ecosystem2Seconds = document.getElementById('seconds-ecosystem2');
+            
+            if (ecosystem2Days && ecosystem2Hours && ecosystem2Minutes && ecosystem2Seconds) {
+                let days = parseInt(ecosystem2Days.textContent);
+                let hours = parseInt(ecosystem2Hours.textContent);
+                let minutes = parseInt(ecosystem2Minutes.textContent);
+                let seconds = parseInt(ecosystem2Seconds.textContent);
+                
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        
+                        if (hours < 0) {
+                            hours = 23;
+                            days--;
+                            
+                            if (days < 0) {
+                                days = 0;
+                                hours = 0;
+                                minutes = 0;
+                                seconds = 0;
+                            }
+                        }
+                    }
+                }
+                
+                ecosystem2Days.textContent = days.toString().padStart(2, '0');
+                ecosystem2Hours.textContent = hours.toString().padStart(2, '0');
+                ecosystem2Minutes.textContent = minutes.toString().padStart(2, '0');
+                ecosystem2Seconds.textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            // 生态正在对接中倒计时2
+            const ecosystem3Days = document.getElementById('days-ecosystem3');
+            const ecosystem3Hours = document.getElementById('hours-ecosystem3');
+            const ecosystem3Minutes = document.getElementById('minutes-ecosystem3');
+            const ecosystem3Seconds = document.getElementById('seconds-ecosystem3');
+            
+            if (ecosystem3Days && ecosystem3Hours && ecosystem3Minutes && ecosystem3Seconds) {
+                let days = parseInt(ecosystem3Days.textContent);
+                let hours = parseInt(ecosystem3Hours.textContent);
+                let minutes = parseInt(ecosystem3Minutes.textContent);
+                let seconds = parseInt(ecosystem3Seconds.textContent);
+                
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        
+                        if (hours < 0) {
+                            hours = 23;
+                            days--;
+                            
+                            if (days < 0) {
+                                days = 0;
+                                hours = 0;
+                                minutes = 0;
+                                seconds = 0;
+                            }
+                        }
+                    }
+                }
+                
+                ecosystem3Days.textContent = days.toString().padStart(2, '0');
+                ecosystem3Hours.textContent = hours.toString().padStart(2, '0');
+                ecosystem3Minutes.textContent = minutes.toString().padStart(2, '0');
+                ecosystem3Seconds.textContent = seconds.toString().padStart(2, '0');
+            }
+        }
+        
+        // 绑定关闭按钮事件
         document.addEventListener('DOMContentLoaded', function() {
+            // 启动倒计时定时器，每秒更新一次
+            setInterval(updateCountdowns, 1000);
+            const closeBtn = document.getElementById('closeWelfareModal');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeWelfareModal);
+            }
+            
+            // 点击弹窗外部关闭
+            const modal = document.getElementById('welfareModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeWelfareModal();
+                    }
+                });
+            }
+            
+            // 为所有按钮添加音效
             // 添加页面空白处点击音效
             document.addEventListener('click', function(e) {
                 // 检查是否点击的是空白区域（不是按钮、链接等可交互元素）
@@ -1841,8 +2234,8 @@
             });
         }
     </script>
-</head>
-<body class="max-w-md mx-auto bg-white min-h-screen flex flex-col">
+
+
 
 <!-- 页面容器 -->
 <div id="page-container" class="flex-1">
@@ -2141,7 +2534,7 @@
                     <div class="flex-1">
                         <h4 class="font-bold text-base">实名DID元宇宙</h4>
                         <p class="text-xs text-gray-500 mt-1">派币支付电商平台，生态商品交易</p>
-                        <p class="text-xs text-blue-500 mt-1">https://pimarket.io</p>
+                        <p class="text-xs text-blue-500 mt-1">https010010101010</p>
                     </div>
                     <div class="flex flex-col gap-2">
 
@@ -2158,7 +2551,7 @@
                     <div class="flex-1">
                         <h4 class="font-bold text-base">OPA免费挖矿生态</h4>
                         <p class="text-xs text-gray-500 mt-1">区块链游戏平台，边玩边赚模式</p>
-                        <p class="text-xs text-blue-500 mt-1">https://pigame.network</p>
+                        <p class="text-xs text-blue-500 mt-1">https://0101001100101010</p>
                     </div>
                     <div class="flex flex-col gap-2">
 
@@ -2175,7 +2568,7 @@
                     <div class="flex-1">
                         <h4 class="font-bold text-base">月光宝盒   游戏派生态</h4>
                         <p class="text-xs text-gray-500 mt-1">Web3教育平台，知识付费生态</p>
-                        <p class="text-xs text-blue-500 mt-1">https://pilearn.edu</p>
+                        <p class="text-xs text-blue-500 mt-1">https:/010101010101010101</p>
                     </div>
                     <div class="flex flex-col gap-2">
 
@@ -2192,7 +2585,7 @@
                     <div class="flex-1">
                         <h4 class="font-bold text-base">对接中</h4>
                         <p class="text-xs text-gray-500 mt-1">健康数据管理，区块链医疗记录</p>
-                        <p class="text-xs text-blue-500 mt-1">https://pihealth.org</p>
+                        <p class="text-xs text-blue-500 mt-1">https:/010101010101010101010</p>
                     </div>
                     <div class="flex flex-col gap-2">
 
@@ -2213,10 +2606,11 @@
                         <div class="flex-1">
                             <h4 class="font-bold text-base">PIX---派信娱乐</h4>
                             <p class="text-xs text-gray-500 mt-1" style="color: rgb(62, 72, 92);">派游戏生态开启公募中</p>
+                            <p class="text-xs text-blue-500 mt-1">https://pixinyule333.pages.dev/</p>
                         </div>
                          <div class="flex flex-col gap-2">
                             <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('派信娱乐', '派游戏生态开启公募中，为派友提供优质的游戏娱乐体验，打造Web3游戏生态。', 'https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/4281f933cc9b4d428dee1ed5ceb0687e.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=2026042921371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=Ssu%2Fi7XQ08A8Rpkb2fRfXoBEh3c%3D', 'https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/4281f933cc9b4d428dee1ed5ceb0687e.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=2026042921371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=Ssu%2Fi7XQ08A8Rpkb2fRfXoBEh3c%3D', 'public')">详情</button>
-                            <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://pixinyule.com')">复制网址</button>
+                            <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://pixinyule333.pages.dev/')">复制网址</button>
                         </div>
                     </div>
                     <div class="bg-purple-100 p-3 rounded-lg border-2 border-transparent animate-border-glow-purple">
@@ -2245,10 +2639,11 @@
                         <div class="flex-1">
                             <h4 class="font-bold text-base">SPACE  派社区生态</h4>
                             <p class="text-xs text-gray-500 mt-1" style="color: rgb(62, 71, 89);">派33俱乐部发起生态招募VIP用户</p>
+                            <p class="text-xs text-blue-500 mt-1">https://worldland.pages.dev/</p>
                         </div>
                         <div class="flex flex-col gap-2">
                             <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('SPACE派社区生态', '派33俱乐部发起的社区生态，招募VIP用户，共同建设派生态社区。', 'https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/5b895bf9bf514c37bcff125dca171854.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202605010038370D9192A987E86A1BDFED&amp;rrcfp=8a172a1a&amp;x-expires=1778171918&amp;x-signature=4yO97znQk%2BXc5DevgfA4GygZnKM%3D', 'https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/5b895bf9bf514c37bcff125dca171854.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202605010038370D9192A987E86A1BDFED&amp;rrcfp=8a172a1a&amp;x-expires=1778171918&amp;x-signature=4yO97znQk%2BXc5DevgfA4GygZnKM%3D', 'public')">详情</button>
-                            <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://spacepi.com')">复制网址</button>
+                            <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://worldland.pages.dev/')">复制网址</button>
                         </div>
                     </div>
                     <div class="bg-blue-100 p-3 rounded-lg border-2 border-transparent animate-border-glow-blue">
@@ -2268,37 +2663,84 @@
                     </div>
                 </div>
 
-                <!-- PiLaunch -->
-                <div class="flex items-center py-4 border-b border-gray-100">
-                    <div class="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center text-white text-2xl mr-3 flex-shrink-0 shadow-lg">
-                        <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7ec5efe269c34e969197cedc94286e91.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202604291371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=ehOgExo5KkDGJMuuS%2FnDL67udec%3D" alt="新生态对接中" class="w-17 h-17 object-contain">
+
+
+                <!-- PiMarket -->
+                <div class="py-4 border-b border-gray-100">
+                    <div class="flex items-center mb-3">
+                        <div class="w-16 h-16 rounded-2xl bg-yellow-500 flex items-center justify-center text-white text-2xl mr-3 flex-shrink-0 shadow-lg">
+                            <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/9b97bf7814b24bed954736d653c24a88.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=vnJxq9kAtiXrt3NQYAYk6HOT7hU%3D" alt="PiMarket" class="w-17 h-17 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-base">对接。。。</h4>
+                            <p class="text-xs text-gray-500 mt-1" style="color: rgb(62, 72, 92);">派币支付电商平台公募</p>
+                            <p class="text-xs text-blue-500 mt-1">https://0011</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('PiMarket 派商城', '派币支付电商平台公募，为派友提供便捷的购物和交易体验。', 'https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/9b97bf7814b24bed954736d653c24a88.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=vnJxq9kAtiXrt3NQYAYk6HOT7hU%3D', 'https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/9b97bf7814b24bed954736d653c24a88.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=vnJxq9kAtiXrt3NQYAYk6HOT7hU%3D', 'public')">详情</button>
+                            <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://pimarket.online')">复制网址</button>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <h4 class="font-bold text-base">新生态对接中</h4>
-                        <p class="text-xs text-gray-500 mt-1">新项目首发上线平台</p>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <button class="bg-primary text-white px-4 py-1 rounded-lg text-xs sound-btn" onclick="openEcosystemDetail('新生态对接中', '新项目首发上线平台，为优质派生态项目提供展示和对接服务。', 'https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7ec5efe269c34e969197cedc94286e91.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202604291371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=ehOgExo5KkDGJMuuS%2FnDL67udec%3D', 'https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7ec5efe269c34e969197cedc94286e91.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202604291371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=ehOgExo5KkDGJMuuS%2FnDL67udec%3D', 'public')">进入详情</button>
-                        <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('新生态对接中', '新项目首发上线平台，为优质派生态项目提供展示和对接服务。', 'https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7ec5efe269c34e969197cedc94286e91.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202604291371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=ehOgExo5KkDGJMuuS%2FnDL67udec%3D', 'https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7ec5efe269c34e969197cedc94286e91.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202604291371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=ehOgExo5KkDGJMuuS%2FnDL67udec%3D', 'public')">详情</button>
-                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://pilunch.com')">复制网址</button>
+                    <div class="bg-purple-100 p-3 rounded-lg border-2 border-transparent animate-border-glow-purple">
+                        <p class="text-xs text-gray-600 mb-2" style="color: rgb(4, 6, 10);">对接。。。。</p>
+
                     </div>
                 </div>
-                <!-- 生态招募中卡片 - 55天倒计时 -->
-                <div class="bg-gray-100 p-3 rounded-lg mb-4 border border-gray-300">
-                    <p class="text-sm text-gray-700 font-semibold mb-2">生态正在对接中</p>
-                    <div class="flex items-center justify-between bg-white p-2 rounded-md">
-                        <span class="text-xs font-semibold text-gray-700">对接倒计时：未开启</span>
-                        <div class="flex items-center gap-1 text-xs font-bold text-gray-600" id="countdown-ecosystem1">
-                            <span id="days-ecosystem1">55</span>
-                            <span>天</span>
-                            <span id="hours-ecosystem1">00</span>
-                            <span>:</span>
-                            <span id="minutes-ecosystem1">00</span>
-                            <span>:</span>
-                            <span id="seconds-ecosystem1">00</span>
+
+                <!-- PiLearn -->
+                <div class="py-4 border-b border-gray-100">
+                    <div class="flex items-center mb-3">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan-400 flex items-center justify-center text-white text-2xl mr-3 flex-shrink-0 shadow-lg">
+                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f65502459ed341f0886acef0ca11b2c4~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260429215628C62529F4885FE9371ED1&amp;rrcfp=e75484ac&amp;x-expires=1778075789&amp;x-signature=0H%2FzgcxGFpVKlTPQAWytIYCmIAM%3D" alt="PiLearn" class="w-17 h-17 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-base">Pi月光宝盒</h4>
+                            <p class="text-xs text-gray-500 mt-1" style="color: rgb(62, 72, 92);">抽奖游戏</p>
+                            <p class="text-xs text-blue-500 mt-1">https:/10101100</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('PiLearn 学习平台', 'Web3教育平台公募，为用户提供专业的区块链学习资源和服务。', 'https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f65502459ed341f0886acef0ca11b2c4~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260429215628C62529F4885FE9371ED1&amp;rrcfp=e75484ac&amp;x-expires=1778075789&amp;x-signature=0H%2FzgcxGFpVKlTPQAWytIYCmIAM%3D', 'https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f65502459ed341f0886acef0ca11b2c4~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260429215628C62529F4885FE9371ED1&amp;rrcfp=e75484ac&amp;x-expires=1778075789&amp;x-signature=0H%2FzgcxGFpVKlTPQAWytIYCmIAM%3D', 'public')">详情</button>
+                            <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://pilearn.online')">复制网址</button>
+                        </div>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-lg border-2 border-transparent animate-border-glow-purple">
+                        <p class="text-xs text-gray-600 mb-2" style="color: rgb(4, 6, 10);">派生态月光宝盒，盲盒游戏。即将上线</p>
+                    </div>
+                </div>
+
+                <!-- PiSocial -->
+                <div class="py-4">
+                    <div class="flex items-center mb-3">
+                        <div class="w-16 h-16 rounded-2xl bg-purple-400 flex items-center justify-center text-white text-2xl mr-3 flex-shrink-0 shadow-lg">
+                            <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/930f0244cca4483fb3f175d9b55be4b8.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=T%2BonpCnLQ%2FyZulwNBVIKrxyn0LQ%3D" alt="PiSocial" class="w-17 h-17 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-base">Pi对接。。。</h4>
+                            <p class="text-xs text-gray-500 mt-1" style="color: rgb(62, 72, 92);">派社交网络平</p>
+                            <p class="text-xs text-blue-500 mt-1">https:/10101001</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('PiSocial 社交生态', '派社交网络平台公募，为派友提供去中心化的社交网络服务。', 'https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/930f0244cca4483fb3f175d9b55be4b8.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=T%2BonpCnLQ%2FyZulwNBVIKrxyn0LQ%3D', 'https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/930f0244cca4483fb3f175d9b55be4b8.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=T%2BonpCnLQ%2FyZulwNBVIKrxyn0LQ%3D', 'public')">详情</button>
+                            <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://pisocial.network')">复制网址</button>
+                        </div>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-lg border-2 border-transparent animate-border-glow-purple">
+                        <p class="text-xs text-gray-600 mb-2" style="color: rgb(4, 6, 10);">公募详情：PiSocial是一款基于区块链技术的社交网络平台，旨在为派友提供去中心化的社交网络服务，保护用户隐私。</p>
+                        <div class="flex items-center justify-between bg-white p-2 rounded-md">
+                            <span class="text-xs font-semibold text-gray-700">公募倒计时：</span>
+                            <div class="flex items-center gap-1 text-xs font-bold text-purple-500" id="countdown-pisocial">
+                                <span id="days-pisocial">170</span>
+                                <span>天</span>
+                                <span id="hours-pisocial">12</span>
+                                <span>:</span>
+                                <span id="minutes-pisocial">45</span>
+                                <span>:</span>
+                                <span id="seconds-pisocial">00</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- TokenMarket -->
                 <div class="flex items-center py-4 border-b border-gray-100">
@@ -2306,7 +2748,7 @@
                         <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/8500eb8b7c9d447ab16148186e83e142.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202604291371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=%2BBmPvlVivGrmTZO2xmWeZySQA64%3D" alt="新生态对接中" class="w-17 h-17 object-contain">
                     </div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-base">新生态对接中</h4>
+                        <h4 class="font-bold text-base">新生态对接中。。。</h4>
                         <p class="text-xs text-gray-500 mt-1">代币市场行情分析工具</p>
                     </div>
                     <div class="flex flex-col gap-2">
@@ -2338,7 +2780,7 @@
                         <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/a41d10b103094d3788cdbb9ace70d4e4.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202604291371594682301302F8F351162&amp;rrcfp=8a172a1a&amp;x-expires=1778074635&amp;x-signature=FPR4jw%2FQGyxQoBEy1%2BqUBdPyOqY%3D" alt="新生态对接中" class="w-17 h-17 object-contain">
                     </div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-base">新生态对接中</h4>
+                        <h4 class="font-bold text-base">新生态对接中。。。</h4>
                         <p class="text-xs text-gray-500 mt-1">最新官方生态</p>
                     </div>
                     <div class="flex flex-col gap-2">
@@ -2404,22 +2846,22 @@
             <div class="grid grid-cols-2 gap-3">
                 <!-- 社区卡片1 -->
                 <div class="flex flex-col items-center">
-                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/59c17811694a4366b95381fecef11eed~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026042818135541B110A4398801574241&amp;rrcfp=f06b921b&amp;x-expires=1779963274&amp;x-signature=2LDES%2FxeuD8k3UOGhDlujSspDqY%3D" alt="山西太原派友本地社区" class="w-full h-full object-cover">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 cursor-pointer" onclick="showWelfareModal('山西太原派友本地社区')">
+                        <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/35928329caab425a8eef9e66c8538ff3~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202605010138211F8AB606FD72B2180F5A&amp;rrcfp=e75484ac&amp;x-expires=1778175502&amp;x-signature=eFu%2F0J%2B7R%2FnX%2Ba53qa8zZ0zcc9g%3D" alt="山西太原派友本地社区" class="w-full h-full object-cover">
                     </div>
                     <p class="text-xs text-center" style="font-weight: bold;">山西太原派友本地社区</p>
                 </div>
                 <!-- 社区卡片2 -->
                 <div class="flex flex-col items-center">
-                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/59c17811694a4366b95381fecef11eed~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026042818135541B110A4398801574241&amp;rrcfp=f06b921b&amp;x-expires=1779963274&amp;x-signature=2LDES%2FxeuD8k3UOGhDlujSspDqY%3D" alt="派信娱乐生态群" class="w-full h-full object-cover">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 cursor-pointer" onclick="showWelfareModal('派信娱乐生态群')">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/53ad83af32c746039a607e3bedb23ed8~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026050101341689F385B6F9D593EB7C8A&amp;rrcfp=e75484ac&amp;x-expires=1778175256&amp;x-signature=K8pXdSakG%2B3ttJwSn1PRCG748U4%3D" alt="派信娱乐生态群" class="w-full h-full object-cover">
                     </div>
                     <p class="text-xs text-center" style="font-weight: bold;">派信娱乐生态群</p>
                 </div>
                 <!-- 社区卡片3 -->
                 <div class="flex flex-col items-center">
-                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/59c17811694a4366b95381fecef11eed~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026042818135541B110A4398801574241&amp;rrcfp=f06b921b&amp;x-expires=1779963274&amp;x-signature=2LDES%2FxeuD8k3UOGhDlujSspDqY%3D" alt="派空间生态总群" class="w-full h-full object-cover">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 cursor-pointer" onclick="showWelfareModal('SPACE派空间生态总群')">
+                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e9cd610b8c8247afada7e7e059601b38~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260501013429F1019FDA60110A7EF097&amp;rrcfp=e75484ac&amp;x-expires=1778175269&amp;x-signature=1Kgovb%2FGUJ6fFSWgea3GCYui4R8%3D" alt="派空间生态总群" class="w-full h-full object-cover">
                     </div>
                     <p class="text-xs text-center" style="font-weight: bold;">SPACE派空间生态总群</p>
                 </div>
@@ -2432,15 +2874,15 @@
                 </div>
                 <!-- 社区卡片5 -->
                 <div class="flex flex-col items-center">
-                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/59c17811694a4366b95381fecef11eed~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026042818135541B110A4398801574241&amp;rrcfp=f06b921b&amp;x-expires=1779963274&amp;x-signature=2LDES%2FxeuD8k3UOGhDlujSspDqY%3D" alt="派币派友节点群聊" class="w-full h-full object-cover">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 cursor-pointer" onclick="showWelfareModal('派节点搭建群聊')">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/cacc99bf6c03403e94deb61282eabe6c~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260501013443BC5058A01DA564E03B55&amp;rrcfp=e75484ac&amp;x-expires=1778175284&amp;x-signature=gmoQ1ZhOQ%2BkdsJ2IJ2MAF8dRRec%3D" alt="派币派友节点群聊" class="w-full h-full object-cover">
                     </div>
                     <p class="text-xs text-center" style="font-weight: bold;">派节点搭建群聊</p>
                 </div>
                 <!-- 社区卡片6 -->
                 <div class="flex flex-col items-center">
-                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/59c17811694a4366b95381fecef11eed~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026042818135541B110A4398801574241&amp;rrcfp=f06b921b&amp;x-expires=1779963274&amp;x-signature=2LDES%2FxeuD8k3UOGhDlujSspDqY%3D" alt="10名 did 群聊" class="w-full h-full object-cover">
+                    <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 cursor-pointer" onclick="showWelfareModal('实名DID群聊')">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/c6d8626fc96c43178e5c04ff6602a1e6~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026050101350929D991813216747D44B2&amp;rrcfp=e75484ac&amp;x-expires=1778175309&amp;x-signature=Zb1FBHiMcPtFHrzgphEJBlb4HGY%3D" alt="10名 did 群聊" class="w-full h-full object-cover">
                     </div>
                     <p class="text-xs text-center" style="font-weight: bold;">实名DID群聊</p>
                 </div>
@@ -2563,7 +3005,7 @@
         <!-- 节点服务器图片 -->
         <div class="px-4 mt-4 mb-4">
             <div class="rounded-xl overflow-hidden shadow-sm">
-                <img src="https://p26-doubao-search-sign.byteimg.com/labis/84052f66306c4ec42c3d187729d6172a~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&amp;x-expires=1792923248&amp;x-signature=poDB1rUIb5ZKCSw%2By0KMUuMVUgU%3D" alt="派生态节点服务器集群" class="w-full h-auto">
+                <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/308a1e31f1b74f71a45add1102ed798a~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202605010148186D9EE5664220BC169898&amp;rrcfp=e75484ac&amp;x-expires=1778176100&amp;x-signature=FcbZ78jMrmeYv%2F6WtNbyp53Fo0Y%3D" alt="派生态节点服务器集群" class="w-full h-auto">
                 <div class="bg-white p-3">
                     <p class="text-sm font-bold text-center">派生态全球节点服务器集群</p>
                 </div>
@@ -2573,7 +3015,7 @@
         <!-- 额外的节点服务器图片 -->
         <div class="px-4 mt-2 mb-4">
             <div class="rounded-xl overflow-hidden shadow-sm">
-                <img src="https://p26-doubao-search-sign.byteimg.com/labis/84052f66306c4ec42c3d187729d6172a~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&amp;x-expires=1792923248&amp;x-signature=poDB1rUIb5ZKCSw%2By0KMUuMVUgU%3D" alt="派生态全球节点网络" class="w-full h-auto">
+                <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e6599f1396454afe8b1e2f1a0cb962f2~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026050101545235A3182410D23A7D8A73&amp;rrcfp=03245832&amp;x-expires=1778176496&amp;x-signature=a0CK18un%2BRLooKjrgnx9VrxIwIs%3D" alt="派生态全球节点网络" class="w-full h-auto">
                 <div class="bg-white p-3">
                     <p class="text-sm font-bold text-center">加入全球节点网络，共建去中心化未来</p>
                 </div>
@@ -2773,24 +3215,24 @@
 <!-- 底部导航 -->
 <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 py-2">
     <div class="flex justify-around">
-        <div class="flex flex-col items-center text-primary sound-btn nav-btn" data-target="home-page">
-            <i class="fa fa-home text-lg"></i>
+        <div class="flex flex-col items-center text-primary sound-btn nav-btn" data-target="home-page" style="transition: all 0.3s ease;">
+            <i class="fa fa-home text-lg" style="transition: all 0.3s ease;"></i>
             <span class="text-xs mt-1" style="color: rgb(3, 11, 18); font-weight: bold;">首页</span>
         </div>
-        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="community-page">
-            <i class="fa fa-database text-lg"></i>
+        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="community-page" style="transition: all 0.3s ease;">
+            <i class="fa fa-database text-lg" style="transition: all 0.3s ease;"></i>
             <span class="text-xs mt-1" style="color: rgb(10, 12, 13); font-weight: bold;">加入社群</span>
         </div>
-        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="roadmap-page">
-            <i class="fa fa-map text-lg"></i>
+        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="roadmap-page" style="transition: all 0.3s ease;">
+            <i class="fa fa-map text-lg" style="transition: all 0.3s ease;"></i>
             <span class="text-xs mt-1" style="color: rgb(7, 186, 7); font-weight: bold;">节点搭建</span>
         </div>
-        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="assets-page">
-            <i class="fa fa-bank text-lg"></i>
+        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="assets-page" style="transition: all 0.3s ease;">
+            <i class="fa fa-bank text-lg" style="transition: all 0.3s ease;"></i>
             <span class="text-xs mt-1" style="font-family: KaiTi, STKaiti, KaiTi_GB2312, sans-serif; font-weight: bold; color: rgb(8, 5, 5); font-size: 14px;">先锋划分</span>
         </div>
-        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="profile-page">
-            <i class="fa fa-user text-lg"></i>
+        <div class="flex flex-col items-center text-gray-400 sound-btn nav-btn" data-target="profile-page" style="transition: all 0.3s ease;">
+            <i class="fa fa-user text-lg" style="transition: all 0.3s ease;"></i>
             <span class="text-xs mt-1" style="color: rgba(8, 1, 1, 0.85); font-weight: bold;">福利空投</span>
         </div>
     </div>
@@ -2834,7 +3276,7 @@
                     <i class="fa fa-times text-xl"></i>
                 </button>
             </div>
-            <div id="modalContent" class="mb-4">
+            <div id="modalContent" class="mb-4" style="overflow-y: auto; max-height: 450px;">
                 <p class="text-sm text-gray-600 mb-4">派生态应用中心是全球领先的Web3超级入口。</p>
                 
                 <!-- 两张可替换的长方形图片 -->
@@ -2862,7 +3304,7 @@
             <p id="ecosystemDetailDescription" class="modal-description">正在对接。</p>
             <div class="modal-images">
                 <div class="modal-image">
-                    <img id="ecosystemDetailImage1" alt="项目图片" src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/be7b51564e844567b6e9bd1d17a4552d~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260501001356A8A83D65A872AE7C2C03&amp;rrcfp=e75484ac&amp;x-expires=1778170437&amp;x-signature=p9ua0bn%2FEoTiZbANwjNePRDJpWg%3D">
+                    <img id="ecosystemDetailImage1" alt="项目图片" src="">
                 </div>
             </div>
             <button id="ecosystemDetailButton" class="bg-green-500 text-white px-6 py-3 rounded-xl text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full mt-4" onclick="goToEcosystemDetail()">进入详情</button>
