@@ -322,6 +322,15 @@
 
     <script>
         // 生态详情模态框
+        function openHashpiDetail() {
+            document.getElementById('hashpiDetailModal').classList.remove('hidden');
+            playSound();
+        }
+
+        function closeHashpiDetail() {
+            document.getElementById('hashpiDetailModal').classList.add('hidden');
+        }
+
         function openEcosystemDetail(name, description, image1, image2, category = 'featured') {
             const modal = document.getElementById('ecosystemDetailModal');
             const title = document.getElementById('ecosystemDetailTitle');
@@ -421,6 +430,15 @@
 
     <script>
         // 生态详情模态框
+        function openHashpiDetail() {
+            document.getElementById('hashpiDetailModal').classList.remove('hidden');
+            playSound();
+        }
+
+        function closeHashpiDetail() {
+            document.getElementById('hashpiDetailModal').classList.add('hidden');
+        }
+
         function openEcosystemDetail(name, description, image1, image2, category = 'featured') {
             const modal = document.getElementById('ecosystemDetailModal');
             const title = document.getElementById('ecosystemDetailTitle');
@@ -2404,13 +2422,16 @@
                         <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7062748e461a4172932893a90765c7b8.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429154200138D8E73A0EEFA77E605&amp;rrcfp=8a172a1a&amp;x-expires=1778053320&amp;x-signature=ONTnrpv%2FXhtqSRbSNJGelrYKBH0%3D" alt="应用图标" class="w-17 h-17 object-contain">
                     </div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-base">Hashpi    ---哈希派</h4>
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-base">Hashpi    ---哈希派</h4>
+                            <button class="bg-gradient-to-r from-green-600 to-green-500 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-300 sound-btn ml-auto" onclick="openHashpiDetail()">详情</button>
+                        </div>
                         <p class="text-xs text-gray-500 mt-1" style="color: rgb(59, 73, 94);">链上加密&amp;NFT确权【派浏览器】</p>
                         <p class="text-xs text-blue-500 mt-1">hashpi.app</p>
                     </div>
                     <div class="flex flex-col gap-2">
 
-                        <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('Hashpi --- 哈希派', '链上加密&amp;NFT确权【派浏览器】，提供安全的数字资产确权和加密服务。', 'https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/3d65089e883942a09102bffc37b375f1.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202605010032152329B52788825D147814&amp;rrcfp=8a172a1a&amp;x-expires=1778171535&amp;x-signature=X%2FfdzWnIhKw1ltvRutzDdQh%2FMdw%3D', 'https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/3d65089e883942a09102bffc37b375f1.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202605010032152329B52788825D147814&amp;rrcfp=8a172a1a&amp;x-expires=1778171535&amp;x-signature=X%2FfdzWnIhKw1ltvRutzDdQh%2FMdw%3D')">详情</button>
+
                         <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('start.app')">复制网址</button>
                     </div>
                 </div>
@@ -2519,7 +2540,7 @@
                     </div>
                     <div class="flex flex-col gap-2">
 
-                        <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('实名DID', '派友专属社交平台，连接全球先锋，打造安全、隐私的社交环境。', 'https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/2fea96fd02c54c7fa602c1fb40f61042.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=H%2B9M25P2P%2BKLp1BWRKseWHKPfDY%3D', 'https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/2fea96fd02c54c7fa602c1fb40f61042.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=H%2B9M25P2P%2BKLp1BWRKseWHKPfDY%3D')">详情</button>
+                        <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('实名DID', '派友专属社交平台，连接全球先锋，打造安全、隐私的社交环境。', 'https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/d6631cc70e8649198c8aa537f4821e84.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260501162813B13F8F3B77BA6F9F84B5&amp;rrcfp=8a172a1a&amp;x-expires=1778228894&amp;x-signature=aMjtqzN%2FXce8RsPRd3HuNf3EfMQ%3D', 'https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/d6631cc70e8649198c8aa537f4821e84.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260501162813B13F8F3B77BA6F9F84B5&amp;rrcfp=8a172a1a&amp;x-expires=1778228894&amp;x-signature=aMjtqzN%2FXce8RsPRd3HuNf3EfMQ%3D')">详情</button>
                         <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://pisocial.app')">复制网址</button>
                     </div>
                 </div>
@@ -2555,7 +2576,7 @@
                     </div>
                     <div class="flex flex-col gap-2">
 
-                        <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('OPA免费挖矿生态', '区块链游戏平台，边玩边赚模式，让用户在游戏中获得收益。', 'https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/930f0244cca4483fb3f175d9b55be4b8.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=T%2BonpCnLQ%2FyZulwNBVIKrxyn0LQ%3D', 'https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/930f0244cca4483fb3f175d9b55be4b8.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260429215419D31EB83DD579D7C3226E&amp;rrcfp=8a172a1a&amp;x-expires=1778075659&amp;x-signature=T%2BonpCnLQ%2FyZulwNBVIKrxyn0LQ%3D')">详情</button>
+                        <button class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 sound-btn w-full text-center" onclick="openEcosystemDetail('OPA免费挖矿生态', '区块链游戏平台，边玩边赚模式，让用户在游戏中获得收益。', 'https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/d6631cc70e8649198c8aa537f4821e84.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260501162813B13F8F3B77BA6F9F84B5&amp;rrcfp=8a172a1a&amp;x-expires=1778228894&amp;x-signature=aMjtqzN%2FXce8RsPRd3HuNf3EfMQ%3D', 'https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/c3558564e575410aabf4cd1402643481.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260501162813B13F8F3B77BA6F9F84B5&amp;rrcfp=8a172a1a&amp;x-expires=1778228894&amp;x-signature=4tOt0CkShu5DzxBdDKI9OxYZ0lc%3D')">详情</button>
                         <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sound-btn" onclick="copyText('https://pigame.network')">复制网址</button>
                     </div>
                 </div>
@@ -2889,7 +2910,7 @@
                 <!-- 社区卡片7 -->
                 <div class="flex flex-col items-center">
                     <div class="w-full aspect-square rounded-lg overflow-hidden mb-1">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/59c17811694a4366b95381fecef11eed~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026042818135541B110A4398801574241&amp;rrcfp=f06b921b&amp;x-expires=1779963274&amp;x-signature=2LDES%2FxeuD8k3UOGhDlujSspDqY%3D" alt="派生态开发者群" class="w-full h-full object-cover">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/541d3ea0b03542499ce19fa5457da9ca~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=2026050116540051F8BA14DC8519C2D505&amp;rrcfp=03245832&amp;x-expires=1778230444&amp;x-signature=tevk9G3ONloGDeW50zmdqxEuOjM%3D" alt="派生态开发者群" class="w-full h-full object-cover">
                     </div>
                     <p class="text-xs text-center" style="font-weight: bold;">派生态开发者群</p>
                 </div>
@@ -3297,6 +3318,16 @@
     
 
     <!-- 生态详情模态框 -->
+    <div id="hashpiDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-6 w-11/12 max-w-md mx-auto">
+            <h3 class="text-xl font-bold mb-4">哈希派详情</h3>
+            <div class="mb-4">
+                <img id="hashpiDetailImage" alt="哈希派图片" src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/2c0923e8e8e44c64bbc30282657e30cf.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=20260501144259A7D33F458F3B8F49D8DF&amp;rrcfp=8a172a1a&amp;x-expires=1778222579&amp;x-signature=hVAHyUubUysdZVM5fII5Ehtjykc%3D" class="w-full h-auto rounded-xl">
+            </div>
+            <button id="closeHashpiDetailButton" class="bg-gray-500 text-white px-6 py-3 rounded-xl text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full" onclick="closeHashpiDetail()">关闭</button>
+        </div>
+    </div>
+
     <div id="ecosystemDetailModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeEcosystemDetail()">×</button>
@@ -3304,10 +3335,10 @@
             <p id="ecosystemDetailDescription" class="modal-description">正在对接。</p>
             <div class="modal-images">
                 <div class="modal-image">
-                    <img id="ecosystemDetailImage1" alt="项目图片" src="">
+                    <img id="ecosystemDetailImage1" alt="项目图片" src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/2d78eb88b8964db1bb8924f7552195a5.png~tplv-a9rns2rl98-24:720:720.png?lk3s=8e244e95&amp;rcl=202605011338539A92D83FFD26F1F8C892&amp;rrcfp=8a172a1a&amp;x-expires=1778218733&amp;x-signature=l0As5pnmUUt7FIuq%2BTwgxySLjlI%3D">
                 </div>
             </div>
-            <button id="ecosystemDetailButton" class="bg-green-500 text-white px-6 py-3 rounded-xl text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full mt-4" onclick="goToEcosystemDetail()">进入详情</button>
+            <button id="ecosystemDetailButton" class="bg-gray-500 text-white px-6 py-3 rounded-xl text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full mt-4" onclick="closeEcosystemDetail()">我知道了</button>
         </div>
     </div>
 
