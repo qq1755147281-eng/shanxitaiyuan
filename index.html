@@ -7,7 +7,7 @@
     <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
-                // 音效系统 - 优化版
+        // 高级音效系统
         class SoundManager {
             constructor() {
                 this.audioContext = null;
@@ -16,7 +16,8 @@
                 this.initAttempted = false;
                 this.lastPlayTime = 0;
                 this.cooldownPeriod = 100; // 100ms冷却时间，防止快速点击产生噪音
-                console.log('音效管理器初始化');
+                this.sounds = {};
+                console.log('🎵 高级音效管理器初始化');
             }
             
             // 初始化音频上下文
@@ -53,6 +54,26 @@
             
             // 播放"叮"的音效
             playDing() {
+                this.playSound('ding');
+            }
+            
+            // 播放点击音效
+            playClick() {
+                this.playSound('click');
+            }
+            
+            // 播放成功音效
+            playSuccess() {
+                this.playSound('success');
+            }
+            
+            // 播放页面切换音效
+            playPageSwitch() {
+                this.playSound('pageSwitch');
+            }
+            
+            // 通用音效播放函数
+            playSound(type) {
                 if (!this.soundEnabled) return;
                 
                 // 防止快速点击产生的噪音
@@ -80,24 +101,61 @@
                     const oscillator = this.audioContext.createOscillator();
                     const gainNode = this.audioContext.createGain();
                     
-                    // 配置音效参数
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(880.00, this.audioContext.currentTime); // A5音符
-                    oscillator.frequency.exponentialRampToValueAtTime(800.00, this.audioContext.currentTime + 0.1); // 轻微下降
-                    
-                    // 音量包络
-                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.66, this.audioContext.currentTime + 0.01); // 快速起音
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15); // 平滑衰减
+                    // 根据音效类型配置参数
+                    switch (type) {
+                        case 'ding':
+                            oscillator.type = 'sine';
+                            oscillator.frequency.setValueAtTime(880.00, this.audioContext.currentTime); // A5音符
+                            oscillator.frequency.exponentialRampToValueAtTime(800.00, this.audioContext.currentTime + 0.1);
+                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                            gainNode.gain.linearRampToValueAtTime(0.66, this.audioContext.currentTime + 0.01);
+                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15);
+                            break;
+                            
+                        case 'click':
+                            oscillator.type = 'square';
+                            oscillator.frequency.setValueAtTime(1200.00, this.audioContext.currentTime);
+                            oscillator.frequency.exponentialRampToValueAtTime(600.00, this.audioContext.currentTime + 0.05);
+                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                            gainNode.gain.linearRampToValueAtTime(0.5, this.audioContext.currentTime + 0.005);
+                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.08);
+                            break;
+                            
+                        case 'success':
+                            oscillator.type = 'sine';
+                            oscillator.frequency.setValueAtTime(523.25, this.audioContext.currentTime); // C5
+                            oscillator.frequency.setValueAtTime(659.25, this.audioContext.currentTime + 0.05); // E5
+                            oscillator.frequency.setValueAtTime(783.99, this.audioContext.currentTime + 0.1); // G5
+                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                            gainNode.gain.linearRampToValueAtTime(0.6, this.audioContext.currentTime + 0.01);
+                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.3);
+                            break;
+                            
+                        case 'pageSwitch':
+                            oscillator.type = 'sawtooth';
+                            oscillator.frequency.setValueAtTime(200.00, this.audioContext.currentTime);
+                            oscillator.frequency.exponentialRampToValueAtTime(400.00, this.audioContext.currentTime + 0.2);
+                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                            gainNode.gain.linearRampToValueAtTime(0.4, this.audioContext.currentTime + 0.01);
+                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.2);
+                            break;
+                            
+                        default:
+                            oscillator.type = 'sine';
+                            oscillator.frequency.setValueAtTime(440.00, this.audioContext.currentTime);
+                            gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+                    }
                     
                     // 连接节点并播放
                     oscillator.connect(gainNode);
                     gainNode.connect(this.audioContext.destination);
                     
+                    const duration = type === 'success' ? 0.3 : (type === 'pageSwitch' ? 0.2 : 0.15);
                     oscillator.start(this.audioContext.currentTime);
-                    oscillator.stop(this.audioContext.currentTime + 0.15);
+                    oscillator.stop(this.audioContext.currentTime + duration);
                     
-                    console.log('🎵 播放"叮"音效');
+                    console.log(`🎵 播放${type}音效`);
                 } catch (error) {
                     console.error('🎵 播放音效失败:', error.message);
                 }
@@ -107,11 +165,45 @@
             setEnabled(enabled) {
                 this.soundEnabled = enabled;
                 console.log(`🎵 音效已${enabled ? '启用' : '禁用'}`);
+                
+                // 显示音效状态提示
+                const statusText = enabled ? '音效已开启' : '音效已关闭';
+                this.showToast(statusText, enabled ? 'bg-green-500' : 'bg-gray-500');
             }
             
             // 获取音效状态
             isEnabled() {
                 return this.soundEnabled;
+            }
+            
+            // 显示提示消息
+            showToast(message, bgColor = 'bg-blue-500') {
+                // 移除已存在的toast
+                const existingToast = document.querySelector('.toast-notification');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+                
+                // 创建新的toast
+                const toast = document.createElement('div');
+                toast.className = `toast-notification fixed top-4 right-4 ${bgColor} text-white px-4 py-2 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                // 显示toast
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-full');
+                }, 100);
+                
+                // 3秒后隐藏toast
+                setTimeout(() => {
+                    toast.classList.add('translate-x-full');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                }, 3000);
             }
         }
         
@@ -119,8 +211,20 @@
         const soundManager = new SoundManager();
         
         // 便捷的播放函数
-        function playSound() {
-            soundManager.playDing();
+        function playSound(type = 'ding') {
+            switch (type) {
+                case 'click':
+                    soundManager.playClick();
+                    break;
+                case 'success':
+                    soundManager.playSuccess();
+                    break;
+                case 'pageSwitch':
+                    soundManager.playPageSwitch();
+                    break;
+                default:
+                    soundManager.playDing();
+            }
         }
 
         tailwind.config = {
@@ -149,25 +253,28 @@
                 @apply text-blue-600 border-b-2 border-blue-600;
             }
             .btn-primary {
-                @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors;
+                @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
             }
             .btn-secondary {
-                @apply bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors;
+                @apply bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
             }
             .btn-tertiary {
-                @apply bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors;
+                @apply bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
             }
             .btn-quaternary {
-                @apply bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors;
+                @apply bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
             }
             .btn-quinary {
-                @apply bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors;
+                @apply bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
             }
             .card {
-                @apply bg-white rounded-xl shadow-md p-4 mb-4;
+                @apply bg-white rounded-xl shadow-md p-4 mb-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:brightness-105;
             }
             .input-field {
-                @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+                @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300;
             }
             .page-container {
                 @apply fixed inset-0 flex flex-col bg-gray-100;
@@ -179,16 +286,99 @@
                 @apply bg-white border-t border-gray-200 flex justify-around items-center h-16;
             }
             .nav-item {
-                @apply flex flex-col items-center justify-center flex-1 p-2 text-gray-500;
+                @apply flex flex-col items-center justify-center flex-1 p-2 text-gray-500 transition-all duration-300 cursor-pointer;
             }
             .nav-item.active {
                 @apply text-blue-600;
+            }
+            .nav-item:hover {
+                @apply text-blue-500 transform scale-105;
             }
             .nav-icon {
                 @apply text-xl mb-1;
             }
             .nav-label {
                 @apply text-xs;
+            }
+            .page {
+                @apply transition-all duration-500 ease-in-out;
+            }
+            .page.hidden {
+                @apply opacity-0 translate-x-full;
+            }
+            .page.active {
+                @apply opacity-100 translate-x-0;
+            }
+            .btn-glow {
+                @apply relative overflow-hidden;
+            }
+            .btn-glow::after {
+                content: '';
+                @apply absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 transition-opacity duration-700 -translate-x-full;
+            }
+            .btn-glow:hover::after {
+                @apply opacity-20 translate-x-full;
+            }
+            .glass-effect {
+                @apply bg-white bg-opacity-80 backdrop-blur-md;
+            }
+            .text-gradient {
+                @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
+            }
+            .bg-gradient-primary {
+                @apply bg-gradient-to-r from-blue-500 to-purple-600;
+            }
+            .bg-gradient-secondary {
+                @apply bg-gradient-to-r from-green-500 to-teal-600;
+            }
+            .bg-gradient-tertiary {
+                @apply bg-gradient-to-r from-orange-500 to-red-600;
+            }
+            .breathing-animation {
+                animation: breathing 2s infinite ease-in-out;
+            }
+            @keyframes breathing {
+                0%, 100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.02);
+                }
+            }
+            .pulse-animation {
+                animation: pulse 2s infinite ease-in-out;
+            }
+            @keyframes pulse {
+                0%, 100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.8;
+                }
+            }
+            .float-animation {
+                animation: float 3s infinite ease-in-out;
+            }
+            @keyframes float {
+                0%, 100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-5px);
+                }
+            }
+            .shimmer {
+                background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+                background-size: 200% 100%;
+                animation: shimmer 2s infinite;
+            }
+            @keyframes shimmer {
+                0% {
+                    background-position: -200% 0;
+                }
+                100% {
+                    background-position: 200% 0;
+                }
             }
         }
     </style>
@@ -199,8 +389,6 @@
         <div class="content-container">
             <!-- 首页 -->
             <div id="home-page" class="page active">
-
-                
                 <!-- 山西太原派生态社区聚会 - 高级卡片 -->
                 <div class="rounded-xl shadow-lg overflow-hidden mb-4 border border-gray-200">
                     <!-- 绿色标题卡片 -->
@@ -246,305 +434,171 @@
                     </div>
                 </div>
                 
-
-                
-                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
+                <div class="card card-hover">
                     <div class="flex space-x-3 mb-3">
-                        <button class="bg-white text-black py-1.5 px-3 rounded-lg text-base font-semibold border-2 border-black shadow-lg flex-1 text-center focus:outline-none active:outline-none transition-all duration-300 hover:shadow-xl animate-black-pulse" onclick="renderAppList(appList1)">
+                        <button class="bg-white text-black py-1.5 px-3 rounded-lg text-base font-semibold border-2 border-black shadow-lg flex-1 text-center focus:outline-none active:outline-none transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-95 btn-glow" onclick="renderAppList(appList1)">
                             推荐派应用
                         </button>
-                        <button class="bg-white text-black py-1.5 px-3 rounded-lg text-base font-semibold border-2 border-black shadow-lg flex-1 text-center focus:outline-none active:outline-none transition-all duration-300 hover:shadow-xl animate-black-pulse" onclick="renderAppList(appList2)">
+                        <button class="bg-white text-black py-1.5 px-3 rounded-lg text-base font-semibold border-2 border-black shadow-lg flex-1 text-center focus:outline-none active:outline-none transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-95 btn-glow" onclick="renderAppList(appList2)">
                             生态对接
                         </button>
                     </div>
 
                     <div id="app-list" class="space-y-3">
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-comment text-orange-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">TELTLK - 派生态</p>
-                                        <p class="text-xs text-gray-500">社交应用</p>
-                                    </div>
-                                </div>
-                                <button class="btn-tertiary text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://telk-pi.com">https://telk-pi.com</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://mysticring.jiewai.pro/Share/#/home?trendsId=726306">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-line-chart text-purple-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Satrpi派链孵化器</p>
-                                        <p class="text-xs text-gray-500">工具应用</p>
-                                    </div>
-                                </div>
-                                <button class="btn-quaternary text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://satpi-quantum.io">https://satpi-quantum.io</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://satpi-quantum.io">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-map text-blue-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Piday - 派对土地</p>
-                                        <p class="text-xs text-gray-500">电商应用</p>
-                                    </div>
-                                </div>
-                                <button class="btn-primary text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://pimarket.online">https://pimarket.online</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://pimarket.online">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-leaf text-green-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">h - π众筹生态</p>
-                                        <p class="text-xs text-gray-500">分布项目应用</p>
-                                    </div>
-                                </div>
-                                <button class="btn-secondary text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://ecochain-pi.org">https://ecochain-pi.org</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://ecochain-pi.org">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-hashtag text-blue-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">hashpi - 哈希派</p>
-                                        <p class="text-xs text-gray-500">NFT</p>
-                                    </div>
-                                </div>
-                                <button class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://pinews.network">https://pinews.network</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://pinews.network">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-paw text-purple-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Pipet - π宠物紫色</p>
-                                        <p class="text-xs text-gray-500">教育应用</p>
-                                    </div>
-                                </div>
-                                <button class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://pilearn.edu">https://pilearn.edu</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://pilearn.edu">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-bullseye text-blue-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold"> - π标志</p>
-                                        <p class="text-xs text-gray-500">金融应用</p>
-                                    </div>
-                                </div>
-                                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://safepi-wallet.com">https://safepi-wallet.com</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://safepi-wallet.com">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-diamond text-pink-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">- 月光宝盒</p>
-                                        <p class="text-xs text-gray-500">NFT应用</p>
-                                    </div>
-                                </div>
-                                <button class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-xs editing-breathing-bg" onclick="window.location.href='https://mysticring.jiewai.pro/Share/#/home?trendsId=777570'">操作视频</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://piart-nft.art">https://piart-nft.art</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://piart-nft.art">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-city text-teal-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">VCITY- 第五城城市</p>
-                                        <p class="text-xs text-gray-500">社交应用</p>
-                                    </div>
-                                </div>
-                                <button class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://worldpi-community.com">https://worldpi-community.com</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://worldpi-community.com">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fa fa-cog text-gray-500"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">PiTools - 工具箱</p>
-                                        <p class="text-xs text-gray-500">工具应用</p>
-                                    </div>
-                                </div>
-                                <button class="btn-quinary text-xs">详情</button>
-                            </div>
-                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://对接中p">https://对接中</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://pitools.app">
-                                    <i class="fa fa-copy"></i> 复制
-                                </button>
-                            </div>
-                        </div>
+                        <!-- 应用列表将通过JavaScript动态生成 -->
                     </div>
                 </div>
             </div>
             
             <!-- 生态页面 -->
             <div id="ecosystem-page" class="page hidden">
-                <div class="bg-gradient-to-r from-red-500 to-yellow-500 text-white p-4 rounded-lg mb-4">
+                <a href="https://www.teltlk.com/#/register?invite=sss444" class="block bg-gradient-to-r from-red-500 to-yellow-500 text-white p-4 rounded-lg mb-4 text-center hover:opacity-90 transition-opacity">
                     <h1 class="text-2xl font-bold">加入社群   TELTLK</h1>
-                    <p class="text-sm opacity-80">PI友，没有TELTLK怎么办，点击此处下载</p>
-                </div>
+                    <p class="text-sm opacity-80" style="font-weight: bold; font-size: 16px;">PI友没有teltlk怎么办？点击此处下载</p>
+                </a>
                 
 
                 
-                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
-                    <h2 class="text-lg font-semibold mb-2">派友群聊咨询</h2>
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 border border-blue-100 rounded-lg mb-3">
-                        <p class="font-semibold text-blue-800 text-sm" style="font-size: 16px;">社群顾问</p>
-                        <div class="flex justify-between mt-2">
-                            <div class="text-center">
-                                <p class="text-xs font-medium text-gray-700">魏国炳</p>
-                                <p class="text-xs text-blue-600">155 3645 5536</p>
+                <div class="card card-hover overflow-hidden p-2">
+                    <div class="bg-gradient-to-r from-indigo-600 to-blue-600 p-2 text-white rounded-lg">
+                        <h2 class="text-base font-bold">群聊联络处。。咨询</h2>
+                    </div>
+                    <div class="p-2">
+                        <div class="flex justify-between text-center">
+                            <div class="flex-1">
+                                <p class="text-xs font-semibold">魏国炳</p>
+                                <p class="text-xs text-gray-500">155 3645 5536</p>
                             </div>
-                            <div class="text-center">
-                                <p class="text-xs font-medium text-gray-700">毕尚阳</p>
-                                <p class="text-xs text-blue-600">153 1363 6709</p>
+                            <div class="flex-1">
+                                <p class="text-xs font-semibold">毕尚阳</p>
+                                <p class="text-xs text-gray-500">153 1363 6709</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
-                    <h2 class="text-lg font-semibold mb-2">派社群二维码-----teltlk扫码进</h2>
+                <div class="card card-hover">
+                    <h2 class="text-lg font-semibold mb-2">派友社群---TELTLK扫码</h2>
                     <div class="grid grid-cols-3 gap-4">
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-red-50 to-orange-50 p-4 border border-red-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-red-600">1</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fa fa-map-marker text-indigo-600 text-3xl"></i>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">山西太原总群</p>
+                            <p class="text-base font-semibold mt-2">山西太原</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-orange-50 to-yellow-50 p-4 border border-orange-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-orange-600">2</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fa fa-comments text-indigo-600 text-3xl"></i>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">太原派社群2</p>
+                            <p class="text-base font-semibold mt-2">派信娱乐</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-yellow-50 to-green-50 p-4 border border-yellow-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-yellow-600">3</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-teal-100 rounded-full flex items-center justify-center">
+                                    <i class="fa fa-comments-o text-green-600 text-3xl"></i>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">π节点搭建群</p>
+                            <p class="text-base font-semibold mt-2">穷聊</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-green-50 to-teal-50 p-4 border border-green-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-green-600">4</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center">
+                                    <span class="text-blue-600 font-bold text-3xl">1</span>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">派信娱乐总群</p>
+                            <p class="text-base font-semibold mt-2">群聊1</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-teal-50 to-cyan-50 p-4 border border-teal-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-teal-600">5</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
+                                    <span class="text-green-600 font-bold text-3xl">2</span>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">派信股东群</p>
+                            <p class="text-base font-semibold mt-2">群聊2</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-cyan-50 to-blue-50 p-4 border border-cyan-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-cyan-600">6</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center">
+                                    <span class="text-purple-600 font-bold text-3xl">3</span>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">实名DID群</p>
+                            <p class="text-base font-semibold mt-2">群聊3</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 border border-blue-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-blue-600">7</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center">
+                                    <span class="text-orange-600 font-bold text-3xl">4</span>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">SPACE派总群</p>
+                            <p class="text-base font-semibold mt-2">群聊4</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-4 border border-indigo-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-indigo-600">8</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
+                                    <span class="text-red-600 font-bold text-3xl">5</span>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">SPACE股东群</p>
+                            <p class="text-base font-semibold mt-2">群聊5</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
-                        <div class="text-center">
-                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-4 border border-purple-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
-                                <div class="text-4xl font-bold text-purple-600">9</div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center">
+                                    <span class="text-teal-600 font-bold text-3xl">6</span>
+                                </div>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">实时更新</p>
+                            <p class="text-base font-semibold mt-2">群聊6</p>
+                            <p class="text-sm text-gray-500">
+</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center">
+                                    <span class="text-indigo-600 font-bold text-3xl">7</span>
+                                </div>
+                            </div>
+                            <p class="text-base font-semibold mt-2">群聊7</p>
+                            <p class="text-sm text-gray-500">
+</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center">
+                                    <span class="text-pink-600 font-bold text-3xl">8</span>
+                                </div>
+                            </div>
+                            <p class="text-base font-semibold mt-2">群聊8</p>
+                            <p class="text-sm text-gray-500">
+</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
+                                <div class="w-20 h-20 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-full flex items-center justify-center">
+                                    <span class="text-yellow-600 font-bold text-3xl">9</span>
+                                </div>
+                            </div>
+                            <p class="text-base font-semibold mt-2">群聊9</p>
+                            <p class="text-sm text-gray-500">
+</p>
                         </div>
                     </div>
                 </div>
@@ -557,9 +611,14 @@
                     <p class="text-sm opacity-80">连接更多志同道合的朋友</p>
                 </div>
                 
-
+                <div class="card card-hover">
+                    <h2 class="text-lg font-semibold mb-2">社区活动</h2>
+                    <div class="bg-gradient-to-r from-green-50 to-teal-50 p-4 rounded-lg">
+                        <p class="text-sm text-gray-700">加入节点搭建社区，参与更多线上线下活动。</p>
+                    </div>
+                </div>
                 
-                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
+                <div class="card card-hover">
                     <h2 class="text-lg font-semibold mb-2">节点搭建流程</h2>
                     <div class="space-y-3">
                         <div class="flex items-start">
@@ -618,9 +677,7 @@
                     <p class="text-sm opacity-80">了解最新数据趋势</p>
                 </div>
                 
-
-                
-                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
+                <div class="card card-hover">
                     <h2 class="text-lg font-semibold mb-2">发展阶段</h2>
                     <div class="bg-purple-50 p-4 rounded-lg mb-3">
                         <h3 class="font-bold text-purple-800 mb-2">先锋行为划分，看看你在哪一阶段？</h3>
@@ -629,21 +686,21 @@
                     </div>
                     
                     <div class="space-y-2">
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
+                        <div class="bg-white p-3 border border-gray-200 rounded-lg card-hover">
                             <p class="font-semibold text-sm">普通用户</p>
                             <p class="text-xs text-gray-600">2019年 - 手机阶段（使命结束）</p>
                             <p class="text-xs text-gray-600">手机点击</p>
                         </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
+                        <div class="bg-white p-3 border border-gray-200 rounded-lg card-hover">
                             <p class="font-semibold text-sm">Web3</p>
                             <p class="text-xs text-gray-600">2026年 - 派市减产</p>
                             <p class="text-xs text-gray-600">基础操作</p>
                         </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
+                        <div class="bg-white p-3 border border-gray-200 rounded-lg card-hover">
                             <p class="font-semibold text-sm">项目方规划</p>
                             <p class="text-xs text-gray-600">节点阶段（爆发试错时机）</p>
                         </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg">
+                        <div class="bg-white p-3 border border-gray-200 rounded-lg card-hover">
                             <p class="font-semibold text-sm text-yellow-600">生态楷模（如想参与，非参与入股）</p>
                             <p class="text-xs text-gray-600">生态态开发</p>
                         </div>
@@ -653,9 +710,9 @@
             
             <!-- 我的页面 -->
             <div id="profile-page" class="page hidden">
-                <div class="bg-quinary text-white p-4 rounded-lg mb-4">
-                    <h1 class="text-2xl font-bold">个人中心</h1>
-                    <p class="text-sm opacity-80">管理个人信息和设置</p>
+                <div class="bg-gradient-to-r from-yellow-500 to-red-500 text-white p-3 rounded-lg mb-4 flex flex-col items-center justify-center animate-pulse">
+                    <h1 class="text-2xl font-bold text-center">福利中心板块</h1>
+                    <p class="text-sm opacity-80 text-center mt-2">对接的福利生态</p>
                 </div>
             </div>
         </div>
@@ -695,7 +752,9 @@
                 iconBg: "bg-orange-100",
                 iconColor: "text-orange-500",
                 buttonClass: "btn-tertiary",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726306"
+                buttonText: "操作视频",
+                url: "https://www.teltlk.com/#/register?invite=sss444",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726306"
             },
             {
                 name: "Satrpi派链孵化器",
@@ -704,25 +763,9 @@
                 iconBg: "bg-purple-100",
                 iconColor: "text-purple-500",
                 buttonClass: "btn-quaternary",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726270"
-            },
-            {
-                name: "Piday - 派对土地",
-                description: "购买全球虚拟土地",
-                icon: "fa-map",
-                iconBg: "bg-blue-100",
-                iconColor: "text-blue-500",
-                buttonClass: "btn-primary",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769963"
-            },
-            {
-                name: "h - π众筹生态",
-                description: "分布项目应用",
-                icon: "fa-leaf",
-                iconBg: "bg-green-100",
-                iconColor: "text-green-500",
-                buttonClass: "btn-secondary",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769965"
+                buttonText: "操作视频",
+                url: "startpi.app",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726270"
             },
             {
                 name: "hashpi - 哈希派",
@@ -731,7 +774,9 @@
                 iconBg: "bg-blue-100",
                 iconColor: "text-blue-500",
                 buttonClass: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726278"
+                buttonText: "操作视频",
+                url: "hashpi.app",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726278"
             },
             {
                 name: "Pipet - π宠物紫色",
@@ -740,7 +785,20 @@
                 iconBg: "bg-purple-100",
                 iconColor: "text-purple-500",
                 buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726289"
+                buttonText: "操作视频",
+                url: "https://pipet.me/#/pages/login/login?invite=419296",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726289"
+            },
+            {
+                name: "Piday - 派对土地",
+                description: "购买全球虚拟土地",
+                icon: "fa-map",
+                iconBg: "bg-blue-100",
+                iconColor: "text-blue-500",
+                buttonClass: "btn-primary",
+                buttonText: "操作视频",
+                url: "https://piday.world/zh-CN?ic=MGV2PG",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769963"
             },
             {
                 name: "DOPAI多派元宇宙",
@@ -749,7 +807,20 @@
                 iconBg: "bg-blue-100",
                 iconColor: "text-blue-500",
                 buttonClass: "bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769974"
+                buttonText: "操作视频",
+                url: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769974"
+            },
+            {
+                name: "CrowdFundPi众筹",
+                description: "邀请码FiA5y5HE",
+                icon: "fa-leaf",
+                iconBg: "bg-green-100",
+                iconColor: "text-green-500",
+                buttonClass: "btn-secondary",
+                buttonText: "操作视频",
+                url: "https://crowdfundpi.com",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766725"
             },
             {
                 name: "- 月光宝盒",
@@ -758,7 +829,9 @@
                 iconBg: "bg-pink-100",
                 iconColor: "text-pink-500",
                 buttonClass: "bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777570"
+                buttonText: "操作视频",
+                url: "https://openbox.world?referral_code=15536455536",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777570"
             },
             {
                 name: "VCITY- 第五城城市",
@@ -767,7 +840,9 @@
                 iconBg: "bg-teal-100",
                 iconColor: "text-teal-500",
                 buttonClass: "bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766591"
+                buttonText: "操作视频",
+                url: "https://120",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571"
             },
             {
                 name: "PiTools - 工具箱",
@@ -776,7 +851,9 @@
                 iconBg: "bg-gray-100",
                 iconColor: "text-gray-500",
                 buttonClass: "btn-quinary",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=765900"
+                buttonText: "操作视频",
+                url: "https://110",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=776018"
             }
         ];
 
@@ -788,7 +865,9 @@
                 iconBg: "bg-blue-100",
                 iconColor: "text-blue-600",
                 buttonClass: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
-                url: "https://pixinyule333.pages.dev/"
+                buttonText: "进入详情",
+                url: "https://pixinyule333.pages.dev/",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726306"
             },
             {
                 name: "SPACE-派社区生态",
@@ -797,7 +876,9 @@
                 iconBg: "bg-green-100",
                 iconColor: "text-green-600",
                 buttonClass: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors",
-                url: "https://spacepi333.pages.dev/"
+                buttonText: "进入详情",
+                url: "https://spacepi333.pages.dev/",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726270"
             },
             {
                 name: "实名DID-数字凭证",
@@ -806,7 +887,9 @@
                 iconBg: "bg-purple-100",
                 iconColor: "text-purple-600",
                 buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                url: "https://mysticring.jiewai.pro/mysticringapp"
+                buttonText: "操作视频",
+                url: "https://mysticring.jiewai.pro/mysticringapp",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=774485"
             },
             {
                 name: "did -DID商家平台",
@@ -815,7 +898,9 @@
                 iconBg: "bg-pink-100",
                 iconColor: "text-pink-600",
                 buttonClass: "bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors",
-                url: "https://pisocial.network"
+                buttonText: "操作视频",
+                url: "https://119",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=771311"
             },
             {
                 name: "OPA-免费挖矿分红",
@@ -824,7 +909,9 @@
                 iconBg: "bg-orange-100",
                 iconColor: "text-orange-600",
                 buttonClass: "bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors",
-                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766725"
+                buttonText: "操作视频",
+                url: "https://share.feijipan.com/s/Ct24IYSE",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766725"
             },
             {
                 name: "Pi对接中",
@@ -833,7 +920,9 @@
                 iconBg: "bg-teal-100",
                 iconColor: "text-teal-600",
                 buttonClass: "bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors",
-                url: "https://对接中"
+                buttonText: "操作视频",
+                url: "https://对接中",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=771310"
             },
             {
                 name: "Pi对接中2",
@@ -842,7 +931,9 @@
                 iconBg: "bg-red-100",
                 iconColor: "text-red-600",
                 buttonClass: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
-                url: "https://对接中"
+                buttonText: "操作视频",
+                url: "https://对接中",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766591"
             },
             {
                 name: "Pi对接中3",
@@ -851,7 +942,9 @@
                 iconBg: "bg-yellow-100",
                 iconColor: "text-yellow-600",
                 buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                url: "https://对接中"
+                buttonText: "操作视频",
+                url: "https://对接中",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=765900"
             },
             {
                 name: " Pi-APP大全下载",
@@ -860,7 +953,9 @@
                 iconBg: "bg-indigo-100",
                 iconColor: "text-indigo-600",
                 buttonClass: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors",
-                url: "https://share.feijipan.com/s/rB3w9JF3"
+                buttonText: "点击下载",
+                url: "https://share.feijipan.com/s/rB3w9JF3",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726278"
             },
             {
                 name: "加速器下载",
@@ -869,7 +964,9 @@
                 iconBg: "bg-gray-100",
                 iconColor: "text-gray-600",
                 buttonClass: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors",
-                url: "https://share.feijipan.com/s/C84YBszt"
+                buttonText: "点击下载",
+                url: "https://share.feijipan.com/s/C84YBszt",
+                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769963"
             }
         ];
 
@@ -919,7 +1016,7 @@
                                 <p class="text-xs text-gray-500">${app.description}</p>
                             </div>
                         </div>
-                        <button class="${app.buttonClass} text-xs" onclick="window.location.href='${app.url}'">${app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' ? '进入详情' : (app.name === ' Pi-APP大全下载' || app.name === '加速器下载' ? '点击下载' : '操作视频')}</button>
+                        <button class="${app.buttonClass} text-xs" onclick="window.location.href='${(app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' || app.name === ' Pi-APP大全下载' || app.name === '加速器下载') ? app.url : (app.videoUrl || app.url)}'">${app.buttonText || '操作视频'}</button>
                     </div>
                     <div class="flex items-start justify-between bg-gray-50 p-2 rounded">
                         <span class="text-xs text-gray-600 break-all flex-1 mr-2" data-url="${app.url}">${app.url}</span>
@@ -1023,6 +1120,14 @@
                     }
                 });
             });
+            
+            // 音效开关控制
+            const soundToggle = document.getElementById('sound-toggle');
+            if (soundToggle) {
+                soundToggle.addEventListener('change', function() {
+                    soundManager.setEnabled(this.checked);
+                });
+            }
             
             // 页面加载时默认显示第一组应用
             renderAppList(appList1);
@@ -1158,5 +1263,6 @@
             }
         }
     </script>
+
 
 </body></html>
