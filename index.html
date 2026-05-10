@@ -7,71 +7,120 @@
     <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
-        // 音效系统 - 重写为更可靠的版本
-        let audioContext;
-        let soundEnabled = true; // 音效默认开启
-        
-        // 初始化音频上下文
-        function initAudioContext() {
-            try {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    console.log('音频上下文初始化成功');
+                // 音效系统 - 优化版
+        class SoundManager {
+            constructor() {
+                this.audioContext = null;
+                this.soundEnabled = true;
+                this.isInitialized = false;
+                this.initAttempted = false;
+                this.lastPlayTime = 0;
+                this.cooldownPeriod = 100; // 100ms冷却时间，防止快速点击产生噪音
+                console.log('音效管理器初始化');
+            }
+            
+            // 初始化音频上下文
+            init() {
+                if (this.initAttempted) return this.isInitialized;
+                
+                this.initAttempted = true;
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.isInitialized = true;
+                    console.log('🎵 音频上下文初始化成功');
+                    return true;
+                } catch (error) {
+                    console.warn('🎵 音频上下文初始化失败:', error.message);
+                    return false;
+                }
+            }
+            
+            // 确保音频上下文处于活动状态
+            ensureContextActive() {
+                if (!this.audioContext) return false;
+                
+                if (this.audioContext.state === 'suspended') {
+                    try {
+                        this.audioContext.resume();
+                        console.log('🎵 音频上下文已恢复');
+                    } catch (error) {
+                        console.warn('🎵 恢复音频上下文失败:', error.message);
+                        return false;
+                    }
                 }
                 return true;
-            } catch (error) {
-                console.error('音频上下文初始化失败:', error);
-                return false;
             }
-        }
-        
-        // 播放单个音符
-        function playNote(frequency, duration = 0.1) {
-            if (!soundEnabled) return;
             
-            try {
-                if (!initAudioContext()) return;
+            // 播放"叮"的音效
+            playDing() {
+                if (!this.soundEnabled) return;
                 
-                // 如果音频上下文被挂起，恢复它
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
+                // 防止快速点击产生的噪音
+                const now = Date.now();
+                if (now - this.lastPlayTime < this.cooldownPeriod) {
+                    return;
                 }
+                this.lastPlayTime = now;
                 
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.value = frequency;
-                
-                gainNode.gain.value = 0.66; // 音量66%
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + duration);
-                
-                console.log('音符播放成功:', frequency);
-            } catch (error) {
-                console.error('播放音符失败:', error);
+                try {
+                    // 延迟初始化，确保在用户交互时初始化
+                    if (!this.isInitialized) {
+                        if (!this.init()) {
+                            console.warn('🎵 无法初始化音频上下文，跳过播放');
+                            return;
+                        }
+                    }
+                    
+                    if (!this.ensureContextActive()) {
+                        console.warn('🎵 音频上下文不可用，跳过播放');
+                        return;
+                    }
+                    
+                    // 创建音频节点
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    // 配置音效参数
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(880.00, this.audioContext.currentTime); // A5音符
+                    oscillator.frequency.exponentialRampToValueAtTime(800.00, this.audioContext.currentTime + 0.1); // 轻微下降
+                    
+                    // 音量包络
+                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.66, this.audioContext.currentTime + 0.01); // 快速起音
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15); // 平滑衰减
+                    
+                    // 连接节点并播放
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.start(this.audioContext.currentTime);
+                    oscillator.stop(this.audioContext.currentTime + 0.15);
+                    
+                    console.log('🎵 播放"叮"音效');
+                } catch (error) {
+                    console.error('🎵 播放音效失败:', error.message);
+                }
+            }
+            
+            // 启用/禁用音效
+            setEnabled(enabled) {
+                this.soundEnabled = enabled;
+                console.log(`🎵 音效已${enabled ? '启用' : '禁用'}`);
+            }
+            
+            // 获取音效状态
+            isEnabled() {
+                return this.soundEnabled;
             }
         }
         
-        // 播放叮咚音效
-        function playDingDongSound() {
-            if (!soundEnabled) return;
-            
-            console.log('播放叮咚音效');
-            playNote(659.25, 0.08); // E5音符，叮
-            setTimeout(() => {
-                playNote(783.99, 0.12); // G5音符，咚
-            }, 80);
-        }
+        // 创建全局音效管理器实例
+        const soundManager = new SoundManager();
         
-        // 统一的按钮音效函数
-        function playButtonSound() {
-            playDingDongSound();
+        // 便捷的播放函数
+        function playSound() {
+            soundManager.playDing();
         }
 
         tailwind.config = {
@@ -199,7 +248,7 @@
                 
 
                 
-                <div class="card">
+                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
                     <div class="flex space-x-3 mb-3">
                         <button class="bg-white text-black py-1.5 px-3 rounded-lg text-base font-semibold border-2 border-black shadow-lg flex-1 text-center focus:outline-none active:outline-none transition-all duration-300 hover:shadow-xl animate-black-pulse" onclick="renderAppList(appList1)">
                             推荐派应用
@@ -225,7 +274,7 @@
                             </div>
                             <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
                                 <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://telk-pi.com">https://telk-pi.com</span>
-                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://telk-pi.com">
+                                <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://mysticring.jiewai.pro/Share/#/home?trendsId=726306">
                                     <i class="fa fa-copy"></i> 复制
                                 </button>
                             </div>
@@ -361,7 +410,7 @@
                                         <p class="text-xs text-gray-500">NFT应用</p>
                                     </div>
                                 </div>
-                                <button class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-xs">详情</button>
+                                <button class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-xs editing-breathing-bg" onclick="window.location.href='https://mysticring.jiewai.pro/Share/#/home?trendsId=777570'">操作视频</button>
                             </div>
                             <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
                                 <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://piart-nft.art">https://piart-nft.art</span>
@@ -404,7 +453,7 @@
                                 <button class="btn-quinary text-xs">详情</button>
                             </div>
                             <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://pitools.app">https://pitools.app</span>
+                                <span class="text-xs text-gray-600 truncate flex-1 mr-2" data-url="https://对接中p">https://对接中</span>
                                 <button class="copy-btn text-xs text-blue-600 hover:text-blue-800" data-url="https://pitools.app">
                                     <i class="fa fa-copy"></i> 复制
                                 </button>
@@ -418,48 +467,84 @@
             <div id="ecosystem-page" class="page hidden">
                 <div class="bg-gradient-to-r from-red-500 to-yellow-500 text-white p-4 rounded-lg mb-4">
                     <h1 class="text-2xl font-bold">加入社群   TELTLK</h1>
-                    <p class="text-sm opacity-80">PI友刚需，可持续生态。</p>
+                    <p class="text-sm opacity-80">PI友，没有TELTLK怎么办，点击此处下载</p>
                 </div>
                 
-                <div class="card">
-                    <h2 class="text-lg font-semibold mb-2">生态循环</h2>
-                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/27e69c5336a741cda085c9c786cef40d~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202605092340296D57F3A9381698E8DC14&amp;rrcfp=f06b921b&amp;x-expires=1780933308&amp;x-signature=gWcDR45OIu%2FEvPK5Tr4Sglx1fu0%3D" alt="生态系统" class="w-full rounded-lg mb-4">
-                </div>
+
                 
-                <div class="card">
-                    <h2 class="text-lg font-semibold mb-2">联系我们</h2>
-                    <div class="bg-white p-4 border border-gray-200 rounded-lg mb-3">
-                        <p class="font-semibold text-gray-700">生态咨询</p>
+                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
+                    <h2 class="text-lg font-semibold mb-2">派友群聊咨询</h2>
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 border border-blue-100 rounded-lg mb-3">
+                        <p class="font-semibold text-blue-800 text-sm" style="font-size: 16px;">社群顾问</p>
                         <div class="flex justify-between mt-2">
-                            <div>
-                                <p class="text-sm">魏国炳</p>
-                                <p class="text-xs text-gray-500">155 3645 5536</p>
+                            <div class="text-center">
+                                <p class="text-xs font-medium text-gray-700">魏国炳</p>
+                                <p class="text-xs text-blue-600">155 3645 5536</p>
                             </div>
-                            <div>
-                                <p class="text-sm">毕尚阳</p>
-                                <p class="text-xs text-gray-500">153 1363 6709</p>
+                            <div class="text-center">
+                                <p class="text-xs font-medium text-gray-700">毕尚阳</p>
+                                <p class="text-xs text-blue-600">153 1363 6709</p>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">地址：山西省太原万柏林区优山美郡</p>
                     </div>
                 </div>
                 
-                <div class="card">
-                    <h2 class="text-lg font-semibold mb-2">本地社区</h2>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg text-center">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <i class="fa fa-map-marker text-indigo-600 text-xl"></i>
+                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
+                    <h2 class="text-lg font-semibold mb-2">派社群二维码-----teltlk扫码进</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-red-50 to-orange-50 p-4 border border-red-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-red-600">1</div>
                             </div>
-                            <p class="text-sm font-semibold">山西太原</p>
-                            <p class="text-xs text-gray-500">本地社区</p>
+                            <p class="text-sm font-semibold text-gray-700">山西太原总群</p>
                         </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg text-center">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <i class="fa fa-comments text-indigo-600 text-xl"></i>
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-orange-50 to-yellow-50 p-4 border border-orange-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-orange-600">2</div>
                             </div>
-                            <p class="text-sm font-semibold">派信娱乐</p>
-                            <p class="text-xs text-gray-500">生态社群</p>
+                            <p class="text-sm font-semibold text-gray-700">太原派社群2</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-yellow-50 to-green-50 p-4 border border-yellow-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-yellow-600">3</div>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">π节点搭建群</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-green-50 to-teal-50 p-4 border border-green-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-green-600">4</div>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">派信娱乐总群</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-teal-50 to-cyan-50 p-4 border border-teal-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-teal-600">5</div>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">派信股东群</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-cyan-50 to-blue-50 p-4 border border-cyan-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-cyan-600">6</div>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">实名DID群</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 border border-blue-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-blue-600">7</div>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">SPACE派总群</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-4 border border-indigo-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-indigo-600">8</div>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">SPACE股东群</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-4 border border-purple-100 rounded-lg shadow-sm aspect-square flex items-center justify-center mb-2">
+                                <div class="text-4xl font-bold text-purple-600">9</div>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">实时更新</p>
                         </div>
                     </div>
                 </div>
@@ -472,12 +557,9 @@
                     <p class="text-sm opacity-80">连接更多志同道合的朋友</p>
                 </div>
                 
-                <div class="card">
-                    <h2 class="text-lg font-semibold mb-2">社区活动</h2>
-                    <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/4f590c8edb814509a0efd7df06836df1~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202605092340296D57F3A9381698E8DC14&amp;rrcfp=f06b921b&amp;x-expires=1780933298&amp;x-signature=U0tYtOielOLRj%2FzbsCCFAs%2B%2FDyQ%3D" alt="社区活动" class="w-full rounded-lg mb-4">
-                </div>
+
                 
-                <div class="card">
+                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
                     <h2 class="text-lg font-semibold mb-2">节点搭建流程</h2>
                     <div class="space-y-3">
                         <div class="flex items-start">
@@ -538,7 +620,7 @@
                 
 
                 
-                <div class="card">
+                <div class="card relative overflow-hidden" style="animation: breathing-border 1s infinite ease-in-out, breathing-bg-gradient 2s infinite ease-in-out;">
                     <h2 class="text-lg font-semibold mb-2">发展阶段</h2>
                     <div class="bg-purple-50 p-4 rounded-lg mb-3">
                         <h3 class="font-bold text-purple-800 mb-2">先锋行为划分，看看你在哪一阶段？</h3>
@@ -613,7 +695,7 @@
                 iconBg: "bg-orange-100",
                 iconColor: "text-orange-500",
                 buttonClass: "btn-tertiary",
-                url: "https://www.teltlk.com/#/register?invite=sss444"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726306"
             },
             {
                 name: "Satrpi派链孵化器",
@@ -622,7 +704,7 @@
                 iconBg: "bg-purple-100",
                 iconColor: "text-purple-500",
                 buttonClass: "btn-quaternary",
-                url: "startpi.app"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726270"
             },
             {
                 name: "Piday - 派对土地",
@@ -631,16 +713,16 @@
                 iconBg: "bg-blue-100",
                 iconColor: "text-blue-500",
                 buttonClass: "btn-primary",
-                url: "https://piday.world/zh-CN?ic=MGV2PG"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769963"
             },
             {
-                name: "CrowdFundPi众筹",
-                description: "邀请码FiA5y5HE",
+                name: "h - π众筹生态",
+                description: "分布项目应用",
                 icon: "fa-leaf",
                 iconBg: "bg-green-100",
                 iconColor: "text-green-500",
                 buttonClass: "btn-secondary",
-                url: "https://crowdfundpi.com"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769965"
             },
             {
                 name: "hashpi - 哈希派",
@@ -649,7 +731,7 @@
                 iconBg: "bg-blue-100",
                 iconColor: "text-blue-500",
                 buttonClass: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
-                url: "hashpi.app"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726278"
             },
             {
                 name: "Pipet - π宠物紫色",
@@ -658,7 +740,7 @@
                 iconBg: "bg-purple-100",
                 iconColor: "text-purple-500",
                 buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                url: "https://pipet.me/#/pages/login/login?invite=419296"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726289"
             },
             {
                 name: "DOPAI多派元宇宙",
@@ -667,7 +749,7 @@
                 iconBg: "bg-blue-100",
                 iconColor: "text-blue-500",
                 buttonClass: "bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors",
-                url: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769974"
             },
             {
                 name: "- 月光宝盒",
@@ -676,7 +758,7 @@
                 iconBg: "bg-pink-100",
                 iconColor: "text-pink-500",
                 buttonClass: "bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors",
-                url: "https://openbox.world?referral_code=15536455536"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777570"
             },
             {
                 name: "VCITY- 第五城城市",
@@ -685,7 +767,7 @@
                 iconBg: "bg-teal-100",
                 iconColor: "text-teal-500",
                 buttonClass: "bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors",
-                url: "https://worldpi-community.com"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766591"
             },
             {
                 name: "PiTools - 工具箱",
@@ -694,7 +776,7 @@
                 iconBg: "bg-gray-100",
                 iconColor: "text-gray-500",
                 buttonClass: "btn-quinary",
-                url: "https://pitools.app"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=765900"
             }
         ];
 
@@ -742,34 +824,34 @@
                 iconBg: "bg-orange-100",
                 iconColor: "text-orange-600",
                 buttonClass: "bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors",
-                url: "https://share.feijipan.com/s/Ct24IYSE"
+                url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766725"
             },
             {
-                name: "PiLearn - 派学习",
-                description: "教育应用",
+                name: "Pi对接中",
+                description: "Pi对接中",
                 icon: "fa-graduation-cap",
                 iconBg: "bg-teal-100",
                 iconColor: "text-teal-600",
                 buttonClass: "bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors",
-                url: "https://pilearn.online"
+                url: "https://对接中"
             },
             {
-                name: "PiNew - 派新闻",
-                description: "NFT",
+                name: "Pi对接中2",
+                description: "Pi对接中2",
                 icon: "fa-newspaper-o",
                 iconBg: "bg-red-100",
                 iconColor: "text-red-600",
                 buttonClass: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
-                url: "https://pinews.live"
+                url: "https://对接中"
             },
             {
-                name: "PiVote - 派投票",
-                description: "治理应用",
+                name: "Pi对接中3",
+                description: "Pi对接中3",
                 icon: "fa-vote-yea",
                 iconBg: "bg-yellow-100",
                 iconColor: "text-yellow-600",
                 buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                url: "https://pivote.io"
+                url: "https://对接中"
             },
             {
                 name: " Pi-APP大全下载",
@@ -777,8 +859,8 @@
                 icon: "fa-cloud",
                 iconBg: "bg-indigo-100",
                 iconColor: "text-indigo-600",
-                buttonClass: "bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors",
-                url: "https://share.feijipan.com/s/rB3w9JF3e"
+                buttonClass: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors",
+                url: "https://share.feijipan.com/s/rB3w9JF3"
             },
             {
                 name: "加速器下载",
@@ -786,7 +868,7 @@
                 icon: "fa-credit-card",
                 iconBg: "bg-gray-100",
                 iconColor: "text-gray-600",
-                buttonClass: "bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors",
+                buttonClass: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors",
                 url: "https://share.feijipan.com/s/C84YBszt"
             }
         ];
@@ -837,7 +919,7 @@
                                 <p class="text-xs text-gray-500">${app.description}</p>
                             </div>
                         </div>
-                        <button class="${app.buttonClass} text-xs" onclick="playButtonSound(); window.location.href='${app.url}'">${app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' ? '进入详情' : '操作视频'}</button>
+                        <button class="${app.buttonClass} text-xs" onclick="window.location.href='${app.url}'">${app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' ? '进入详情' : (app.name === ' Pi-APP大全下载' || app.name === '加速器下载' ? '点击下载' : '操作视频')}</button>
                     </div>
                     <div class="flex items-start justify-between bg-gray-50 p-2 rounded">
                         <span class="text-xs text-gray-600 break-all flex-1 mr-2" data-url="${app.url}">${app.url}</span>
@@ -880,6 +962,48 @@
 
         // 页面切换功能和初始化
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Web3生态应用加载完成');
+            
+            // 初始化音频上下文（在用户首次交互时）
+            const initAudioOnFirstInteraction = function() {
+                if (soundManager.init()) {
+                    console.log('🎵 用户首次交互，音频上下文初始化成功');
+                    // 移除所有初始化监听器
+                    document.removeEventListener('click', initAudioOnFirstInteraction);
+                    document.removeEventListener('touchstart', initAudioOnFirstInteraction);
+                    document.removeEventListener('keydown', initAudioOnFirstInteraction);
+                }
+            };
+            
+            // 添加首次交互监听器
+            document.addEventListener('click', initAudioOnFirstInteraction, { once: true });
+            document.addEventListener('touchstart', initAudioOnFirstInteraction, { once: true });
+            document.addEventListener('keydown', initAudioOnFirstInteraction, { once: true });
+            
+            // 全局音效事件委托
+            document.addEventListener('click', function(e) {
+                // 检查是否点击了可交互元素
+                const isInteractiveElement = 
+                    e.target.tagName === 'BUTTON' || 
+                    e.target.tagName === 'A' || 
+                    e.target.closest('.nav-item') ||
+                    e.target.closest('.copy-btn') ||
+                    e.target.hasAttribute('onclick');
+                
+                if (isInteractiveElement) {
+                    // 防止事件冒泡导致重复播放
+                    if (!e.target.dataset.soundPlayed) {
+                        playSound();
+                        e.target.dataset.soundPlayed = 'true';
+                        
+                        // 清除标记，允许下次点击播放
+                        setTimeout(() => {
+                            delete e.target.dataset.soundPlayed;
+                        }, 100);
+                    }
+                }
+            }, { capture: true });
+            
             const navItems = document.querySelectorAll('.nav-item');
             const pages = document.querySelectorAll('.page');
             
@@ -893,7 +1017,10 @@
                     // 添加当前活动状态
                     this.classList.add('active');
                     const targetPage = document.getElementById(this.dataset.page);
-                    targetPage.classList.remove('hidden');
+                    if (targetPage) {
+                        targetPage.classList.remove('hidden');
+                        console.log(`📱 切换到页面: ${targetPage.id}`);
+                    }
                 });
             });
             
@@ -904,6 +1031,8 @@
             startEventCountdown();
             startAppCountdowns();
             startEntertainmentCardCountdown();
+            
+            console.log('✅ 应用初始化完成，音效系统已优化');
         });
 
         // 活动倒计时功能
