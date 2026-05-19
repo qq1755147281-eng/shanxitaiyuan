@@ -1,244 +1,24 @@
 <html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web3生态应用</title>
-    <!-- Tailwind CSS v3 -->
+    <title>3D旋转正方体</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.140.1/build/three.min.js"></script>
     <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="flex flex-col items-center min-h-screen text-white">
+    <audio id="click-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3" type="audio/mpeg">
+    </audio>
     <script>
-        // 高级音效系统
-        class SoundManager {
-            constructor() {
-                this.audioContext = null;
-                this.soundEnabled = true;
-                this.isInitialized = false;
-                this.initAttempted = false;
-                this.lastPlayTime = 0;
-                this.cooldownPeriod = 100; // 100ms冷却时间，防止快速点击产生噪音
-                this.sounds = {};
-                console.log('🎵 高级音效管理器初始化');
-            }
-            
-            // 初始化音频上下文
-            init() {
-                if (this.initAttempted) return this.isInitialized;
-                
-                this.initAttempted = true;
-                try {
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    this.isInitialized = true;
-                    console.log('🎵 音频上下文初始化成功');
-                    return true;
-                } catch (error) {
-                    console.warn('🎵 音频上下文初始化失败:', error.message);
-                    return false;
-                }
-            }
-            
-            // 确保音频上下文处于活动状态
-            ensureContextActive() {
-                if (!this.audioContext) return false;
-                
-                if (this.audioContext.state === 'suspended') {
-                    try {
-                        this.audioContext.resume();
-                        console.log('🎵 音频上下文已恢复');
-                    } catch (error) {
-                        console.warn('🎵 恢复音频上下文失败:', error.message);
-                        return false;
-                    }
-                }
-                return true;
-            }
-            
-            // 播放"叮"的音效
-            playDing() {
-                this.playSound('ding');
-            }
-            
-            // 播放点击音效
-            playClick() {
-                this.playSound('click');
-            }
-            
-            // 播放成功音效
-            playSuccess() {
-                this.playSound('success');
-            }
-            
-            // 播放页面切换音效
-            playPageSwitch() {
-                this.playSound('pageSwitch');
-            }
-            
-            // 通用音效播放函数
-            playSound(type) {
-                if (!this.soundEnabled) return;
-                
-                // 防止快速点击产生的噪音
-                const now = Date.now();
-                if (now - this.lastPlayTime < this.cooldownPeriod) {
-                    return;
-                }
-                this.lastPlayTime = now;
-                
-                try {
-                    // 延迟初始化，确保在用户交互时初始化
-                    if (!this.isInitialized) {
-                        if (!this.init()) {
-                            console.warn('🎵 无法初始化音频上下文，跳过播放');
-                            return;
-                        }
-                    }
-                    
-                    if (!this.ensureContextActive()) {
-                        console.warn('🎵 音频上下文不可用，跳过播放');
-                        return;
-                    }
-                    
-                    // 创建音频节点
-                    const oscillator = this.audioContext.createOscillator();
-                    const gainNode = this.audioContext.createGain();
-                    
-                    // 根据音效类型配置参数
-                    switch (type) {
-                        case 'ding':
-                            oscillator.type = 'sine';
-                            oscillator.frequency.setValueAtTime(880.00, this.audioContext.currentTime); // A5音符
-                            oscillator.frequency.exponentialRampToValueAtTime(800.00, this.audioContext.currentTime + 0.1);
-                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                            gainNode.gain.linearRampToValueAtTime(0.66, this.audioContext.currentTime + 0.01);
-                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15);
-                            break;
-                            
-                        case 'click':
-                            oscillator.type = 'square';
-                            oscillator.frequency.setValueAtTime(1200.00, this.audioContext.currentTime);
-                            oscillator.frequency.exponentialRampToValueAtTime(600.00, this.audioContext.currentTime + 0.05);
-                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                            gainNode.gain.linearRampToValueAtTime(0.5, this.audioContext.currentTime + 0.005);
-                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.08);
-                            break;
-                            
-                        case 'success':
-                            oscillator.type = 'sine';
-                            oscillator.frequency.setValueAtTime(523.25, this.audioContext.currentTime); // C5
-                            oscillator.frequency.setValueAtTime(659.25, this.audioContext.currentTime + 0.05); // E5
-                            oscillator.frequency.setValueAtTime(783.99, this.audioContext.currentTime + 0.1); // G5
-                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                            gainNode.gain.linearRampToValueAtTime(0.6, this.audioContext.currentTime + 0.01);
-                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.3);
-                            break;
-                            
-                        case 'pageSwitch':
-                            oscillator.type = 'sawtooth';
-                            oscillator.frequency.setValueAtTime(200.00, this.audioContext.currentTime);
-                            oscillator.frequency.exponentialRampToValueAtTime(400.00, this.audioContext.currentTime + 0.2);
-                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                            gainNode.gain.linearRampToValueAtTime(0.4, this.audioContext.currentTime + 0.01);
-                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.2);
-                            break;
-                            
-                        default:
-                            oscillator.type = 'sine';
-                            oscillator.frequency.setValueAtTime(440.00, this.audioContext.currentTime);
-                            gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
-                    }
-                    
-                    // 连接节点并播放
-                    oscillator.connect(gainNode);
-                    gainNode.connect(this.audioContext.destination);
-                    
-                    const duration = type === 'success' ? 0.3 : (type === 'pageSwitch' ? 0.2 : 0.15);
-                    oscillator.start(this.audioContext.currentTime);
-                    oscillator.stop(this.audioContext.currentTime + duration);
-                    
-                    console.log(`🎵 播放${type}音效`);
-                } catch (error) {
-                    console.error('🎵 播放音效失败:', error.message);
-                }
-            }
-            
-            // 启用/禁用音效
-            setEnabled(enabled) {
-                this.soundEnabled = enabled;
-                console.log(`🎵 音效已${enabled ? '启用' : '禁用'}`);
-                
-                // 显示音效状态提示
-                const statusText = enabled ? '音效已开启' : '音效已关闭';
-                this.showToast(statusText, enabled ? 'bg-green-500' : 'bg-gray-500');
-            }
-            
-            // 获取音效状态
-            isEnabled() {
-                return this.soundEnabled;
-            }
-            
-            // 显示提示消息
-            showToast(message, bgColor = 'bg-blue-500') {
-                // 移除已存在的toast
-                const existingToast = document.querySelector('.toast-notification');
-                if (existingToast) {
-                    existingToast.remove();
-                }
-                
-                // 创建新的toast
-                const toast = document.createElement('div');
-                toast.className = `toast-notification fixed top-4 right-4 ${bgColor} text-white px-4 py-2 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
-                toast.textContent = message;
-                document.body.appendChild(toast);
-                
-                // 显示toast
-                setTimeout(() => {
-                    toast.classList.remove('translate-x-full');
-                }, 100);
-                
-                // 3秒后隐藏toast
-                setTimeout(() => {
-                    toast.classList.add('translate-x-full');
-                    setTimeout(() => {
-                        if (toast.parentNode) {
-                            toast.parentNode.removeChild(toast);
-                        }
-                    }, 300);
-                }, 3000);
-            }
-        }
-        
-        // 创建全局音效管理器实例
-        const soundManager = new SoundManager();
-        
-        // 便捷的播放函数
-        function playSound(type = 'ding') {
-            switch (type) {
-                case 'click':
-                    soundManager.playClick();
-                    break;
-                case 'success':
-                    soundManager.playSuccess();
-                    break;
-                case 'pageSwitch':
-                    soundManager.playPageSwitch();
-                    break;
-                default:
-                    soundManager.playDing();
-            }
-        }
-
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#1E40AF', // 蓝色主题
-                        secondary: '#15803D', // 绿色主题
-                        tertiary: '#EA580C', // 橙色主题
-                        quaternary: '#7E22CE', // 紫色主题
-                        quinary: '#64748B', // 灰色主题
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        'blue-custom': '#1E40AF',
                     }
                 }
             }
@@ -246,1022 +26,988 @@
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
-            .content-auto {
-                content-visibility: auto;
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
             }
-            .tab-active {
-                @apply text-blue-600 border-b-2 border-blue-600;
+            .btn-hover {
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+                animation: glow 2s infinite alternate;
             }
-            .btn-primary {
-                @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
-            }
-            .btn-secondary {
-                @apply bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
-            }
-            .btn-tertiary {
-                @apply bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
-            }
-            .btn-quaternary {
-                @apply bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
-            }
-            .btn-quinary {
-                @apply bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-lg;
-            }
-            .card {
-                @apply bg-white rounded-xl shadow-md p-4 mb-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
-            }
-            .card-hover {
-                @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:brightness-105;
-            }
-            .input-field {
-                @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300;
-            }
-            .page-container {
-                @apply fixed inset-0 flex flex-col bg-gray-100;
-            }
-            .content-container {
-                @apply flex-1 overflow-y-auto p-4;
-            }
-            .bottom-nav {
-                @apply bg-white border-t border-gray-200 flex justify-around items-center h-16;
-            }
-            .nav-item {
-                @apply flex flex-col items-center justify-center flex-1 p-2 text-gray-500 transition-all duration-300 cursor-pointer;
-            }
-            .nav-item.active {
-                @apply text-blue-600;
-            }
-            .nav-item:hover {
-                @apply text-blue-500 transform scale-105;
-            }
-            .nav-icon {
-                @apply text-xl mb-1;
-            }
-            .nav-label {
-                @apply text-xs;
-            }
-            .page {
-                @apply transition-all duration-500 ease-in-out;
-            }
-            .page.hidden {
-                @apply opacity-0 translate-x-full;
-            }
-            .page.active {
-                @apply opacity-100 translate-x-0;
-            }
-            .btn-glow {
-                @apply relative overflow-hidden;
-            }
-            .btn-glow::after {
+            .btn-hover::before {
                 content: '';
-                @apply absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 transition-opacity duration-700 -translate-x-full;
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(100, 149, 237, 0.3), transparent);
+                transition: all 0.6s ease;
             }
-            .btn-glow:hover::after {
-                @apply opacity-20 translate-x-full;
+            .btn-hover:hover::before {
+                left: 100%;
             }
-            .glass-effect {
-                @apply bg-white bg-opacity-80 backdrop-blur-md;
+            .btn-hover:hover {
+                transform: translateY(-2px) scale(1.02);
+                box-shadow: 0 0 20px rgba(100, 149, 237, 0.8), 0 0 40px rgba(100, 149, 237, 0.6);
+                border-color: #87CEFA;
             }
-            .text-gradient {
-                @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
+            .btn-active {
+                transform: translateY(0);
+                animation: brightGlow 0.5s ease;
+                box-shadow: 0 0 30px rgba(173, 216, 230, 0.9), 0 0 60px rgba(173, 216, 230, 0.7), 0 0 90px rgba(173, 216, 230, 0.5);
+                border-color: #FFFFFF;
             }
-            .bg-gradient-primary {
-                @apply bg-gradient-to-r from-blue-500 to-purple-600;
-            }
-            .bg-gradient-secondary {
-                @apply bg-gradient-to-r from-green-500 to-teal-600;
-            }
-            .bg-gradient-tertiary {
-                @apply bg-gradient-to-r from-orange-500 to-red-600;
-            }
-            .breathing-animation {
-                animation: breathing 2s infinite ease-in-out;
-            }
-            @keyframes breathing {
-                0%, 100% {
-                    transform: scale(1);
+            @keyframes glow {
+                from {
+                    box-shadow: 0 0 10px rgba(100, 149, 237, 0.5), 0 0 20px rgba(100, 149, 237, 0.3);
+                    border-color: #6495ED;
                 }
-                50% {
-                    transform: scale(1.02);
-                }
-            }
-            .pulse-animation {
-                animation: pulse 2s infinite ease-in-out;
-            }
-            @keyframes pulse {
-                0%, 100% {
-                    opacity: 1;
-                }
-                50% {
-                    opacity: 0.8;
+                to {
+                    box-shadow: 0 0 15px rgba(173, 216, 230, 0.6), 0 0 30px rgba(173, 216, 230, 0.4);
+                    border-color: #87CEFA;
                 }
             }
-            .float-animation {
-                animation: float 3s infinite ease-in-out;
-            }
-            @keyframes float {
-                0%, 100% {
-                    transform: translateY(0);
-                }
-                50% {
-                    transform: translateY(-5px);
-                }
-            }
-            .shimmer {
-                background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-                background-size: 200% 100%;
-                animation: shimmer 2s infinite;
-            }
-            @keyframes shimmer {
+            @keyframes brightGlow {
                 0% {
-                    background-position: -200% 0;
+                    box-shadow: 0 0 15px rgba(173, 216, 230, 0.6), 0 0 30px rgba(173, 216, 230, 0.4);
+                }
+                50% {
+                    box-shadow: 0 0 40px rgba(255, 255, 255, 0.9), 0 0 80px rgba(255, 255, 255, 0.7), 0 0 120px rgba(255, 255, 255, 0.5);
+                    border-color: #FFFFFF;
                 }
                 100% {
-                    background-position: 200% 0;
+                    box-shadow: 0 0 20px rgba(173, 216, 230, 0.8), 0 0 40px rgba(173, 216, 230, 0.6);
+                    border-color: #87CEFA;
                 }
             }
         }
     </style>
-</head>
-<body class="font-sans">
-    <div class="page-container">
-        <!-- 内容区域 -->
-        <div class="content-container">
-            <!-- 首页 -->
-            <div id="home-page" class="page active">
-                <!-- 山西太原派生态社区聚会 - 高级卡片 -->
-                <div class="rounded-xl shadow-lg overflow-hidden mb-4 border border-gray-200">
-                    <!-- 绿色标题卡片 -->
-                    <div class="bg-gradient-to-r from-green-600 to-green-700 text-white p-3">
-                        <h1 class="text-base font-bold">派生态 全球Web3超级入口</h1>
-                        <p class="text-xs opacity-90">一站，派生态最新资讯，抢先看！</p>
-                    </div>
-                    
-                    <!-- 紫色活动标题卡片 -->
-                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-2 mt-2">
-                        <h2 class="text-xs font-bold text-center" style="font-size: 16px;">山西太原派生态社区 # 线下聚会</h2>
-                    </div>
-                    
-                    <!-- 黄色倒计时卡片 -->
-                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 p-2">
-                        <div class="flex justify-center items-center space-x-2">
-                            <div class="bg-white text-black rounded-lg px-2 py-1 text-center flex items-center">
-                                <span id="event-days" class="text-sm font-bold">00</span>
-                                <span class="text-xs ml-1">天</span>
-                            </div>
-                            <div class="bg-white text-black rounded-lg px-2 py-1 text-center flex items-center">
-                                <span id="event-hours" class="text-sm font-bold">00</span>
-                                <span class="text-xs ml-1">时</span>
-                            </div>
-                            <div class="bg-white text-black rounded-lg px-2 py-1 text-center flex items-center">
-                                <span id="event-minutes" class="text-sm font-bold">00</span>
-                                <span class="text-xs ml-1">分</span>
-                            </div>
-                            <div class="bg-white text-black rounded-lg px-2 py-1 text-center flex items-center">
-                                <span id="event-seconds" class="text-sm font-bold">00</span>
-                                <span class="text-xs ml-1">秒</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 白色活动信息卡片 -->
-                    <div class="bg-white p-2">
-                        <p class="font-semibold text-gray-800 text-xs">2026年5月12日 14:30</p>
-                        <p class="text-xs text-gray-600">毕向阳：155 1363 6709   ---  魏国炳：  155 3645 5536</p>
-                        
-                        <p class="text-xs text-gray-600 leading-relaxed">地址：山西省太原市和平北路营村优山美郡17号楼<br>
-                                  2单元负1层0102号</p>
-                    </div>
-                </div>
-                
-                <div class="card card-hover">
-                    <div class="flex space-x-3 mb-3">
-                        <button class="bg-white text-black py-1.5 px-3 rounded-lg text-base font-semibold border-2 border-black shadow-lg flex-1 text-center focus:outline-none active:outline-none transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-95 btn-glow" onclick="renderAppList(appList1)">
-                            推荐派应用
-                        </button>
-                        <button class="bg-white text-black py-1.5 px-3 rounded-lg text-base font-semibold border-2 border-black shadow-lg flex-1 text-center focus:outline-none active:outline-none transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-95 btn-glow" onclick="renderAppList(appList2)">
-                            生态对接
-                        </button>
-                    </div>
+    <style>
+        body {
+            background-color: #000000;
+            overflow-x: hidden;
+        }
+        #canvas-container {
+            width: 60vw;
+            height: 60vw;
+            max-width: 400px;
+            max-height: 400px;
+        }
+    </style>
 
-                    <div id="app-list" class="space-y-3">
-                        <!-- 应用列表将通过JavaScript动态生成 -->
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 生态页面 -->
-            <div id="ecosystem-page" class="page hidden">
-                <a href="https://www.teltlk.com/#/register?invite=sss444" class="block bg-gradient-to-r from-red-500 to-yellow-500 text-white p-4 rounded-lg mb-4 text-center hover:opacity-90 transition-opacity">
-                    <h1 class="text-2xl font-bold">加入社群   TELTLK</h1>
-                    <p class="text-sm opacity-80" style="font-weight: bold; font-size: 16px;">PI友没有teltlk怎么办？点击此处下载</p>
-                </a>
-                
 
-                
-                <div class="card card-hover overflow-hidden p-2">
-                    <div class="bg-gradient-to-r from-indigo-600 to-blue-600 p-2 text-white rounded-lg">
-                        <h2 class="text-base font-bold">群聊联络处。。咨询</h2>
-                    </div>
-                    <div class="p-2">
-                        <div class="flex justify-between text-center">
-                            <div class="flex-1">
-                                <p class="text-xs font-semibold">魏国炳</p>
-                                <p class="text-xs text-gray-500">155 3645 5536</p>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-xs font-semibold">毕尚阳</p>
-                                <p class="text-xs text-gray-500">153 1363 6709</p>
-                            </div>
-                        </div>
-                    </div>
+    <!-- 标题区域 -->
+    <header class="w-full text-center pt-16 pb-8">
+        <h1 class="text-4xl font-bold mb-2 text-shadow" style="font-family: 'Kaiti', 'STKaiti', 'KaiTi', sans-serif;">股东查询器</h1>
+        <p class="text-xl opacity-80" style="font-size: 18px; margin-top: 12px; font-family: 'Kaiti', 'STKaiti', 'KaiTi', sans-serif;">先锋的投入开启确权模式</p>
+    </header>
+
+    <!-- 3D正方体区域 -->
+    <main class="w-full flex justify-center my-8">
+        <div id="canvas-container" class="relative"></div>
+    </main>
+
+    <!-- 按钮区域 -->
+    <footer class="w-full px-6 pb-10 space-y-4 flex flex-col items-center">
+        <button id="shareholder-btn" class="w-[80%] py-3 bg-gradient-to-r from-gray-900 to-black border-2 border-blue-custom text-white rounded-md btn-hover font-medium tracking-wide text-shadow">股东进度</button>
+        <button id="system-btn" class="w-[80%] py-3 bg-gradient-to-r from-gray-900 to-black border-2 border-blue-custom text-white rounded-md btn-hover font-medium tracking-wide text-shadow">系统介绍</button>
+        <button id="contact-btn" class="w-[80%] py-3 bg-gradient-to-r from-gray-900 to-black border-2 border-blue-custom text-white rounded-md btn-hover font-medium tracking-wide text-shadow">联系我们</button>
+    </footer>
+
+    <!-- 模态框 - 股东进度 -->
+    <div id="shareholder-modal" class="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4 hidden">
+        <div class="bg-gradient-to-b from-blue-800 to-blue-900 rounded-xl shadow-2xl w-[95%] max-h-[90vh] overflow-hidden pb-4 mt-[-20px]">
+            <div class="flex justify-between items-center p-3 border-b border-blue-700">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">股东进度查询</h2>
+                    <p class="text-blue-300 text-sm">详情</p>
                 </div>
-                
-                <div class="card card-hover">
-                    <h2 class="text-lg font-semibold mb-2">派友社群---TELTLK扫码</h2>
-                    <div class="grid grid-cols-3 gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                                    <i class="fa fa-map-marker text-indigo-600 text-3xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">山西太原</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                                    <i class="fa fa-comments text-indigo-600 text-3xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">派信娱乐</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-teal-100 rounded-full flex items-center justify-center">
-                                    <i class="fa fa-comments-o text-green-600 text-3xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">穷聊</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center">
-                                    <span class="text-blue-600 font-bold text-3xl">1</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊1</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
-                                    <span class="text-green-600 font-bold text-3xl">2</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊2</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center">
-                                    <span class="text-purple-600 font-bold text-3xl">3</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊3</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center">
-                                    <span class="text-orange-600 font-bold text-3xl">4</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊4</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
-                                    <span class="text-red-600 font-bold text-3xl">5</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊5</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center">
-                                    <span class="text-teal-600 font-bold text-3xl">6</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊6</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center">
-                                    <span class="text-indigo-600 font-bold text-3xl">7</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊7</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center">
-                                    <span class="text-pink-600 font-bold text-3xl">8</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊8</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white p-3 border border-black rounded-lg flex items-center justify-center">
-                                <div class="w-20 h-20 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-full flex items-center justify-center">
-                                    <span class="text-yellow-600 font-bold text-3xl">9</span>
-                                </div>
-                            </div>
-                            <p class="text-base font-semibold mt-2">群聊9</p>
-                            <p class="text-sm text-gray-500">
-</p>
-                        </div>
-                    </div>
-                </div>
+                <button class="close-modal text-white text-2xl">×</button>
             </div>
-            
-            <!-- 社区页面 -->
-            <div id="community-page" class="page hidden">
-                <div class="bg-secondary text-white p-4 rounded-lg mb-4">
-                    <h1 class="text-2xl font-bold">加入节点搭建</h1>
-                    <p class="text-sm opacity-80">连接更多志同道合的朋友</p>
+            <div class="p-3 text-white">
+                
+                <div class="overflow-x-auto mb-4">
+                    <table class="w-full border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-blue-700">
+                                <th class="border border-blue-600 px-1 py-1 text-center w-[15%]">序列</th>
+                                <th class="border border-blue-600 px-2 py-1 text-center w-[35%]">姓名</th>
+                                <th class="border border-blue-600 px-2 py-1 text-center w-[30%]">时间</th>
+                                <th class="border border-blue-600 px-1 py-1 text-center w-[15%]">股份</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-blue-800/50">
+                                <td class="border border-blue-600 px-2 py-1 text-center">1</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">粉丝</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">2026-01-29</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">1</td>
+                            </tr>
+                            <tr class="bg-blue-800/30">
+                                <td class="border border-blue-600 px-2 py-1 text-center">2</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">李四</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">01-18</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">1,200</td>
+                            </tr>
+                            <tr class="bg-blue-800/50">
+                                <td class="border border-blue-600 px-2 py-1 text-center">3</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">王五</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">01-20</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">2,000</td>
+                            </tr>
+                            <tr class="bg-blue-800/30">
+                                <td class="border border-blue-600 px-2 py-1 text-center">4</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">赵六</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">01-22</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">800</td>
+                            </tr>
+                            <tr class="bg-blue-800/50">
+                                <td class="border border-blue-600 px-2 py-1 text-center">5</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">孙七</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">01-25</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">1,000</td>
+                            </tr>
+                            <tr class="bg-blue-800/30">
+                                <td class="border border-blue-600 px-2 py-1 text-center">6</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">周八</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">01-28</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">1,300</td>
+                            </tr>
+                            <tr class="bg-blue-800/50">
+                                <td class="border border-blue-600 px-2 py-1 text-center">7</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">吴九</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">02-01</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">900</td>
+                            </tr>
+                            <tr class="bg-blue-800/30">
+                                <td class="border border-blue-600 px-2 py-1 text-center">8</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">郑十</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">02-05</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">1,100</td>
+                            </tr>
+                            <tr class="bg-blue-800/50">
+                                <td class="border border-blue-600 px-2 py-1 text-center">9</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">刘十一</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">02-08</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">700</td>
+                            </tr>
+                            <tr class="bg-blue-800/30">
+                                <td class="border border-blue-600 px-2 py-1 text-center">10</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">陈十二</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">02-10</td>
+                                <td class="border border-blue-600 px-2 py-1 text-center">1,400</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 
-                <div class="card card-hover">
-                    <h2 class="text-lg font-semibold mb-2">社区活动</h2>
-                    <div class="bg-gradient-to-r from-green-50 to-teal-50 p-4 rounded-lg">
-                        <p class="text-sm text-gray-700">加入节点搭建社区，参与更多线上线下活动。</p>
-                    </div>
-                </div>
-                
-                <div class="card card-hover">
-                    <h2 class="text-lg font-semibold mb-2">节点搭建流程</h2>
-                    <div class="space-y-3">
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-1">
-                                <i class="fa fa-check text-green-600 text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-sm">准备阶段</p>
-                                <p class="text-xs text-gray-600">准备服务器和网络环境</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-1">
-                                <i class="fa fa-check text-green-600 text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-sm">安装节点软件</p>
-                                <p class="text-xs text-gray-600">下载并安装最新版本的节点软件</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-1">
-                                <i class="fa fa-check text-green-600 text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-sm">配置节点信息</p>
-                                <p class="text-xs text-gray-600">按照指引完成节点配置</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-1">
-                                <i class="fa fa-check text-green-600 text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-sm">加入节点网络</p>
-                                <p class="text-xs text-gray-600">启动节点并连接到生态网络</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-1">
-                                <i class="fa fa-check text-green-600 text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-sm">开始获得奖励</p>
-                                <p class="text-xs text-gray-600">节点正常运行后，即可开始获得奖励</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 数据页面 -->
-            <div id="data-page" class="page hidden">
-                <div class="bg-quaternary text-white p-4 rounded-lg mb-4">
-                    <h1 class="text-2xl font-bold">数据分析</h1>
-                    <p class="text-sm opacity-80">了解最新数据趋势</p>
-                </div>
-                
-                <div class="card card-hover">
-                    <h2 class="text-lg font-semibold mb-2">发展阶段</h2>
-                    <div class="bg-purple-50 p-4 rounded-lg mb-3">
-                        <h3 class="font-bold text-purple-800 mb-2">先锋行为划分，看看你在哪一阶段？</h3>
-                        <p class="text-sm text-purple-700 mb-1">先锋不上千万 —— 生态都难千万 线上采样讲究</p>
-                        <p class="text-sm text-purple-700">我 —— 绝知此事要躬行</p>
-                    </div>
-                    
-                    <div class="space-y-2">
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg card-hover">
-                            <p class="font-semibold text-sm">普通用户</p>
-                            <p class="text-xs text-gray-600">2019年 - 手机阶段（使命结束）</p>
-                            <p class="text-xs text-gray-600">手机点击</p>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg card-hover">
-                            <p class="font-semibold text-sm">Web3</p>
-                            <p class="text-xs text-gray-600">2026年 - 派市减产</p>
-                            <p class="text-xs text-gray-600">基础操作</p>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg card-hover">
-                            <p class="font-semibold text-sm">项目方规划</p>
-                            <p class="text-xs text-gray-600">节点阶段（爆发试错时机）</p>
-                        </div>
-                        <div class="bg-white p-3 border border-gray-200 rounded-lg card-hover">
-                            <p class="font-semibold text-sm text-yellow-600">生态楷模（如想参与，非参与入股）</p>
-                            <p class="text-xs text-gray-600">生态态开发</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 我的页面 -->
-            <div id="profile-page" class="page hidden">
-                <div class="bg-gradient-to-r from-yellow-500 to-red-500 text-white p-3 rounded-lg mb-4 flex flex-col items-center justify-center animate-pulse">
-                    <h1 class="text-2xl font-bold text-center">福利中心板块</h1>
-                    <p class="text-sm opacity-80 text-center mt-2">对接的福利生态</p>
+                <p class="text-center text-blue-300 font-semibold mt-6" style="font-size: 20px;">当前股东进度为11%</p>
+
+                <!-- 左右按钮 -->
+                <div class="flex justify-center items-center space-x-4 mt-6">
+                    <button id="prev-page" class="px-4 py-1 bg-blue-800 rounded-full text-sm flex items-center justify-center">
+                        <i class="fa fa-chevron-left mr-1"></i> 上一页
+                    </button>
+                    <span class="text-xs text-blue-300">第 1/100 页</span>
+                    <button id="next-page" class="px-4 py-1 bg-blue-800 rounded-full text-sm flex items-center justify-center">
+                        下一页 <i class="fa fa-chevron-right ml-1"></i>
+                    </button>
                 </div>
             </div>
         </div>
-        
-        <!-- 底部导航 -->
-        <div class="bottom-nav">
-            <div class="nav-item active" data-page="home-page">
-                <i class="fa fa-home nav-icon"></i>
-                <span class="nav-label">首页</span>
+    </div>
+
+    <!-- 模态框 - 软系统介绍 -->
+    <div id="system-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-gradient-to-b from-blue-800 to-blue-900 rounded-xl shadow-2xl w-[85%] max-h-[50vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-3 border-b border-blue-700">
+                <h2 class="text-2xl font-bold text-white animate-pulse-yellow-glow">软系统介绍</h2>
+                <button class="close-modal text-white text-2xl">×</button>
             </div>
-            <div class="nav-item" data-page="ecosystem-page">
-                <i class="fa fa-comments nav-icon"></i>
-                <span class="nav-label">加入群聊</span>
+            <div class="p-4 text-white text-sm">
+                <p class="mb-3">派信娱乐生态的股东查询系统</p>
+                <h3 class="text-base font-semibold mb-2">核心功能</h3>
+                <ul class="list-disc pl-5 mb-3 space-y-1 text-xs">
+                    <li>实时公开股东数据</li>
+                    <li>及时了解生态进度</li>
+                    <li>搭建股东信任体系</li>
+                    <li>入股投资分析</li>
+                    <li>开放股东自治模式</li>
+                </ul>
+                <h3 class="text-base font-semibold mb-2">系统核心</h3>
+                <p class="mb-3 text-xs">展示生态公募状态   为广大先锋提供简单高效查询    生态持续更新中</p>
+                <div class="bg-blue-800/50 p-2 rounded-lg mt-2">
+                    <p class="text-center text-blue-300 text-xs">参考码143658认证 · 9H456F</p>
+                </div>
             </div>
-            <div class="nav-item" data-page="community-page">
-                <i class="fa fa-cubes nav-icon"></i>
-                <span class="nav-label">节点搭建</span>
+        </div>
+    </div>
+
+    <!-- 模态框 - 联系我们 -->
+    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-gradient-to-b from-blue-800 to-blue-900 rounded-xl shadow-2xl w-[85%] max-h-[50vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-3 border-b border-blue-700">
+                <h2 class="text-2xl font-bold text-white">联系我们</h2>
+                <button class="close-modal text-white text-2xl">×</button>
             </div>
-            <div class="nav-item" data-page="data-page">
-                <i class="fa fa-bar-chart nav-icon"></i>
-                <span class="nav-label">数据</span>
-            </div>
-            <div class="nav-item" data-page="profile-page">
-                <i class="fa fa-gift nav-icon"></i>
-                <span class="nav-label">福利空投</span>
+            <div class="p-4 text-white text-sm">
+                <p class="mb-3 text-center">如有疑惑  随时咨询</p>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <div class="w-6 h-6 bg-blue-700 rounded-full flex items-center justify-center mr-3">
+                            <i class="fa fa-envelope text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-blue-300">邮箱</p>
+                            <p class="text-xs">pixin.yule@protonmail.com</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-6 h-6 bg-blue-700 rounded-full flex items-center justify-center mr-3">
+                            <i class="fa fa-phone text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-blue-300">电报群</p>
+                            <p class="text-xs">搜索pixinyule314</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-6 h-6 bg-blue-700 rounded-full flex items-center justify-center mr-3">
+                            <i class="fa fa-map-marker text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-blue-300">推特</p>
+                            <p class="text-xs truncate">维护中</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-6 h-6 bg-blue-700 rounded-full flex items-center justify-center mr-3">
+                            <i class="fa fa-clock-o text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-blue-300">TELTLK官方社群</p>
+                            <p class="text-xs">3111171248</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 pt-2 border-t border-blue-700">
+                    <p class="text-center text-blue-300 text-xs">生态团队持续跟进中</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 定义两组不同的应用数据
-        const appList1 = [
-            {
-                name: "TELTLK - 派生态",
-                description: "派友必备社群生态",
-                icon: "fa-comment",
-                iconBg: "bg-orange-100",
-                iconColor: "text-orange-500",
-                buttonClass: "btn-tertiary",
-                buttonText: "操作视频",
-                url: "https://www.teltlk.com/#/register?invite=sss444",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726306"
-            },
-            {
-                name: "Satrpi派链孵化器",
-                description: "派生态部署工具",
-                icon: "fa-line-chart",
-                iconBg: "bg-purple-100",
-                iconColor: "text-purple-500",
-                buttonClass: "btn-quaternary",
-                buttonText: "操作视频",
-                url: "startpi.app",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726270"
-            },
-            {
-                name: "hashpi - 哈希派",
-                description: "链上加密&NFT确权",
-                icon: "fa-hashtag",
-                iconBg: "bg-blue-100",
-                iconColor: "text-blue-500",
-                buttonClass: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
-                buttonText: "操作视频",
-                url: "hashpi.app",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726278"
-            },
-            {
-                name: "Pipet - π宠物紫色",
-                description: "链游NFT养成宠物",
-                icon: "fa-paw",
-                iconBg: "bg-purple-100",
-                iconColor: "text-purple-500",
-                buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://pipet.me/#/pages/login/login?invite=419296",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726289"
-            },
-            {
-                name: "Piday - 派对土地",
-                description: "购买全球虚拟土地",
-                icon: "fa-map",
-                iconBg: "bg-blue-100",
-                iconColor: "text-blue-500",
-                buttonClass: "btn-primary",
-                buttonText: "操作视频",
-                url: "https://piday.world/zh-CN?ic=MGV2PG",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769963"
-            },
-            {
-                name: "DOPAI多派元宇宙",
-                description: "元宇宙模块资产/场景 ",
-                icon: "fa-bullseye",
-                iconBg: "bg-blue-100",
-                iconColor: "text-blue-500",
-                buttonClass: "bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769974"
-            },
-            {
-                name: "CrowdFundPi众筹",
-                description: "邀请码FiA5y5HE",
-                icon: "fa-leaf",
-                iconBg: "bg-green-100",
-                iconColor: "text-green-500",
-                buttonClass: "btn-secondary",
-                buttonText: "操作视频",
-                url: "https://crowdfundpi.com",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766725"
-            },
-            {
-                name: "- 月光宝盒",
-                description: "抽奖盲盒NFT应用",
-                icon: "fa-diamond",
-                iconBg: "bg-pink-100",
-                iconColor: "text-pink-500",
-                buttonClass: "bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://openbox.world?referral_code=15536455536",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777570"
-            },
-            {
-                name: "VCITY- 第五城城市",
-                description: "第五城？签到积分NFT",
-                icon: "fa-city",
-                iconBg: "bg-teal-100",
-                iconColor: "text-teal-500",
-                buttonClass: "bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://120",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571"
-            },
-            {
-                name: "PiTools - 工具箱",
-                description: "工具应用",
-                icon: "fa-cog",
-                iconBg: "bg-gray-100",
-                iconColor: "text-gray-500",
-                buttonClass: "btn-quinary",
-                buttonText: "操作视频",
-                url: "https://110",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=776018"
-            }
-        ];
-
-        const appList2 = [
-            {
-                name: "PIX-派信娱乐",
-                description: "900派入股游戏生态",
-                icon: "fa-exchange",
-                iconBg: "bg-blue-100",
-                iconColor: "text-blue-600",
-                buttonClass: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
-                buttonText: "进入详情",
-                url: "https://pixinyule333.pages.dev/",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726306"
-            },
-            {
-                name: "SPACE-派社区生态",
-                description: "628派生态分红",
-                icon: "fa-wallet",
-                iconBg: "bg-green-100",
-                iconColor: "text-green-600",
-                buttonClass: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors",
-                buttonText: "进入详情",
-                url: "https://spacepi333.pages.dev/",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726270"
-            },
-            {
-                name: "实名DID-数字凭证",
-                description: "落地中-邀请码009014",
-                icon: "fa-gamepad",
-                iconBg: "bg-purple-100",
-                iconColor: "text-purple-600",
-                buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://mysticring.jiewai.pro/mysticringapp",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=774485"
-            },
-            {
-                name: "did -DID商家平台",
-                description: "即将落地",
-                icon: "fa-users",
-                iconBg: "bg-pink-100",
-                iconColor: "text-pink-600",
-                buttonClass: "bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://119",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=771311"
-            },
-            {
-                name: "OPA-免费挖矿分红",
-                description: "邀请码 XH910815",
-                icon: "fa-shopping-cart",
-                iconBg: "bg-orange-100",
-                iconColor: "text-orange-600",
-                buttonClass: "bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://share.feijipan.com/s/Ct24IYSE",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766725"
-            },
-            {
-                name: "Pi对接中",
-                description: "Pi对接中",
-                icon: "fa-graduation-cap",
-                iconBg: "bg-teal-100",
-                iconColor: "text-teal-600",
-                buttonClass: "bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://对接中",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=771310"
-            },
-            {
-                name: "Pi对接中2",
-                description: "Pi对接中2",
-                icon: "fa-newspaper-o",
-                iconBg: "bg-red-100",
-                iconColor: "text-red-600",
-                buttonClass: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://对接中",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766591"
-            },
-            {
-                name: "Pi对接中3",
-                description: "Pi对接中3",
-                icon: "fa-vote-yea",
-                iconBg: "bg-yellow-100",
-                iconColor: "text-yellow-600",
-                buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://对接中",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=765900"
-            },
-            {
-                name: " Pi-APP大全下载",
-                description: "派币下载，浏览器下载",
-                icon: "fa-cloud",
-                iconBg: "bg-indigo-100",
-                iconColor: "text-indigo-600",
-                buttonClass: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors",
-                buttonText: "点击下载",
-                url: "https://share.feijipan.com/s/rB3w9JF3",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726278"
-            },
-            {
-                name: "加速器下载",
-                description: "加速器若干下载",
-                icon: "fa-credit-card",
-                iconBg: "bg-gray-100",
-                iconColor: "text-gray-600",
-                buttonClass: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors",
-                buttonText: "点击下载",
-                url: "https://share.feijipan.com/s/C84YBszt",
-                videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769963"
-            }
-        ];
-
-        // 渲染应用列表
-        function renderAppList(appList) {
-            const appListContainer = document.getElementById('app-list');
-            appListContainer.innerHTML = '';
+        // Three.js 3D正方体实现
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建场景
+            const scene = new THREE.Scene();
             
-            appList.forEach(app => {
-                const appItem = document.createElement('div');
-                appItem.className = 'bg-white p-3 border border-gray-200 rounded-lg';
+            // 创建相机
+            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+            camera.position.z = 6;
+            
+            // 创建渲染器
+            const container = document.getElementById('canvas-container');
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+            
+            // 创建正方体
+            const geometry = new THREE.BoxGeometry(3, 3, 3);
+            const material = new THREE.MeshBasicMaterial({ 
+                color: 0x1E40AF,
+                wireframe: false
+            });
+            const cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+            
+            // 创建黄色圆环
+            const torusGeometry = new THREE.TorusGeometry(3.5, 0.15, 16, 100);
+            const torusMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700 });
+            const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+            scene.add(torus);
+
+            // 创建"股东"文字（使用HTML覆盖层实现）
+            const textOverlay = document.createElement('div');
+            textOverlay.id = 'text-overlay';
+            textOverlay.style.position = 'absolute';
+            textOverlay.style.top = '50%';
+            textOverlay.style.left = '50%';
+            textOverlay.style.transform = 'translate(-50%, -50%)';
+            textOverlay.style.fontSize = '24px';
+            textOverlay.style.fontFamily = 'Kaiti, STKaiti, KaiTi, sans-serif';
+            textOverlay.style.color = '#FFD700';
+            textOverlay.style.fontWeight = 'bold';
+            textOverlay.style.zIndex = '10';
+            textOverlay.style.pointerEvents = 'none';
+            textOverlay.style.textShadow = '0 0 10px rgba(255, 215, 0, 0.8)';
+            textOverlay.textContent = '股东';
+            container.appendChild(textOverlay);
+
+            // 创建"确权"文字（使用HTML覆盖层实现）
+            const textOverlay2 = document.createElement('div');
+            textOverlay2.id = 'text-overlay-2';
+            textOverlay2.style.position = 'absolute';
+            textOverlay2.style.top = '50%';
+            textOverlay2.style.left = '50%';
+            textOverlay2.style.transform = 'translate(-50%, -50%)';
+            textOverlay2.style.fontSize = '24px';
+            textOverlay2.style.fontFamily = 'Kaiti, STKaiti, KaiTi, sans-serif';
+            textOverlay2.style.color = '#FFD700';
+            textOverlay2.style.fontWeight = 'bold';
+            textOverlay2.style.zIndex = '10';
+            textOverlay2.style.pointerEvents = 'none';
+            textOverlay2.style.textShadow = '0 0 15px rgba(255, 215, 0, 0.8)';
+            textOverlay2.textContent = '确权';
+            container.appendChild(textOverlay2);
+            
+            // 动画循环
+            function animate() {
+                requestAnimationFrame(animate);
                 
-                // 检查是否需要添加倒计时
-                let countdownHtml = '';
-                if (app.name === 'PIX-派信娱乐') {
-                    countdownHtml = `
-                        <div class="mt-2 pt-2 border-t border-gray-100">
-                            <div class="bg-blue-50 p-2 rounded-lg mb-2">
-                                <h4 class="text-xs font-bold text-blue-800">生态详情</h4>
-                                <p class="text-xs text-blue-700">900派入股游戏生态，包含多种游戏玩法和NFT资产，用户可通过游戏获得派币奖励。</p>
-                            </div>
-                            <p class="text-xs text-gray-600">派信娱乐落地倒计时</p>
-                            <p id="countdown-entertainment" class="text-sm font-bold text-indigo-600">计算中...</p>
-                        </div>
-                    `;
-                } else if (app.name === 'SPACE-派社区生态') {
-                    countdownHtml = `
-                        <div class="mt-2 pt-2 border-t border-gray-100">
-                            <div class="bg-green-50 p-2 rounded-lg mb-2">
-                                <h4 class="text-xs font-bold text-green-800">生态详情</h4>
-                                <p class="text-xs text-green-700">628派生态分红，社区成员可参与生态建设并获得分红收益，支持多种社区活动。</p>
-                            </div>
-                            <p class="text-xs text-gray-600">派社区生态落地倒计时</p>
-                            <p id="countdown-community" class="text-sm font-bold text-teal-600">计算中...</p>
-                        </div>
-                    `;
+                // 旋转正方体
+                cube.rotation.y += 0.02;
+                cube.rotation.x += 0.005;
+                
+                // 旋转圆环
+                torus.rotation.y += 0.01;
+                torus.rotation.x += 0.005;
+
+                // 获取正方体的位置和旋转
+                const cubePosition = { x: 0, y: 0, z: 0 };
+                const cubeRotation = {
+                    x: cube.rotation.x,
+                    y: cube.rotation.y,
+                    z: cube.rotation.z
+                };
+
+                // 计算左上角和右下角的世界坐标
+                const halfSize = 1.5; // 正方体边长的一半
+                const topLeftCorner = {
+                    x: cubePosition.x - halfSize * Math.cos(cubeRotation.y),
+                    y: cubePosition.y + halfSize,
+                    z: cubePosition.z - halfSize * Math.sin(cubeRotation.y)
+                };
+                const bottomRightCorner = {
+                    x: cubePosition.x + halfSize * Math.cos(cubeRotation.y),
+                    y: cubePosition.y - halfSize,
+                    z: cubePosition.z + halfSize * Math.sin(cubeRotation.y)
+                };
+
+                // 旋转"股东"文字覆盖层（围绕左上角顺时针）
+                const textOverlay = document.getElementById('text-overlay');
+                if (textOverlay) {
+                    const radius = 80; // 旋转半径
+                    const angle = Date.now() * 0.001; // 顺时针旋转角度
+                    const x = topLeftCorner.x + Math.cos(angle) * radius;
+                    const z = topLeftCorner.z + Math.sin(angle) * radius;
+                    textOverlay.style.transform = `translate(-50%, -50%) translate3d(${x}px, 0, ${z}px)`;
+                }
+
+                // 旋转"确权"文字覆盖层（围绕黄色圆环上的一个点）
+                const textOverlay2 = document.getElementById('text-overlay-2');
+                if (textOverlay2) {
+                    // 计算黄色圆环上的一个固定点（相对于圆环的旋转）
+                    const torusRadius = 3.5; // 圆环的半径
+                    const anchorAngle = Math.PI / 4; // 锚定的角度（45度）
+                    const torusGlobalAngle = anchorAngle + torus.rotation.y; // 考虑圆环自身的旋转
+
+                    // 计算锚点在世界坐标系中的位置
+                    const anchorX = Math.cos(torusGlobalAngle) * torusRadius * 30; // 30是一个缩放因子，将Three.js单位转换为像素
+                    const anchorZ = Math.sin(torusGlobalAngle) * torusRadius * 30;
+
+                    // 让文字围绕这个锚点旋转
+                    const orbitRadius = 40; // 文字围绕锚点的旋转半径
+                    const orbitAngle = Date.now() * 0.002; // 旋转速度
+                    const x = anchorX + Math.cos(orbitAngle) * orbitRadius;
+                    const z = anchorZ + Math.sin(orbitAngle) * orbitRadius;
+
+                    textOverlay2.style.transform = `translate(-50%, -50%) translate3d(${x}px, 0, ${z}px)`;
                 }
                 
-                appItem.innerHTML = `
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 ${app.iconBg} rounded-lg flex items-center justify-center mr-3">
-                                <i class="fa ${app.icon} ${app.iconColor}"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold">${app.name}</p>
-                                <p class="text-xs text-gray-500">${app.description}</p>
-                            </div>
-                        </div>
-                        <button class="${app.buttonClass} text-xs" onclick="window.location.href='${(app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' || app.name === ' Pi-APP大全下载' || app.name === '加速器下载') ? app.url : (app.videoUrl || app.url)}'">${app.buttonText || '操作视频'}</button>
-                    </div>
-                    <div class="flex items-start justify-between bg-gray-50 p-2 rounded">
-                        <span class="text-xs text-gray-600 break-all flex-1 mr-2" data-url="${app.url}">${app.url}</span>
-                        <button class="copy-btn text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap mt-1" data-url="${app.url}">
-                            <i class="fa fa-copy"></i> 复制
-                        </button>
-                    </div>
-                    ${countdownHtml}
-                `;
-                appListContainer.appendChild(appItem);
+                renderer.render(scene, camera);
+            }
+            
+            // 响应窗口大小变化
+            window.addEventListener('resize', function() {
+                renderer.setSize(container.clientWidth, container.clientHeight);
             });
             
-            // 重新绑定复制按钮事件
-            bindCopyButtons();
+            // 开始动画
+            animate();
             
-            // 如果是appList2，启动倒计时
-            if (appList === appList2) {
-                startAppCountdowns();
-            }
-        }
-
-        // 绑定复制按钮事件
-        function bindCopyButtons() {
-            const copyButtons = document.querySelectorAll('.copy-btn');
-            copyButtons.forEach(button => {
+            // 按钮点击效果
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const url = this.getAttribute('data-url');
-                    navigator.clipboard.writeText(url).then(() => {
-                        const originalText = this.innerHTML;
-                        this.innerHTML = '<i class="fa fa-check"></i> 已复制';
-                        this.classList.add('text-green-600');
-                        setTimeout(() => {
-                            this.innerHTML = originalText;
-                            this.classList.remove('text-green-600');
-                        }, 2000);
+                // 播放音效
+                const clickSound = document.getElementById('click-sound');
+                clickSound.currentTime = 0;
+                clickSound.play().catch(e => console.log("Audio play failed:", e));
+                    this.classList.add('btn-active');
+                    setTimeout(() => {
+                        this.classList.remove('btn-active');
+                    }, 200);
+                    
+                    // 显示对应的模态框
+                    const buttonId = this.id;
+                    if (buttonId === 'shareholder-btn') {
+                        document.getElementById('shareholder-modal').classList.remove('hidden');
+                    } else if (buttonId === 'system-btn') {
+                        document.getElementById('system-modal').classList.remove('hidden');
+                    } else if (buttonId === 'contact-btn') {
+                        document.getElementById('contact-modal').classList.remove('hidden');
+                    }
+                });
+                
+                // 关闭模态框
+                const closeButtons = document.querySelectorAll('.close-modal');
+                closeButtons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const modal = this.closest('[id$="-modal"]');
+                        modal.classList.add('hidden');
                     });
                 });
-            });
-        }
-
-        // 页面切换功能和初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Web3生态应用加载完成');
-            
-            // 初始化音频上下文（在用户首次交互时）
-            const initAudioOnFirstInteraction = function() {
-                if (soundManager.init()) {
-                    console.log('🎵 用户首次交互，音频上下文初始化成功');
-                    // 移除所有初始化监听器
-                    document.removeEventListener('click', initAudioOnFirstInteraction);
-                    document.removeEventListener('touchstart', initAudioOnFirstInteraction);
-                    document.removeEventListener('keydown', initAudioOnFirstInteraction);
-                }
-            };
-            
-            // 添加首次交互监听器
-            document.addEventListener('click', initAudioOnFirstInteraction, { once: true });
-            document.addEventListener('touchstart', initAudioOnFirstInteraction, { once: true });
-            document.addEventListener('keydown', initAudioOnFirstInteraction, { once: true });
-            
-            // 全局音效事件委托
-            document.addEventListener('click', function(e) {
-                // 检查是否点击了可交互元素
-                const isInteractiveElement = 
-                    e.target.tagName === 'BUTTON' || 
-                    e.target.tagName === 'A' || 
-                    e.target.closest('.nav-item') ||
-                    e.target.closest('.copy-btn') ||
-                    e.target.hasAttribute('onclick');
                 
-                if (isInteractiveElement) {
-                    // 防止事件冒泡导致重复播放
-                    if (!e.target.dataset.soundPlayed) {
-                        playSound();
-                        e.target.dataset.soundPlayed = 'true';
+                // 点击模态框外部关闭功能已移除
+                
+                // 左右按钮分页功能
+                const shareholderModal = document.getElementById('shareholder-modal');
+                if (shareholderModal) {
+                    let currentPage = 1;
+                    const totalPages = 14;
+                    const pageInfo = shareholderModal.querySelector('.text-xs.text-blue-300');
+                    const prevBtn = document.getElementById('prev-page');
+                    const nextBtn = document.getElementById('next-page');
+                    const tableBody = shareholderModal.querySelector('tbody');
+
+                    
+                    // 生成表格数据
+                    function generateTableData(page) {
+                        const startNum = (page - 1) * 10 + 1;
+                        const endNum = startNum + 9;
+                        let html = '';
                         
-                        // 清除标记，允许下次点击播放
-                        setTimeout(() => {
-                            delete e.target.dataset.soundPlayed;
-                        }, 100);
+                        for (let i = startNum; i <= endNum; i++) {
+                            const isEven = i % 2 === 0;
+                            
+                            let name = '确认中';
+                            let date = '0';
+                            let shares = '0';
+                            
+                            // 根据序列设置特定内容
+                            if (i === 1) {
+                                name = '毕**阳';
+                                date = '2026-01-26';
+                                shares = '1';
+                            } else if (i === 2) {
+                                name = '薛**虎';
+                                date = '2026-01-26';
+                                shares = '1';
+                            } else if (i === 3) {
+                                name = '张**承';
+                                date = '2026-01-28';
+                                shares = '1';
+                            } else if (i === 4) {
+                                name = '姜**斌';
+                                date = '2026-03-19';
+                                shares = '1';
+                            } else if (i === 5) {
+                                name = '翟**英';
+                                date = '2026-02-01';
+                                shares = '1';
+                            } else if (i === 6) {
+                                name = '曲**婷';
+                                date = '2026-02-08';
+                                shares = '1';
+                            } else if (i === 7) {
+                                name = '李**祯';
+                                date = '2026-02-08';
+                                shares = '1';
+                            } else if (i === 8) {
+                                name = '赵**义';
+                                date = '2026-02-24';
+                                shares = '1';
+                            } else if (i === 9) {
+                                name = '魏**炳';
+                                date = '2026-02-26';
+                                shares = '1';
+                            } else if (i === 10) {
+                                name = '贾**敏';
+                                date = '2026-02-27';
+                                shares = '1';
+                            } else if (i === 11) {
+                                name = '晓**怜';
+                                date = '2026-02-27';
+                                shares = '1';
+                            } else if (i === 12) {
+                                name = '鸣**政';
+                                date = '2026-02-27';
+                                shares = '1';
+                            } else if (i === 13) {
+                                name = '闫**军';
+                                date = '2026-02-25';
+                                shares = '1';
+                            } else if (i === 14) {
+                                name = '雒**兵';
+                                date = '2026-02-24';
+                                shares = '1';
+                            } else if (i === 15) {
+                                name = '段**莉';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 16) {
+                                name = '王**波';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 17) {
+                                name = '马**锦';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 18) {
+                                name = '张**韵';
+                                date = '2026-03-06';
+                                shares = '5';
+                            } else if (i === 19) {
+                                name = '李**欣';
+                                date = '2026-03-06';
+                                shares = '5';
+                            } else if (i === 20) {
+                                name = '吴**磊';
+                                date = '2026-03-06';
+                                shares = '3';
+                            } else if (i === 21) {
+                                name = '**Lockett';
+                                date = '2026-03-01';
+                                shares = '1';
+                            } else if (i === 22) {
+                                name = '**Collier';
+                                date = '2026-03-03';
+                                shares = '3';
+                            } else if (i === 23) {
+                                name = '**Ridley';
+                                date = '2026-03-06';
+                                shares = '2';
+                            } else if (i === 24) {
+                                name = '**Brewster';
+                                date = '2026-03-03';
+                                shares = '1';
+                            } else if (i === 25) {
+                                name = '**Farrelly';
+                                date = '2026-03-03';
+                                shares = '1';
+                            } else if (i === 26) {
+                                name = '王**雨';
+                                date = '2026-03-03';
+                                shares = '1';
+                            } else if (i === 27) {
+                                name = '李**豪';
+                                date = '2026-03-03';
+                                shares = '2';
+                            } else if (i === 28) {
+                                name = '张**然';
+                                date = '2026-03-03';
+                                shares = '3';
+                            } else if (i === 29) {
+                                name = '王**熙';
+                                date = '2026-03-03';
+                                shares = '1';
+                            } else if (i === 30) {
+                                name = '李**涵';
+                                date = '2026-03-04';
+                                shares = '1';
+                            } else if (i === 31) {
+                                name = '张**琪';
+                                date = '2026-03-04';
+                                shares = '3';
+                            } else if (i === 32) {
+                                name = '王**欣';
+                                date = '2026-03-04';
+                                shares = '1';
+                            } else if (i === 33) {
+                                name = '**Riggs';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 34) {
+                                name = '**Mer';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 35) {
+                                name = '**Rad';
+                                date = '2026-03-02';
+                                shares = '1';
+                            } else if (i === 36) {
+                                name = '**Langley';
+                                date = '2026-03-02';
+                                shares = '1';
+                            } else if (i === 37) {
+                                name = '张**泽';
+                                date = '2026-03-02';
+                                shares = '1';
+                            } else if (i === 38) {
+                                name = '王**妍';
+                                date = '2026-03-03';
+                                shares = '1';
+                            } else if (i === 39) {
+                                name = '李**悦';
+                                date = '2026-03-04';
+                                shares = '1';
+                            } else if (i === 40) {
+                                name = '张**怡';
+                                date = '2026-03-02';
+                                shares = '1';
+                            } else if (i === 41) {
+                                name = '王**晨';
+                                date = '2026-03-05';
+                                shares = '1';
+                            } else if (i === 42) {
+                                name = '李**轩';
+                                date = '2026-03-04';
+                                shares = '1';
+                            } else if (i === 43) {
+                                name = '张**杰';
+                                date = '2026-03-05';
+                                shares = '1';
+                            } else if (i === 44) {
+                                name = '李**曦';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 45) {
+                                name = '张**文';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 46) {
+                                name = '王**凯';
+                                date = '2026-03-04';
+                                shares = '1';
+                            } else if (i === 47) {
+                                name = '**Lockwood';
+                                date = '2026-03-04';
+                                shares = '1';
+                            } else if (i === 48) {
+                                name = '**Wentworth';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 49) {
+                                name = '**Merton';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 50) {
+                                name = '张**杰';
+                                date = '2026-03-06';
+                                shares = '1';
+                            } else if (i === 51) {
+                                name = '常**芳';
+                                date = '2026-03-19';
+                                shares = '1';
+                            } else if (i === 52) {
+                                name = '李**珍';
+                                date = '2026-03-19';
+                                shares = '1';
+                            } else if (i === 53) {
+                                name = '李**燕';
+                                date = '2026-03-11';
+                                shares = '2';
+                            } else if (i === 54) {
+                                name = '张**房';
+                                date = '2026-03-15';
+                                shares = '1';
+                            } else if (i === 55) {
+                                name = '李**琦';
+                                date = '2026-03-17';
+                                shares = '1';
+                            } else if (i === 56) {
+                                name = '白**莲';
+                                date = '2026-03-21';
+                                shares = '1';
+                            } else if (i === 57) {
+                                name = '关**萍';
+                                date = '股份已转入';
+                                shares = '1';
+                            } else if (i === 58) {
+                                name = '李**林';
+                                date = '2026-03-24';
+                                shares = '1';
+                            } else if (i === 59) {
+                                name = '刘**明';
+                                date = '2026-03-26';
+                                shares = '1';
+                            } else if (i === 60) {
+                                name = '王**玲';
+                                date = '2026-03-26';
+                                shares = '1';
+                            } else if (i === 61) {
+                                name = '李**鹿';
+                                date = '2026-03-20';
+                                shares = '1';
+                            } else if (i === 62) {
+                                name = '张**禄';
+                                date = '2026-03-21';
+                                shares = '1';
+                            } else if (i === 63) {
+                                name = '李**军';
+                                date = '2026-03-22';
+                                shares = '3';
+                            } else if (i === 64) {
+                                name = '王**兰';
+                                date = '2026-03-19';
+                                shares = '3';
+                            } else if (i === 65) {
+                                name = '**Albright';
+                                date = '2026-03-11';
+                                shares = '1';
+                            } else if (i === 66) {
+                                name = '**Loxley';
+                                date = '2026-03-15';
+                                shares = '1';
+                            } else if (i === 67) {
+                                name = '**Har';
+                                date = '2026-03-16';
+                                shares = '1';
+                            } else if (i === 68) {
+                                name = '**Lawford';
+                                date = '2026-03-19';
+                                shares = '2';
+                            } else if (i === 69) {
+                                name = '周**福';
+                                date = '2026-03-19';
+                                shares = '1';
+                            } else if (i === 70) {
+                                name = '吴**英';
+                                date = '2026-03-20';
+                                shares = '1';
+                            } else if (i === 71) {
+                                name = '吕**香';
+                                date = '2026-03-25';
+                                shares = '1';
+                            } else if (i === 72) {
+                                name = '姜**锋';
+                                date = '2026-03-30';
+                                shares = '1';
+                            } else if (i === 73) {
+                                name = '李**衍';
+                                date = '2026-03-30';
+                                shares = '1';
+                            } else if (i === 74) {
+                                name = '常**斌';
+                                date = '2026-03-30';
+                                shares = '1';
+                            } else if (i === 75) {
+                                name = '马**宏';
+                                date = '2026-04-11';
+                                shares = '1';
+                            } else if (i === 76) {
+                                name = '杨**娟';
+                                date = '待审核';
+                                shares = '1';
+                            } else if (i === 77) {
+                                name = '沈**玲';
+                                date = '2026-04-14';
+                                shares = '1';
+                            } else if (i === 78) {
+                                name = '吕**真';
+                                date = '2026-04-28';
+                                shares = '1';
+                            } else if (i === 79) {
+                                name = '王*弟';
+                                date = '2026-04-30';
+                                shares = '1';
+                            } else if (i === 80) {
+                                name = '郭**文';
+                                date = '2026-04-14';
+                                shares = '1';
+                            } else if (i === 81) {
+                                name = '郑**军';
+                                date = '2026-03-27';
+                                shares = '1';
+                            } else if (i === 82) {
+                                name = '梁**花';
+                                date = '2026-03-28';
+                                shares = '2';
+                            } else if (i === 83) {
+                                name = '谢**根';
+                                date = '2026-03-28';
+                                shares = '2';
+                            } else if (i === 84) {
+                                name = '唐**兰';
+                                date = '2026-04-03';
+                                shares = '1';
+                            } else if (i === 85) {
+                                name = '许**莲';
+                                date = '2026-04-11';
+                                shares = '1';
+                            } else if (i === 86) {
+                                name = '冯**苹';
+                                date = '2026-04-11';
+                                shares = '2';
+                            } else if (i === 87) {
+                                name = '邓**军';
+                                date = '2026-04-13';
+                                shares = '1';
+                            } else if (i === 88) {
+                                name = '**Linwood';
+                                date = '2026-04-14';
+                                shares = '1';
+                            } else if (i === 89) {
+                                name = '**Shelton';
+                                date = '2026-04-14';
+                                shares = '1';
+                            } else if (i === 90) {
+                                name = '**King';
+                                date = '2026-04-14';
+                                shares = '1';
+                            } else if (i === 91) {
+                                name = '刘**鹏';
+                                date = '2026-05-04';
+                                shares = '1';
+                            } else if (i === 92) {
+                                name = '胡**梅';
+                                date = '2026-05-08';
+                                shares = '1';
+                            } else if (i === 93) {
+                                name = '王**芝';
+                                date = '审核';
+                                shares = '1';
+                            } else if (i === 94) {
+                                name = '刘**扬';
+                                date = '2026-05-08';
+                                shares = '1';
+                            } else if (i === 95) {
+                                name = '王**光';
+                                date = '待通过';
+                                shares = '1';
+                            } else if (i === 101) {
+                                name = '夏**花';
+                                date = '2026-04-16';
+                                shares = '1';
+                            } else if (i === 102) {
+                                name = '钟**花';
+                                date = '2026-04-16';
+                                shares = '1';
+                            } else if (i === 103) {
+                                name = '田**军';
+                                date = '2026-04-19';
+                                shares = '2';
+                            } else if (i === 104) {
+                                name = '**Chatwin';
+                                date = '2026-04-19';
+                                shares = '2';
+                            } else if (i === 105) {
+                                name = '**Vernon';
+                                date = '2026-04-19';
+                                shares = '1';
+                            } else if (i === 106) {
+                                name = '**Cra';
+                                date = '2026-04-22';
+                                shares = '3';
+                            } else if (i === 107) {
+                                name = '**Corbin';
+                                date = '2026-04-23';
+                                shares = '1';
+                            } else if (i === 108) {
+                                name = '石**花';
+                                date = '2026-04-22';
+                                shares = '3';
+                            } else if (i === 109) {
+                                name = '**Rawlings';
+                                date = '2026-04-22';
+                                shares = '1';
+                            } else if (i === 110) {
+                                name = '廖**贵';
+                                date = '2026-04-25';
+                                shares = '1';
+                            } else if (i === 108) {
+                                name = '待审核';
+                                date = '';
+                                shares = '0';
+                            } else if (i === 109) {
+                                name = '待审核';
+                                date = '';
+                                shares = '0';
+                            } else if (i === 110) {
+                                name = '待审核';
+                                date = '';
+                                shares = '0';
+                            } else if (i === 121) {
+                                name = '徐**军';
+                                date = '2026-04-29 ';
+                                shares = '1';
+                            } else if (i >= 122 && i <= 130) {
+                                name = '待审核';
+                                date = '待预定';
+                                shares = '0';
+                            } else if (i === 134) {
+                                name = '王**丽';
+                                date = '2026-04-15 预约';
+                                shares = '3';
+                            }
+                            
+                            html += `
+                                <tr class="${isEven ? 'bg-blue-800/30' : 'bg-blue-800/50'}">
+                                    <td class="border border-blue-600 px-1 py-1 text-center">${i}</td>
+                                    <td class="border border-blue-600 px-2 py-1 text-center">${name}</td>
+                                    <td class="border border-blue-600 px-2 py-1 text-center">${date}</td>
+                                    <td class="border border-blue-600 px-1 py-1 text-center">${shares}</td>
+                                </tr>
+                            `;
+                        }
+                        
+                        return html;
                     }
-                }
-            }, { capture: true });
-            
-            const navItems = document.querySelectorAll('.nav-item');
-            const pages = document.querySelectorAll('.page');
-            
-            // 页面导航功能
-            navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    // 移除所有活动状态
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    pages.forEach(page => page.classList.add('hidden'));
                     
-                    // 添加当前活动状态
-                    this.classList.add('active');
-                    const targetPage = document.getElementById(this.dataset.page);
-                    if (targetPage) {
-                        targetPage.classList.remove('hidden');
-                        console.log(`📱 切换到页面: ${targetPage.id}`);
+                    // 更新表格数据
+                    function updateTable() {
+                        tableBody.innerHTML = generateTableData(currentPage);
                     }
-                });
+                    
+                    // 更新页码显示
+                    function updatePageInfo() {
+                        pageInfo.textContent = `第 ${currentPage}/${totalPages} 页`;
+                        prevBtn.disabled = currentPage === 1;
+                        nextBtn.disabled = currentPage === totalPages;
+                        
+                        if (prevBtn.disabled) {
+                            prevBtn.classList.add('opacity-50');
+                        } else {
+                            prevBtn.classList.remove('opacity-50');
+                        }
+                        
+                        if (nextBtn.disabled) {
+                            nextBtn.classList.add('opacity-50');
+                        } else {
+                            nextBtn.classList.remove('opacity-50');
+                        }
+                    }
+                    
+
+                    
+                    // 上一页按钮点击事件
+                    prevBtn.addEventListener('click', function() {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            updateTable();
+                            updatePageInfo();
+                        }
+                    });
+                    
+                    // 下一页按钮点击事件
+                    nextBtn.addEventListener('click', function() {
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            updateTable();
+                            updatePageInfo();
+                        }
+                    });
+                    
+                    // 初始化
+                    updateTable();
+                    updatePageInfo();
+                }
             });
-            
-            // 音效开关控制
-            const soundToggle = document.getElementById('sound-toggle');
-            if (soundToggle) {
-                soundToggle.addEventListener('change', function() {
-                    soundManager.setEnabled(this.checked);
-                });
-            }
-            
-            // 页面加载时默认显示第一组应用
-            renderAppList(appList1);
-            
-            // 启动所有倒计时功能
-            startEventCountdown();
-            startAppCountdowns();
-            startEntertainmentCardCountdown();
-            
-            console.log('✅ 应用初始化完成，音效系统已优化');
         });
-
-        // 活动倒计时功能
-        function startEventCountdown() {
-            const targetDate = new Date('2026-05-12T14:30:00').getTime();
-            const startTime = new Date('2026-05-10T01:33:00').getTime();
-            
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const elapsed = now - startTime;
-                const totalDuration = targetDate - startTime;
-                
-                if (elapsed >= totalDuration) {
-                    // 倒计时结束
-                    document.getElementById('event-days').textContent = '00';
-                    document.getElementById('event-hours').textContent = '00';
-                    document.getElementById('event-minutes').textContent = '00';
-                    document.getElementById('event-seconds').textContent = '00';
-                    return;
-                }
-                
-                const remaining = totalDuration - elapsed;
-                
-                // 计算剩余的天数、小时、分钟和秒数
-                const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-                
-                // 更新显示
-                document.getElementById('event-days').textContent = days.toString().padStart(2, '0');
-                document.getElementById('event-hours').textContent = hours.toString().padStart(2, '0');
-                document.getElementById('event-minutes').textContent = minutes.toString().padStart(2, '0');
-                document.getElementById('event-seconds').textContent = seconds.toString().padStart(2, '0');
-            }
-            
-            // 立即更新一次
-            updateCountdown();
-            
-            // 每秒更新一次
-            setInterval(updateCountdown, 1000);
-        }
-
-        // 应用倒计时功能
-        function startAppCountdowns() {
-            // 派信娱乐倒计时
-            const entertainmentTarget = new Date('2026-11-11T13:19:31').getTime();
-            const entertainmentElement = document.getElementById('countdown-entertainment');
-            
-            if (entertainmentElement) {
-                function updateEntertainmentCountdown() {
-                    const now = new Date().getTime();
-                    const distance = entertainmentTarget - now;
-                    
-                    if (distance < 0) {
-                        entertainmentElement.textContent = '已开始';
-                        return;
-                    }
-                    
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    
-                    entertainmentElement.textContent = `${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒`;
-                }
-                
-                updateEntertainmentCountdown();
-                setInterval(updateEntertainmentCountdown, 1000); // 每秒更新一次
-            }
-            
-            // 派社区生态倒计时
-            const communityTarget = new Date('2026-12-12T03:15:15').getTime();
-            const communityElement = document.getElementById('countdown-community');
-            
-            if (communityElement) {
-                function updateCommunityCountdown() {
-                    const now = new Date().getTime();
-                    const distance = communityTarget - now;
-                    
-                    if (distance < 0) {
-                        communityElement.textContent = '已开始';
-                        return;
-                    }
-                    
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    
-                    communityElement.textContent = `${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒`;
-                }
-                
-                updateCommunityCountdown();
-                setInterval(updateCommunityCountdown, 1000); // 每秒更新一次
-            }
-        }
-
-        // 派信娱乐卡片倒计时
-        function startEntertainmentCardCountdown() {
-            const targetDate = new Date('2026-05-20T10:00:00').getTime();
-            const countdownElement = document.getElementById('entertainment-countdown');
-            
-            if (countdownElement) {
-                function updateCountdown() {
-                    const now = new Date().getTime();
-                    const distance = targetDate - now;
-                    
-                    if (distance < 0) {
-                        countdownElement.textContent = '活动已开始';
-                        return;
-                    }
-                    
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    
-                    countdownElement.textContent = `${days}天 ${hours}小时 ${minutes}分钟`;
-                }
-                
-                updateCountdown();
-                setInterval(updateCountdown, 60000); // 每分钟更新一次
-            }
-        }
     </script>
 
 
