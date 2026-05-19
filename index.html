@@ -1074,6 +1074,14 @@
                     `;
                 }
                 
+                // 确定按钮图标和文本
+                let buttonIcon = 'fa-copy';
+                let buttonText = '复制';
+                if (app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙') {
+                    buttonIcon = 'fa-download';
+                    buttonText = '下载';
+                }
+                
                 appItem.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
@@ -1085,12 +1093,12 @@
                                 <p class="text-xs text-gray-500">${app.description}</p>
                             </div>
                         </div>
-                        <button class="${app.buttonClass} text-xs" onclick="window.location.href='${(app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' || app.name === ' Pi-APP大全下载' || app.name === '加速器下载') ? app.url : (app.videoUrl || app.url)}'">${app.buttonText || '操作视频'}</button>
+                        <button class="${app.buttonClass} text-xs" onclick="window.location.href='${(app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' || app.name === ' Pi-APP大全下载' || app.name === '加速器下载' || app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙') ? app.url : (app.videoUrl || app.url)}'">${app.buttonText || '操作视频'}</button>
                     </div>
                     <div class="flex items-start justify-between bg-gray-50 p-2 rounded">
                         <span class="text-xs text-gray-600 break-all flex-1 mr-2" data-url="${app.url}">${app.url}</span>
-                        <button class="copy-btn text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap mt-1" data-url="${app.url}">
-                            <i class="fa fa-copy"></i> 复制
+                        <button class="copy-btn text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap mt-1" data-url="${app.url}" onclick="${(app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙') ? `window.location.href='${app.url}'; return false;` : ''}">
+                            <i class="fa ${buttonIcon}"></i> ${buttonText}
                         </button>
                     </div>
                     ${countdownHtml}
