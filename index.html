@@ -389,6 +389,39 @@
                     transform: translateX(-100%);
                 }
             }
+            /* 绿色呼吸灯动画 */
+            @keyframes pulse-green {
+                0%, 100% {
+                    transform: scale(1);
+                    opacity: 0.7;
+                    box-shadow: 0 0 10px 2px rgba(34, 197, 94, 0.3);
+                }
+                50% {
+                    transform: scale(1.1);
+                    opacity: 1;
+                    box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.6);
+                }
+            }
+            /* 红色呼吸灯动画 */
+            @keyframes pulse-red {
+                0%, 100% {
+                    transform: scale(1);
+                    opacity: 0.7;
+                    box-shadow: 0 0 10px 2px rgba(239, 68, 68, 0.3);
+                }
+                50% {
+                    transform: scale(1.1);
+                    opacity: 1;
+                    box-shadow: 0 0 20px 5px rgba(239, 68, 68, 0.6);
+                }
+            }
+            /* 应用动画类 */
+            .animate-pulse-green {
+                animation: pulse-green 3s infinite ease-in-out;
+            }
+            .animate-pulse-red {
+                animation: pulse-red 3s infinite ease-in-out 1.5s;
+            }
         }
     </style>
 </head>
@@ -397,7 +430,8 @@
         <!-- 内容区域 -->
         <div class="content-container">
             <!-- 首页 -->
-            <div id="home-page" class="page active">
+            <div id="home-page" class="page active relative">
+
                 <!-- 山西太原派生态社区聚会 - 高级卡片 -->
                 <div class="rounded-xl shadow-lg overflow-hidden mb-4 border border-gray-200">
                     <!-- 绿色标题卡片 -->
@@ -455,7 +489,21 @@
                     </div>
                 </div>
                 
-                <div class="card card-hover">
+                <div class="card card-hover relative">
+                    <!-- 生态对接旁边的悬浮小球 -->
+                    <div id="floating-glass-ball" class="absolute w-12 h-12 flex items-center justify-center z-10 cursor-pointer animate-float" style="top: -19px; right: -10px;">
+                        <div class="relative w-full h-full">
+                            <!-- 绿色外光环 -->
+                            <div class="absolute inset-0 rounded-full border-2 border-green-400 opacity-70 animate-pulse-green"></div>
+                            <!-- 红色外光环 -->
+                            <div class="absolute inset-0 rounded-full border-2 border-red-400 opacity-70 animate-pulse-red"></div>
+                            <!-- 玻璃球主体 -->
+                            <div class="absolute inset-0 rounded-full bg-white bg-opacity-20 backdrop-blur-md flex items-center justify-center shadow-lg">
+                                <span class="text-white font-bold text-sm drop-shadow-lg" style="color: rgb(6, 10, 4); font-weight: bold; font-size: 12px;">派资讯</span>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="flex space-x-3 mb-3">
                         <button class="bg-white text-black py-1.5 px-3 rounded-lg text-base font-semibold border-2 border-black shadow-lg flex-1 text-center focus:outline-none active:outline-none transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-95 btn-glow" onclick="renderAppList(appList1)">
                             推荐派应用
@@ -1134,6 +1182,20 @@
             });
         }
 
+        // 悬浮球点击跳转功能
+        function initFloatingGlassBall() {
+            const glassBall = document.getElementById('floating-glass-ball');
+            if (!glassBall) return;
+            
+            // 点击事件 - 只执行跳转
+            glassBall.addEventListener('click', function(e) {
+                window.location.href = 'https://sxtyxfc.pages.dev/';
+                e.preventDefault();
+            });
+            
+            console.log('🎯 悬浮球点击跳转功能已初始化');
+        }
+
         // 页面切换功能和初始化
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Web3生态应用加载完成');
@@ -1213,6 +1275,9 @@
             startEventCountdown();
             startAppCountdowns();
             startEntertainmentCardCountdown();
+            
+            // 初始化悬浮球点击功能
+            initFloatingGlassBall();
             
             console.log('✅ 应用初始化完成，音效系统已优化');
         });
