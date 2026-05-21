@@ -1053,14 +1053,14 @@
                 videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=766591"
             },
             {
-                name: "Pi对接中3",
-                description: "Pi对接中3",
+                name: "Pi远程辅助",
+                description: "Pi远程辅助安卓下载",
                 icon: "fa-vote-yea",
                 iconBg: "bg-yellow-100",
                 iconColor: "text-yellow-600",
                 buttonClass: "bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors",
-                buttonText: "操作视频",
-                url: "https://对接中",
+                buttonText: "点击下载",
+                url: "https://share.feijipan.com/s/9panZOKd",
                 videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=765900"
             },
             {
@@ -1125,7 +1125,7 @@
                 // 确定按钮图标和文本
                 let buttonIcon = 'fa-copy';
                 let buttonText = '复制';
-                if (app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙') {
+                if (app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙' || app.name === 'Pi远程辅助') {
                     buttonIcon = 'fa-download';
                     buttonText = '下载';
                 }
@@ -1141,11 +1141,11 @@
                                 <p class="text-xs text-gray-500">${app.description}</p>
                             </div>
                         </div>
-                        <button class="${app.buttonClass} text-xs" onclick="window.location.href='${(app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' || app.name === ' Pi-APP大全下载' || app.name === '加速器下载' || app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙') ? app.url : (app.videoUrl || app.url)}'">${app.buttonText || '操作视频'}</button>
+                        <button class="${app.buttonClass} text-xs" onclick="window.location.href='${(app.name === 'PIX-派信娱乐' || app.name === 'SPACE-派社区生态' || app.name === ' Pi-APP大全下载' || app.name === '加速器下载' || app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙' || app.name === 'Pi远程辅助') ? app.url : (app.videoUrl || app.url)}'">${app.buttonText || '操作视频'}</button>
                     </div>
                     <div class="flex items-start justify-between bg-gray-50 p-2 rounded">
                         <span class="text-xs text-gray-600 break-all flex-1 mr-2" data-url="${app.url}">${app.url}</span>
-                        <button class="copy-btn text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap mt-1" data-url="${app.url}" onclick="${(app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙') ? `window.location.href='${app.url}'; return false;` : ''}">
+                        <button class="copy-btn text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap mt-1" data-url="${app.url}" onclick="${(app.name === 'OPA-免费挖矿分红' || app.name === 'TELTLK - 派生态' || app.name === 'DOPAI多派元宇宙' || app.name === 'Pi远程辅助') ? `window.location.href='${app.url}'; return false;` : ''}">
                             <i class="fa ${buttonIcon}"></i> ${buttonText}
                         </button>
                     </div>
