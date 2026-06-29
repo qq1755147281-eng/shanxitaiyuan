@@ -92,6 +92,14 @@
             box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
         }
         
+        .btn-gradient-text {
+            background: linear-gradient(to bottom, #ffffff, #1f2937);
+            color: transparent !important;
+            background-clip: text;
+            -webkit-background-clip: text;
+            text-shadow: none !important;
+        }
+        
         .btn-yellow {
             background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
             color: white;
@@ -362,6 +370,19 @@
             }
         }
         
+        @keyframes glow-breath {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(251, 191, 36, 0.5), 0 0 20px rgba(239, 68, 68, 0.3), 0 0 30px rgba(251, 191, 36, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(251, 191, 36, 0.8), 0 0 40px rgba(239, 68, 68, 0.6), 0 0 60px rgba(251, 191, 36, 0.4);
+            }
+        }
+        
+        .breath-card {
+            animation: glow-breath 2s ease-in-out infinite;
+        }
+        
         @media (max-width: 480px) {
             .content-container {
                 padding: 10px;
@@ -433,6 +454,27 @@
                 
                 <!-- 主内容区 -->
                 <div class="card overflow-hidden relative">
+                    <!-- 呼吸灯卡片 -->
+                    <div class="breath-card bg-gradient-to-r from-yellow-500/20 via-red-500/20 to-yellow-500/20 rounded-xl p-4 mb-3 border-2 border-yellow-400">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-red-500 rounded-full flex items-center justify-center text-white mr-3 shadow-lg">
+                                <i class="fa fa-external-link text-lg"></i>
+                            </div>
+                            <span class="text-sm font-bold text-gray-800">复制下面网址，打开派浏览器，直接进入所有派生态</span>
+                        </div>
+                        <div class="flex gap-2 mb-3">
+                            <button class="btn flex-1 py-3 text-base font-bold bg-gradient-to-r from-orange-500 to-red-500 text-white border-2 border-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" onclick="playSound('click'); window.open('https://mysticring.jiewai.pro/Share/#/home?trendsId=814654', '_blank');">
+                                <i class="fa fa-play-circle mr-2"></i>操作视频
+                            </button>
+                        </div>
+                        <div class="flex items-center bg-white/90 rounded-lg p-3 border-2 border-gray-800">
+                            <span class="text-xs text-gray-600 truncate flex-1" id="eco-url">https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad</span>
+                            <button class="btn btn-yellow btn-small border border-gray-800" onclick="playSound('click'); copyToClipboard('https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad'); alert('已复制网址到剪贴板！');">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                    </div>
+                    
                     <!-- 三个按钮 -->
                     <div class="flex gap-2 mb-3 mt-2">
                         <button class="btn btn-purple flex-1 py-3 text-sm" onclick="playSound('click'); renderAppList(appList1); hideEcoDocking();">推荐派应用</button>
@@ -489,68 +531,52 @@
                     <h2 class="text-lg font-bold mb-4 text-center">派友社群 · TELTLK扫码</h2>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="text-center">
-                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
-                                <div class="w-3/4 h-3/4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
-                                    <span class="text-4xl text-blue-500 font-bold">1</span>
-                                </div>
+                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                                <img src="images/IMG_20260423_224814.jpg" class="w-full h-full object-contain" alt="山西太原">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">山西太原</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
-                                <div class="w-3/4 h-3/4 bg-gradient-to-br from-purple-100 to-blue-100 rounded-lg flex items-center justify-center">
-                                    <i class="fa fa-comments text-4xl text-purple-600"></i>
-                                </div>
+                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                                <img src="images/mmexport1774878331644.jpg" class="w-full h-full object-contain" alt="派信娱乐">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">派信娱乐</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
-                                <div class="w-3/4 h-3/4 bg-gradient-to-br from-green-100 to-teal-100 rounded-lg flex items-center justify-center">
-                                    <i class="fa fa-comments text-4xl text-green-600"></i>
-                                </div>
+                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                                <img src="images/mmexport1774878330254.jpg" class="w-full h-full object-contain" alt="实名DID聊">
                             </div>
-                            <p class="text-sm mt-3 font-bold text-gray-700">穷聊</p>
+                            <p class="text-sm mt-3 font-bold text-gray-700">实名DID聊</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
-                                <div class="w-3/4 h-3/4 bg-gradient-to-br from-red-100 to-pink-100 rounded-lg flex items-center justify-center">
-                                    <span class="text-4xl text-red-600 font-bold">2</span>
-                                </div>
+                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                                <img src="images/Screenshot_2026-03-30-16-59-13-80_82b10d9f3584360f08225ddcebbb4f6d.jpg" class="w-full h-full object-contain" alt="派币节点搭建群聊">
                             </div>
-                            <p class="text-sm mt-3 font-bold text-gray-700">北京社群</p>
+                            <p class="text-sm mt-3 font-bold text-gray-700">派币节点搭建群聊</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
-                                <div class="w-3/4 h-3/4 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-lg flex items-center justify-center">
-                                    <span class="text-4xl text-yellow-600 font-bold">3</span>
-                                </div>
+                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                                <img src="images/Screenshot_2026-03-30-15-47-52-78_f86b2690ff7296bf8d1db1bf739c2ed8.jpg" class="w-full h-full object-contain" alt="数字人民币推广一群">
                             </div>
-                            <p class="text-sm mt-3 font-bold text-gray-700">上海社群</p>
+                            <p class="text-sm mt-3 font-bold text-gray-700">数字人民币推广一群</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
-                                <div class="w-3/4 h-3/4 bg-gradient-to-br from-cyan-100 to-blue-100 rounded-lg flex items-center justify-center">
-                                    <i class="fa fa-comments text-4xl text-cyan-600"></i>
-                                </div>
+                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                                <img src="images/Screenshot_2026-04-25-19-09-55-66_37905f839bb7b4e2495a2c0e3c06a631.jpg" class="w-full h-full object-contain" alt="数字人民币推广二群">
                             </div>
-                            <p class="text-sm mt-3 font-bold text-gray-700">广州社群</p>
+                            <p class="text-sm mt-3 font-bold text-gray-700">数字人民币推广二群</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
-                                <div class="w-3/4 h-3/4 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center">
-                                    <span class="text-4xl text-indigo-600 font-bold">4</span>
-                                </div>
+                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                                <img src="images/Screenshot_2026-04-25-19-14-47-09_37905f839bb7b4e2495a2c0e3c06a631.jpg" class="w-full h-full object-contain" alt="派币其他俱乐部群聊">
                             </div>
-                            <p class="text-sm mt-3 font-bold text-gray-700">深圳社群</p>
+                            <p class="text-sm mt-3 font-bold text-gray-700">派币其他俱乐部群聊</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
-                                <div class="w-3/4 h-3/4 bg-gradient-to-br from-emerald-100 to-green-100 rounded-lg flex items-center justify-center">
-                                    <i class="fa fa-comments text-4xl text-emerald-600"></i>
-                                </div>
+                            <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                                <img src="images/MEITU_20260408_180809645.jpg" class="w-full h-full object-contain" alt="更多群聊对接中">
                             </div>
-                            <p class="text-sm mt-3 font-bold text-gray-700">成都社群</p>
+                            <p class="text-sm mt-3 font-bold text-gray-700">更多群聊对接中</p>
                         </div>
                     </div>
                 </div>
@@ -1128,6 +1154,21 @@
             }
         }
         
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('复制失败:', err);
+            }
+            document.body.removeChild(textarea);
+        }
+        
         function playSound(type) {
             initAudio();
             if (!audioCtx) return;
@@ -1224,11 +1265,12 @@
             { name: "PIX-派信娱乐", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-11-11T13:19:31", share: "原始股份：200万枚", progress: "社区建设中" },
             { name: "SPACE-派社区生态", desc: "Pi生态应用市场，汇聚各类优质生态应用，欢迎开发者入驻", icon: "fa-rocket", color: "blue", url: "https://spacepi333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-12-12T03:15:15", share: "已统计：200+生态应用", progress: "生态对接进行中" },
             { name: "实名DID数字凭证", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://mysticring.jiewai.pro/mysticringapp", copy: true, action: "download" },
-            { name: "OPA免费生态挖矿", desc: "参与派生态贡献，免费获得OPA生态代币奖励", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download" }
+            { name: "OPA免费生态挖矿", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815" }
         ];
         
         const ecoDockingList = [
-            { name: "PiPay支付", desc: "派币支付解决方案，支持派生态内快速转账和支付", icon: "fa-credit-card", status: "开发中", url: "#", color: "green" }
+            { name: "PiPay支付", desc: "派币支付解决方案，支持派生态内快速转账和支付", icon: "fa-credit-card", status: "开发中", url: "#", color: "green" },
+            { name: "数字人民币", desc: "推广中国唯一法定数字货币、推广数字人民币码牌", icon: "fa-yen-sign", color: "red", type: "special", contact: { name: "魏国炳", phone: "15536455536" }, buttons: [{ text: "业务员推广下载APP", url: "http://bankh5.payweipan.com/app/agent/12105" }, { text: "商家APP下载后台", url: "http://bankh5.payweipan.com/app/mch/12105" }] }
         ];
         
         const toolsList = [
@@ -1290,6 +1332,7 @@
                             <div class="flex-1 min-w-0 mx-3">
                                 <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
                                 <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
+                                ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                             </div>
                             <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
                                 ${btnText}
@@ -1318,34 +1361,68 @@
             const list = document.getElementById('eco-docking-list');
             if (card && list && ecoDockingList.length > 0) {
                 card.classList.remove('hidden');
-                const item = ecoDockingList[0];
-                const colors = colorMap[item.color] || colorMap.blue;
-                // 模仿OPA免费生态挖矿的样式
-                list.innerHTML = `
-                    <div class="bg-white rounded-lg p-4 border border-gray-200">
-                        <div class="flex items-start">
-                            <div class="icon-box bg-gradient-to-br ${colors.bg}">
-                                <i class="fa ${item.icon} ${colors.text} text-xl"></i>
-                            </div>
-                            <div class="flex-1 min-w-0 mx-3">
-                                <div class="flex items-center">
-                                    <h4 class="font-bold text-gray-800 text-sm">${item.name}</h4>
-                                    <span class="ml-2 text-xs px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full">${item.status}</span>
+                list.innerHTML = ecoDockingList.map(item => {
+                    const colors = colorMap[item.color] || colorMap.blue;
+                    
+                    if (item.type === 'special') {
+                        return `
+                            <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-4 text-white shadow-lg shadow-red-200">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fa ${item.icon} text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">${item.name}</h4>
+                                        <p class="text-xs text-red-100 mt-1">${item.desc}</p>
+                                    </div>
                                 </div>
-                                <p class="text-xs text-gray-600 leading-snug mt-1">${item.desc}</p>
+                                <div class="flex flex-col gap-2 mb-4">
+                                    ${item.buttons.map(btn => `
+                                        <button class="w-full py-3 bg-white text-red-600 font-bold rounded-lg text-base hover:bg-red-50 transition-colors" onclick="playSound('click'); window.open('${btn.url}', '_blank')">
+                                            ${btn.text}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                                <div class="pt-3 border-t border-white/20">
+                                    <div class="flex items-center text-sm">
+                                        <i class="fa fa-user mr-2"></i>
+                                        <span>联系人：${item.contact.name}</span>
+                                    </div>
+                                    <div class="flex items-center text-sm mt-1">
+                                        <i class="fa fa-phone mr-2"></i>
+                                        <span>电话：${item.contact.phone}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); window.open('${item.url}', '_blank')">
-                                进入详情
-                            </button>
+                        `;
+                    }
+                    
+                    return `
+                        <div class="bg-white rounded-lg p-4 border border-gray-200">
+                            <div class="flex items-start">
+                                <div class="icon-box bg-gradient-to-br ${colors.bg}">
+                                    <i class="fa ${item.icon} ${colors.text} text-xl"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 mx-3">
+                                    <div class="flex items-center">
+                                        <h4 class="font-bold text-gray-800 text-sm">${item.name}</h4>
+                                        <span class="ml-2 text-xs px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full">${item.status}</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 leading-snug mt-1">${item.desc}</p>
+                                </div>
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); window.open('${item.url}', '_blank')">
+                                    进入详情
+                                </button>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
+                                <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${item.url}</span>
+                                <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${item.url}', this)">
+                                    <i class="fa fa-copy mr-1"></i>复制
+                                </button>
+                            </div>
                         </div>
-                        <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
-                            <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${item.url}</span>
-                            <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${item.url}', this)">
-                                <i class="fa fa-copy mr-1"></i>复制
-                            </button>
-                        </div>
-                    </div>
-                `;
+                    `;
+                }).join('');
             }
         }
         
