@@ -1281,7 +1281,7 @@
             { name: "PIX-派信娱乐", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-11-11T13:19:31", share: "原始股份：200万枚", progress: "社区建设中" },
             { name: "SPACE-派社区生态", desc: "Pi生态应用市场，汇聚各类优质生态应用，欢迎开发者入驻", icon: "fa-rocket", color: "blue", url: "https://spacepi333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-12-12T03:15:15", share: "已统计：200+生态应用", progress: "生态对接进行中" },
             { name: "实名DID数字凭证", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://mysticring.jiewai.pro/mysticringapp", copy: true, action: "download" },
-            { name: "OPA免费生态挖矿", desc: "参与派生态贡献，免费获得OPA生态代币奖励", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download" }
+            { name: "OPA免费生态挖矿", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815" }
         ];
         
         const ecoDockingList = [
@@ -1347,6 +1347,7 @@
                             <div class="flex-1 min-w-0 mx-3">
                                 <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
                                 <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
+                                ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                             </div>
                             <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
                                 ${btnText}
