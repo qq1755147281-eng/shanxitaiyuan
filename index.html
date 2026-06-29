@@ -1285,7 +1285,8 @@
         ];
         
         const ecoDockingList = [
-            { name: "PiPay支付", desc: "派币支付解决方案，支持派生态内快速转账和支付", icon: "fa-credit-card", status: "开发中", url: "#", color: "green" }
+            { name: "PiPay支付", desc: "派币支付解决方案，支持派生态内快速转账和支付", icon: "fa-credit-card", status: "开发中", url: "#", color: "green" },
+            { name: "数字人民币", desc: "推广中国唯一法定数字货币、推广数字人民币码牌", icon: "fa-yen-sign", color: "red", type: "special", contact: { name: "魏国炳", phone: "15536455536" }, buttons: [{ text: "业务员推广下载APP", url: "#" }, { text: "商家APP下载后台", url: "#" }] }
         ];
         
         const toolsList = [
@@ -1376,34 +1377,68 @@
             const list = document.getElementById('eco-docking-list');
             if (card && list && ecoDockingList.length > 0) {
                 card.classList.remove('hidden');
-                const item = ecoDockingList[0];
-                const colors = colorMap[item.color] || colorMap.blue;
-                // 模仿OPA免费生态挖矿的样式
-                list.innerHTML = `
-                    <div class="bg-white rounded-lg p-4 border border-gray-200">
-                        <div class="flex items-start">
-                            <div class="icon-box bg-gradient-to-br ${colors.bg}">
-                                <i class="fa ${item.icon} ${colors.text} text-xl"></i>
-                            </div>
-                            <div class="flex-1 min-w-0 mx-3">
-                                <div class="flex items-center">
-                                    <h4 class="font-bold text-gray-800 text-sm">${item.name}</h4>
-                                    <span class="ml-2 text-xs px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full">${item.status}</span>
+                list.innerHTML = ecoDockingList.map(item => {
+                    const colors = colorMap[item.color] || colorMap.blue;
+                    
+                    if (item.type === 'special') {
+                        return `
+                            <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-4 text-white shadow-lg shadow-red-200">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fa ${item.icon} text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">${item.name}</h4>
+                                        <p class="text-xs text-red-100 mt-1">${item.desc}</p>
+                                    </div>
                                 </div>
-                                <p class="text-xs text-gray-600 leading-snug mt-1">${item.desc}</p>
+                                <div class="flex flex-col gap-2 mb-4">
+                                    ${item.buttons.map(btn => `
+                                        <button class="w-full py-3 bg-white text-red-600 font-bold rounded-lg text-base hover:bg-red-50 transition-colors" onclick="playSound('click'); window.open('${btn.url}', '_blank')">
+                                            ${btn.text}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                                <div class="pt-3 border-t border-white/20">
+                                    <div class="flex items-center text-sm">
+                                        <i class="fa fa-user mr-2"></i>
+                                        <span>联系人：${item.contact.name}</span>
+                                    </div>
+                                    <div class="flex items-center text-sm mt-1">
+                                        <i class="fa fa-phone mr-2"></i>
+                                        <span>电话：${item.contact.phone}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); window.open('${item.url}', '_blank')">
-                                进入详情
-                            </button>
+                        `;
+                    }
+                    
+                    return `
+                        <div class="bg-white rounded-lg p-4 border border-gray-200">
+                            <div class="flex items-start">
+                                <div class="icon-box bg-gradient-to-br ${colors.bg}">
+                                    <i class="fa ${item.icon} ${colors.text} text-xl"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 mx-3">
+                                    <div class="flex items-center">
+                                        <h4 class="font-bold text-gray-800 text-sm">${item.name}</h4>
+                                        <span class="ml-2 text-xs px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full">${item.status}</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 leading-snug mt-1">${item.desc}</p>
+                                </div>
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); window.open('${item.url}', '_blank')">
+                                    进入详情
+                                </button>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
+                                <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${item.url}</span>
+                                <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${item.url}', this)">
+                                    <i class="fa fa-copy mr-1"></i>复制
+                                </button>
+                            </div>
                         </div>
-                        <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
-                            <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${item.url}</span>
-                            <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${item.url}', this)">
-                                <i class="fa fa-copy mr-1"></i>复制
-                            </button>
-                        </div>
-                    </div>
-                `;
+                    `;
+                }).join('');
             }
         }
         
