@@ -362,6 +362,19 @@
             }
         }
         
+        @keyframes glow-breath {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(251, 191, 36, 0.5), 0 0 20px rgba(239, 68, 68, 0.3), 0 0 30px rgba(251, 191, 36, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(251, 191, 36, 0.8), 0 0 40px rgba(239, 68, 68, 0.6), 0 0 60px rgba(251, 191, 36, 0.4);
+            }
+        }
+        
+        .breath-card {
+            animation: glow-breath 2s ease-in-out infinite;
+        }
+        
         @media (max-width: 480px) {
             .content-container {
                 padding: 10px;
@@ -433,6 +446,27 @@
                 
                 <!-- 主内容区 -->
                 <div class="card overflow-hidden relative">
+                    <!-- 呼吸灯卡片 -->
+                    <div class="breath-card bg-gradient-to-r from-yellow-500/20 via-red-500/20 to-yellow-500/20 rounded-xl p-4 mb-3 border-2 border-yellow-400">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-red-500 rounded-full flex items-center justify-center text-white mr-3 shadow-lg">
+                                <i class="fa fa-external-link text-lg"></i>
+                            </div>
+                            <span class="text-sm font-bold text-gray-800">复制下面网址，进入Pi浏览器，直接浏览所有生态，直接签到</span>
+                        </div>
+                        <div class="flex gap-2 mb-3">
+                            <button class="btn btn-orange flex-1 py-2 text-xs" onclick="playSound('click'); alert('操作视频即将播放...');">
+                                <i class="fa fa-play-circle mr-1"></i>操作视频
+                            </button>
+                        </div>
+                        <div class="flex items-center bg-white/80 rounded-lg p-2 border border-yellow-300">
+                            <span class="text-xs text-gray-600 truncate flex-1" id="eco-url">https://satpi.app</span>
+                            <button class="btn btn-yellow btn-small" onclick="playSound('click'); copyToClipboard('https://satpi.app'); alert('已复制网址到剪贴板！');">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                    </div>
+                    
                     <!-- 三个按钮 -->
                     <div class="flex gap-2 mb-3 mt-2">
                         <button class="btn btn-purple flex-1 py-3 text-sm" onclick="playSound('click'); renderAppList(appList1); hideEcoDocking();">推荐派应用</button>
@@ -1126,6 +1160,21 @@
             if (!audioCtx) {
                 audioCtx = new AudioContext();
             }
+        }
+        
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('复制失败:', err);
+            }
+            document.body.removeChild(textarea);
         }
         
         function playSound(type) {
