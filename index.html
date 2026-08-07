@@ -240,6 +240,25 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
         
+        /* 正方形弹窗：占据屏幕约50% */
+        .modal-square {
+            width: min(50vw, 50vh, 560px) !important;
+            max-width: min(50vw, 50vh, 560px) !important;
+            height: min(50vw, 50vh, 560px);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        @media (max-width: 640px) {
+            .modal-square {
+                width: 92vw !important;
+                max-width: 92vw !important;
+                height: auto;
+                min-height: 70vh;
+            }
+        }
+        
         /* 悬浮圆圈 */
         #floating-circle {
             position: fixed;
@@ -435,7 +454,7 @@
                         </div>
                     </div>
                     <div class="p-3">
-                        <div id="event-date" class="font-bold text-gray-800 text-base mb-2">2026年7月20日 14:30</div>
+                        <div id="event-date" class="font-bold text-gray-800 text-base mb-2">2026年6月30日 14:30</div>
                         <p class="text-gray-600 text-xs mb-1">毕向阳：155 1363 6709</p>
                         <p class="text-gray-600 text-xs mb-1">魏国炳：155 3645 5536</p>
                         <div class="bg-gray-50 p-2 rounded-lg mt-2 border border-gray-100">
@@ -454,27 +473,6 @@
                 
                 <!-- 主内容区 -->
                 <div class="card overflow-hidden relative">
-                    <!-- 呼吸灯卡片 -->
-                    <div class="breath-card bg-gradient-to-r from-yellow-500/20 via-red-500/20 to-yellow-500/20 rounded-xl p-4 mb-3 border-2 border-yellow-400">
-                        <div class="flex items-center mb-3">
-                            <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-red-500 rounded-full flex items-center justify-center text-white mr-3 shadow-lg">
-                                <i class="fa fa-external-link text-lg"></i>
-                            </div>
-                            <span class="text-sm font-bold text-gray-800">复制下面网址，打开派浏览器，直接进入所有派生态</span>
-                        </div>
-                        <div class="flex gap-2 mb-3">
-                            <button class="btn flex-1 py-3 text-base font-bold bg-gradient-to-r from-orange-500 to-red-500 text-white border-2 border-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" onclick="playSound('click'); window.open('https://mysticring.jiewai.pro/Share/#/home?trendsId=814654', '_blank');">
-                                <i class="fa fa-play-circle mr-2"></i>操作视频
-                            </button>
-                        </div>
-                        <div class="flex items-center bg-white/90 rounded-lg p-3 border-2 border-gray-800">
-                            <span class="text-xs text-gray-600 truncate flex-1" id="eco-url">https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad</span>
-                            <button class="btn btn-yellow btn-small border border-gray-800" onclick="playSound('click'); copyToClipboard('https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad'); alert('已复制网址到剪贴板！');">
-                                <i class="fa fa-copy mr-1"></i>复制
-                            </button>
-                        </div>
-                    </div>
-                    
                     <!-- 三个按钮 -->
                     <div class="flex gap-2 mb-3 mt-2">
                         <button class="btn btn-purple flex-1 py-3 text-sm" onclick="playSound('click'); renderAppList(appList1); hideEcoDocking();">推荐派应用</button>
@@ -1143,6 +1141,234 @@
         </div>
     </div>
     
+    <!-- Umap派地图 悬浮弹窗（正方形，屏幕约50%） -->
+    <div id="umap-map-modal" class="modal">
+        <div class="modal-content relative modal-square">
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('umap-map-modal')">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="text-center mb-3 pt-2">
+                <h2 class="text-base font-bold text-blue-800">Umap派地图</h2>
+                <p class="text-gray-600 text-xs mt-1 leading-relaxed">
+                    派币生态地图，看到全国所有的派友俱乐部。<br/>
+                    微信扫码小程序，一键定位身边的派友聚集地。
+                </p>
+            </div>
+            <!-- 长方形SVG展示图：派友俱乐部中国地图分布 -->
+            <div class="w-full rounded-xl overflow-hidden border-2 border-blue-200 bg-blue-50 shadow-inner">
+                <svg viewBox="0 0 600 360" class="w-full h-auto block">
+                    <defs>
+                        <linearGradient id="umapBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#bfdbfe;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="umapLand" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+                        </linearGradient>
+                        <radialGradient id="pulseRed" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                            <stop offset="70%" style="stop-color:#ef4444;stop-opacity:0.6" />
+                            <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0" />
+                        </radialGradient>
+                    </defs>
+                    <!-- 背景 -->
+                    <rect x="0" y="0" width="600" height="360" fill="url(#umapBg)" />
+                    <!-- 网格 -->
+                    <g stroke="#93c5fd" stroke-width="0.8" opacity="0.7">
+                        <line x1="0" y1="60" x2="600" y2="60" />
+                        <line x1="0" y1="120" x2="600" y2="120" />
+                        <line x1="0" y1="180" x2="600" y2="180" />
+                        <line x1="0" y1="240" x2="600" y2="240" />
+                        <line x1="0" y1="300" x2="600" y2="300" />
+                        <line x1="100" y1="0" x2="100" y2="360" />
+                        <line x1="200" y1="0" x2="200" y2="360" />
+                        <line x1="300" y1="0" x2="300" y2="360" />
+                        <line x1="400" y1="0" x2="400" y2="360" />
+                        <line x1="500" y1="0" x2="500" y2="360" />
+                    </g>
+                    <!-- 中国地图简化轮廓 -->
+                    <path d="M110,110
+                        L150,80 L210,70 L280,60 L350,65 L410,80 L460,100
+                        L500,120 L520,160 L510,210 L490,250 L460,280
+                        L420,300 L370,310 L310,305 L250,300 L200,285
+                        L160,260 L130,220 L105,180 Z"
+                        fill="url(#umapLand)" stroke="#1e3a8a" stroke-width="2" opacity="0.9" />
+                    <!-- 派友俱乐部标记点 + 脉冲光圈 -->
+                    <g>
+                        <!-- 北京 -->
+                        <circle cx="400" cy="130" r="22" fill="url(#pulseRed)" />
+                        <circle cx="400" cy="130" r="8" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <text x="400" y="113" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">北京</text>
+                        <!-- 上海 -->
+                        <circle cx="470" cy="210" r="20" fill="url(#pulseRed)" />
+                        <circle cx="470" cy="210" r="7" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <text x="470" y="193" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">上海</text>
+                        <!-- 广州 -->
+                        <circle cx="400" cy="275" r="20" fill="url(#pulseRed)" />
+                        <circle cx="400" cy="275" r="7" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <text x="400" y="298" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">广州</text>
+                        <!-- 成都 -->
+                        <circle cx="260" cy="220" r="18" fill="url(#pulseRed)" />
+                        <circle cx="260" cy="220" r="6.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <text x="260" y="203" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">成都</text>
+                        <!-- 太原 -->
+                        <circle cx="360" cy="160" r="18" fill="url(#pulseRed)" />
+                        <circle cx="360" cy="160" r="6.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <text x="360" y="143" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">太原</text>
+                        <!-- 深圳 -->
+                        <circle cx="420" cy="290" r="16" fill="url(#pulseRed)" />
+                        <circle cx="420" cy="290" r="6" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <!-- 西安 -->
+                        <circle cx="300" cy="190" r="16" fill="url(#pulseRed)" />
+                        <circle cx="300" cy="190" r="6" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <!-- 武汉 -->
+                        <circle cx="370" cy="220" r="14" fill="url(#pulseRed)" />
+                        <circle cx="370" cy="220" r="5.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <!-- 杭州 -->
+                        <circle cx="490" cy="225" r="14" fill="url(#pulseRed)" />
+                        <circle cx="490" cy="225" r="5.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <!-- 乌鲁木齐 -->
+                        <circle cx="150" cy="130" r="14" fill="url(#pulseRed)" />
+                        <circle cx="150" cy="130" r="5.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                        <!-- 哈尔滨 -->
+                        <circle cx="500" cy="75" r="14" fill="url(#pulseRed)" />
+                        <circle cx="500" cy="75" r="5.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
+                    </g>
+                    <!-- 右下角图例 -->
+                    <g transform="translate(470,310)">
+                        <rect x="0" y="0" width="115" height="38" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="1" opacity="0.95" />
+                        <circle cx="18" cy="19" r="5" fill="#ef4444" stroke="#fff" stroke-width="1.5" />
+                        <text x="32" y="24" font-size="11" font-weight="bold" fill="#1e3a8a">派友俱乐部</text>
+                    </g>
+                    <!-- 标题水印 -->
+                    <text x="300" y="35" text-anchor="middle" font-size="18" font-weight="900" fill="#1e3a8a" opacity="0.9">UMAP · 派友生态全国分布图</text>
+                </svg>
+            </div>
+            <div class="mt-4">
+                <button class="btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 border-2 border-blue-900 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all" onclick="playSound('close'); closeModal('umap-map-modal');">
+                    <i class="fa fa-home mr-2"></i>返回首页
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 多派相亲派对 悬浮弹窗（正方形，屏幕约50%） -->
+    <div id="duopai-love-modal" class="modal">
+        <div class="modal-content relative modal-square">
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('duopai-love-modal')">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="text-center mb-3 pt-2">
+                <h2 class="text-base font-bold text-red-800">多派相亲派对</h2>
+                <p class="text-gray-600 text-xs mt-1 leading-relaxed">
+                    多派元宇宙开发的派友相亲平台。<br/>
+                    微信扫码小程序，寻找身边志同道合的派友。
+                </p>
+            </div>
+            <!-- 长方形SVG展示图：红色爱心+男女配对场景 -->
+            <div class="w-full rounded-xl overflow-hidden border-2 border-red-200 bg-red-50 shadow-inner">
+                <svg viewBox="0 0 600 360" class="w-full h-auto block">
+                    <defs>
+                        <linearGradient id="loveBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fff1f2;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#fecdd3;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="bigHeart" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fb7185;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+                        </linearGradient>
+                        <radialGradient id="sparkle" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" style="stop-color:#fef08a;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#fef08a;stop-opacity:0" />
+                        </radialGradient>
+                    </defs>
+                    <!-- 背景 -->
+                    <rect x="0" y="0" width="600" height="360" fill="url(#loveBg)" />
+                    <!-- 漂浮的小爱心装饰 -->
+                    <g fill="#fca5a5" opacity="0.65">
+                        <path d="M70,70c-6,-8 -20,-6 -20,4 c0,10 20,22 20,22 c0,0 20,-12 20,-22 c0,-10 -14,-12 -20,-4 Z" />
+                        <path d="M530,90c-5,-7 -17,-5 -17,3 c0,8 17,18 17,18 c0,0 17,-10 17,-18 c0,-8 -12,-10 -17,-3 Z" />
+                        <path d="M50,260c-4,-6 -13,-4 -13,3 c0,7 13,16 13,16 c0,0 13,-9 13,-16 c0,-7 -9,-9 -13,-3 Z" />
+                        <path d="M550,270c-5,-7 -16,-5 -16,4 c0,9 16,20 16,20 c0,0 16,-11 16,-20 c0,-9 -11,-11 -16,-4 Z" />
+                        <path d="M300,50c-3,-4 -10,-3 -10,2 c0,5 10,12 10,12 c0,0 10,-7 10,-12 c0,-5 -7,-6 -10,-2 Z" />
+                    </g>
+                    <!-- 闪光星星 -->
+                    <g>
+                        <circle cx="120" cy="130" r="10" fill="url(#sparkle)" />
+                        <path d="M120,122 L122,128 L128,130 L122,132 L120,138 L118,132 L112,130 L118,128 Z" fill="#f59e0b" />
+                        <circle cx="490" cy="140" r="10" fill="url(#sparkle)" />
+                        <path d="M490,132 L492,138 L498,140 L492,142 L490,148 L488,142 L482,140 L488,138 Z" fill="#f59e0b" />
+                        <circle cx="150" cy="280" r="8" fill="url(#sparkle)" />
+                        <path d="M150,274 L151.5,278.5 L156,280 L151.5,281.5 L150,286 L148.5,281.5 L144,280 L148.5,278.5 Z" fill="#f59e0b" />
+                        <circle cx="470" cy="290" r="8" fill="url(#sparkle)" />
+                        <path d="M470,284 L471.5,288.5 L476,290 L471.5,291.5 L470,296 L468.5,291.5 L464,290 L468.5,288.5 Z" fill="#f59e0b" />
+                    </g>
+                    <!-- 左侧男生头像（蓝色圆形+男士符号） -->
+                    <g>
+                        <circle cx="190" cy="190" r="62" fill="#3b82f6" stroke="#1e3a8a" stroke-width="3" />
+                        <!-- 男士头像简化 -->
+                        <circle cx="190" cy="172" r="20" fill="#ffffff" />
+                        <path d="M158,235 C158,210 222,210 222,235 L222,245 L158,245 Z" fill="#ffffff" />
+                        <!-- 男士符号 ♂ -->
+                        <g transform="translate(232,118)">
+                            <circle cx="12" cy="28" r="10" fill="none" stroke="#ffffff" stroke-width="3.5" />
+                            <line x1="19" y1="21" x2="34" y2="6" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                            <line x1="28" y1="6" x2="34" y2="6" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                            <line x1="34" y1="6" x2="34" y2="12" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                        </g>
+                        <text x="190" y="280" text-anchor="middle" font-size="18" font-weight="900" fill="#1e3a8a">派先生</text>
+                    </g>
+                    <!-- 中间大爱心 + 箭头 -->
+                    <g transform="translate(300,180)">
+                        <!-- 爱心连接 -->
+                        <path d="M0,0
+                            C-26,-28 -68,-28 -68,-3
+                            C-68,26 0,62 0,62
+                            C0,62 68,26 68,-3
+                            C68,-28 26,-28 0,0 Z"
+                            fill="url(#bigHeart)" stroke="#991b1b" stroke-width="2.5" />
+                        <!-- 丘比特之箭 -->
+                        <g transform="rotate(-30)">
+                            <line x1="-110" y1="5" x2="40" y2="5" stroke="#78350f" stroke-width="3" stroke-linecap="round" />
+                            <!-- 箭头 -->
+                            <polygon points="40,-8 58,5 40,18" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+                            <!-- 箭尾羽毛 -->
+                            <path d="M-110,5 L-125,-6 M-110,5 L-128,5 M-110,5 L-125,16" stroke="#78350f" stroke-width="2.5" stroke-linecap="round" />
+                        </g>
+                        <!-- 爱心中间文字 -->
+                        <text x="0" y="10" text-anchor="middle" font-size="20" font-weight="900" fill="#ffffff" style="font-family:Georgia,serif;">LOVE</text>
+                    </g>
+                    <!-- 右侧女生头像（粉色圆形+女士符号） -->
+                    <g>
+                        <circle cx="410" cy="190" r="62" fill="#ec4899" stroke="#9d174d" stroke-width="3" />
+                        <!-- 女士头像简化（加蝴蝶结） -->
+                        <path d="M395,147 L385,137 L380,147 L387,150 L380,157 L392,152 L398,157 L400,147 Z" fill="#be185d" />
+                        <circle cx="410" cy="172" r="20" fill="#ffffff" />
+                        <path d="M378,235 C378,210 442,210 442,235 L442,245 L378,245 Z" fill="#ffffff" />
+                        <!-- 长发 -->
+                        <path d="M390,158 C380,170 378,190 382,210 L380,215 C372,192 376,166 392,155 Z" fill="#ffffff" opacity="0.95" />
+                        <path d="M430,158 C440,170 442,190 438,210 L440,215 C448,192 444,166 428,155 Z" fill="#ffffff" opacity="0.95" />
+                        <!-- 女士符号 ♀ -->
+                        <g transform="translate(454,120)">
+                            <circle cx="12" cy="12" r="10" fill="none" stroke="#ffffff" stroke-width="3.5" />
+                            <line x1="12" y1="22" x2="12" y2="44" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                            <line x1="2" y1="34" x2="22" y2="34" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                        </g>
+                        <text x="410" y="280" text-anchor="middle" font-size="18" font-weight="900" fill="#9d174d">派女士</text>
+                    </g>
+                    <!-- 底部标题 -->
+                    <text x="300" y="338" text-anchor="middle" font-size="20" font-weight="900" fill="#991b1b">多派元宇宙 · 派友相亲派对</text>
+                </svg>
+            </div>
+            <div class="mt-4">
+                <button class="btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r from-red-500 to-red-700 border-2 border-red-900 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all" onclick="playSound('close'); closeModal('duopai-love-modal');">
+                    <i class="fa fa-home mr-2"></i>返回首页
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // 音效系统
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -1249,23 +1475,22 @@
         
         // 应用数据
         const appList1 = [
-            { name: "TELTLK - 派生态", desc: "派友必备社群生态", icon: "fa-comment", color: "orange", url: "https://www.teltlk.com/#/register?invite=sss444", copyUrl: "https://www.teltlk.com/#/register?invite=sss444", copy: true },
-            { name: "Satrpi派链孵化器", desc: "派生态部署工具", icon: "fa-line-chart", color: "purple", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726270", copyUrl: "startpi.app", copy: true, action: "video" },
-            { name: "hashpi - 哈希派", desc: "链上加密&NFT确权", icon: "fa-hashtag", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726278", copyUrl: "hashpi.app", copy: true, action: "video" },
-            { name: "Piday - 派对土地", desc: "购买全球虚拟土地", icon: "fa-map", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769963", copyUrl: "https://piday.world/zh-CN?ic=MGV2PG", copy: true, action: "video" },
-            { name: "CrowdFundPi众筹", desc: "邀请码FiA5y5HE", icon: "fa-leaf", color: "green", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=769965", copyUrl: "https://crowdfundpi.com", copy: true, action: "video" },
-            { name: "Pipet - π宠物紫色", desc: "链游NFT养成宠物", icon: "fa-paw", color: "purple", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=726289", copyUrl: "https://pipet.me/#/pages/login/login?invite=419296", copy: true, action: "video" },
-            { name: "DOPAI多派元宇宙", desc: "元宇宙模块资产/场景", icon: "fa-bullseye", color: "orange", url: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copyUrl: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copy: true },
-            { name: "月光宝盒", desc: "抽奖盲盒NFT应用", icon: "fa-diamond", color: "pink", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777570", copyUrl: "https://openbox.world?referral_code=15536455536", copy: true, action: "video" },
-            { name: "VCITY - 第五城城市", desc: "第五城？签到积分NFT", icon: "fa-building", color: "teal", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", copyUrl: "https://120", copy: true, action: "video" },
-            { name: "观看操作视频", desc: "观看派生态操作指南视频", icon: "fa-video-camera", color: "gray", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=776018", copyUrl: "https://110", copy: true, action: "video" }
+            { type: "eco-main", name: "派导航（不可下载，必须从派浏览器进入）", desc: "精选派99个派币生态。Pi Dapp生态。复制下面网址粘贴派浏览器进入。", icon: "fa-external-link", color: "orange", videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=814654", copyUrl: "https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad" },
+            { type: "t-talk", name: "TELTLK - 派生态（可下载APP）", desc: "派友必备社群生态", icon: "fa-comment", color: "orange", url: "https://www.teltlk.com/#/register?invite=sss444", copyUrl: "https://www.teltlk.com/#/register?invite=sss444", copy: true },
+            { type: "dopai", name: "DOPAI多派元宇宙（可下载APP）", desc: "元宇宙模块资产/场景", icon: "fa-bullseye", color: "orange", url: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copyUrl: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copy: true },
+            { name: "PIX-派信娱乐", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-11-11T13:19:31", share: "原始股份：200万枚", progress: "社区建设中" },
+            { name: "SPACE-派社区生态", desc: "Pi生态应用市场，汇聚各类优质生态应用，欢迎开发者入驻", icon: "fa-rocket", color: "blue", url: "https://spacepi333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-12-12T03:15:15", share: "已统计：200+生态应用", progress: "生态对接进行中" },
+            { type: "umap-map", name: "Umap派地图（微信扫码小程序）", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
+            { type: "duopai-love", name: "多派相亲派对（微信扫码小程序）", desc: "多派元宇宙开发的派友相亲平台。", icon: "fa-heart", color: "red", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" }
         ];
         
         const appList2 = [
-            { name: "PIX-派信娱乐", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-11-11T13:19:31", share: "原始股份：200万枚", progress: "社区建设中" },
-            { name: "SPACE-派社区生态", desc: "Pi生态应用市场，汇聚各类优质生态应用，欢迎开发者入驻", icon: "fa-rocket", color: "blue", url: "https://spacepi333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-12-12T03:15:15", share: "已统计：200+生态应用", progress: "生态对接进行中" },
             { name: "实名DID数字凭证", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://mysticring.jiewai.pro/mysticringapp", copy: true, action: "download" },
-            { name: "OPA免费生态挖矿", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815" }
+            { name: "OPA免费生态挖矿", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815" },
+            { type: "umap-map", name: "湖南鼎俏日用品有限公司", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
+            { type: "umap-map", name: "青蓝山泉免费喝水", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
+            { type: "umap-map", name: "数字oad银行送红包", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
+            { type: "umap-map", name: "备用", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" }
         ];
         
         const ecoDockingList = [
@@ -1301,6 +1526,272 @@
             const container = document.getElementById('app-list');
             const isEco = appList === appList2;
             container.innerHTML = appList.map((app, index) => {
+                // 派生态主卡片（特殊样式）
+                if (app.type === 'eco-main') {
+                    return `
+                        <div class="bg-gradient-to-r from-yellow-50 via-orange-50 to-red-50 rounded-xl p-4 border-2 border-orange-300 shadow-md mb-2">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 rounded-full bg-white border-2 border-blue-500 flex items-center justify-center mr-3 shadow-lg flex-shrink-0 overflow-hidden">
+                                    <svg viewBox="0 0 100 100" class="w-10 h-10">
+                                        <defs>
+                                            <linearGradient id="hexBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                                <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
+                                            </linearGradient>
+                                        </defs>
+                                        <polygon points="50,8 92,78 8,78" fill="url(#hexBlue)" />
+                                        <polygon points="50,92 8,22 92,22" fill="url(#hexBlue)" />
+                                        <text x="50" y="62" text-anchor="middle" font-weight="bold" font-size="28" fill="#ffffff" style="font-family: 'PingFang SC','Microsoft YaHei',sans-serif;">派</text>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-800">${app.name}</h4>
+                                    <p class="text-xs text-gray-600 mt-0.5">${app.desc}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <button class="btn flex-1 py-3 text-base font-bold bg-gradient-to-r from-orange-500 to-red-500 text-white border-2 border-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
+                                    <i class="fa fa-play-circle mr-2"></i>操作视频
+                                </button>
+                            </div>
+                            <div class="flex items-center bg-white/90 rounded-lg p-3 border-2 border-gray-800">
+                                <span class="text-xs text-gray-600 truncate flex-1">${app.copyUrl}</span>
+                                <button class="btn btn-yellow btn-small border border-gray-800" onclick="playSound('click'); copyToClipboard('${app.copyUrl}'); alert('已复制网址到剪贴板！');">
+                                    <i class="fa fa-copy mr-1"></i>复制
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                // TELTLK - 派生态卡片（自定义小写t图标，颜色保持橙色）
+                if (app.type === 't-talk') {
+                    const colors = colorMap[app.color] || colorMap.orange;
+                    let btnText = '点击下载';
+                    let extra = '';
+                    if (app.share || app.progress) {
+                        extra = `
+                            <div class="mt-3 pt-3 border-t border-purple-200 bg-purple-50 rounded-lg p-3">
+                                ${app.share ? `<div class="flex items-center mb-1"><i class="fa fa-coins text-purple-600 mr-2 text-xs"></i><span class="text-xs font-bold text-purple-800">${app.share}</span></div>` : ''}
+                                ${app.progress ? `<div class="flex items-center"><i class="fa fa-spinner fa-spin text-green-600 mr-2 text-xs"></i><span class="text-xs text-green-700">${app.progress}</span></div>` : ''}
+                            </div>
+                        `;
+                    }
+                    const iconHTML = `
+                        <svg viewBox="0 0 100 100" class="w-10 h-10">
+                            <defs>
+                                <linearGradient id="tTalkOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#c2410c;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="49" fill="url(#tTalkOrange)" />
+                            <text x="50" y="74" text-anchor="middle" font-weight="900" font-size="86" fill="#ffffff" style="font-family: Arial, Helvetica, sans-serif;">t</text>
+                        </svg>
+                    `;
+                    return `
+                        <div class="app-item">
+                            <div class="flex items-start">
+                                <div class="icon-box bg-gradient-to-br ${colors.bg} flex items-center justify-center">
+                                    ${iconHTML}
+                                </div>
+                                <div class="flex-1 min-w-0 mx-3">
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
+                                    ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
+                                </div>
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
+                                    ${btnText}
+                                </button>
+                            </div>
+                            ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
+                            ${extra}
+                            ${app.copy ? `
+                                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
+                                    <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
+                                    <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
+                                        <i class="fa fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+                // DOPAI多派元宇宙卡片（π派符号SVG图标，颜色保持橙色）
+                if (app.type === 'dopai') {
+                    const colors = colorMap[app.color] || colorMap.orange;
+                    let btnText = '点击下载';
+                    let extra = '';
+                    if (app.share || app.progress) {
+                        extra = `
+                            <div class="mt-3 pt-3 border-t border-purple-200 bg-purple-50 rounded-lg p-3">
+                                ${app.share ? `<div class="flex items-center mb-1"><i class="fa fa-coins text-purple-600 mr-2 text-xs"></i><span class="text-xs font-bold text-purple-800">${app.share}</span></div>` : ''}
+                                ${app.progress ? `<div class="flex items-center"><i class="fa fa-spinner fa-spin text-green-600 mr-2 text-xs"></i><span class="text-xs text-green-700">${app.progress}</span></div>` : ''}
+                            </div>
+                        `;
+                    }
+                    const iconHTML = `
+                        <svg viewBox="0 0 100 100" class="w-10 h-10">
+                            <defs>
+                                <linearGradient id="dopaiYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="49" fill="url(#dopaiYellow)" />
+                            <text x="50" y="76" text-anchor="middle" font-weight="900" font-size="90" fill="#ffffff" style="font-family: 'Times New Roman', Georgia, serif; font-style: italic;">π</text>
+                        </svg>
+                    `;
+                    return `
+                        <div class="app-item">
+                            <div class="flex items-start">
+                                <div class="icon-box bg-gradient-to-br ${colors.bg} flex items-center justify-center">
+                                    ${iconHTML}
+                                </div>
+                                <div class="flex-1 min-w-0 mx-3">
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
+                                    ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
+                                </div>
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
+                                    ${btnText}
+                                </button>
+                            </div>
+                            ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
+                            ${extra}
+                            ${app.copy ? `
+                                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
+                                    <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
+                                    <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
+                                        <i class="fa fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+                // Umap派地图卡片（蓝色网格地球SVG图标）
+                if (app.type === 'umap-map') {
+                    const colors = colorMap[app.color] || colorMap.blue;
+                    let btnText = '点击进入详情';
+                    if (app.btnText) btnText = app.btnText;
+                    let extra = '';
+                    if (app.share || app.progress) {
+                        extra = `
+                            <div class="mt-3 pt-3 border-t border-purple-200 bg-purple-50 rounded-lg p-3">
+                                ${app.share ? `<div class="flex items-center mb-1"><i class="fa fa-coins text-purple-600 mr-2 text-xs"></i><span class="text-xs font-bold text-purple-800">${app.share}</span></div>` : ''}
+                                ${app.progress ? `<div class="flex items-center"><i class="fa fa-spinner fa-spin text-green-600 mr-2 text-xs"></i><span class="text-xs text-green-700">${app.progress}</span></div>` : ''}
+                            </div>
+                        `;
+                    }
+                    const iconHTML = `
+                        <svg viewBox="0 0 100 100" class="w-10 h-10">
+                            <defs>
+                                <linearGradient id="umapBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="49" fill="url(#umapBlue)" />
+                            <!-- 经线（纵向网格线） -->
+                            <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                            <ellipse cx="50" cy="50" rx="40" ry="48" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                            <!-- 纬线（横向网格线） -->
+                            <ellipse cx="50" cy="50" rx="48" ry="12" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                            <ellipse cx="50" cy="50" rx="48" ry="28" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                            <ellipse cx="50" cy="50" rx="48" ry="44" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                            <!-- 中心赤道与本初子午线 -->
+                            <line x1="2" y1="50" x2="98" y2="50" stroke="#ffffff" stroke-width="1.6" opacity="0.95" />
+                            <line x1="50" y1="2" x2="50" y2="98" stroke="#ffffff" stroke-width="1.6" opacity="0.95" />
+                        </svg>
+                    `;
+                    return `
+                        <div class="app-item">
+                            <div class="flex items-start">
+                                <div class="icon-box bg-gradient-to-br ${colors.bg} flex items-center justify-center">
+                                    ${iconHTML}
+                                </div>
+                                <div class="flex-1 min-w-0 mx-3">
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
+                                    ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
+                                </div>
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); openModal('umap-map-modal');">
+                                    ${btnText}
+                                </button>
+                            </div>
+                            ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
+                            ${extra}
+                            ${app.copy ? `
+                                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
+                                    <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
+                                    <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
+                                        <i class="fa fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+                // 多派相亲派对卡片（红色爱心SVG图标）
+                if (app.type === 'duopai-love') {
+                    const colors = colorMap[app.color] || colorMap.red;
+                    let btnText = '点击进入详情';
+                    if (app.btnText) btnText = app.btnText;
+                    let extra = '';
+                    if (app.share || app.progress) {
+                        extra = `
+                            <div class="mt-3 pt-3 border-t border-purple-200 bg-purple-50 rounded-lg p-3">
+                                ${app.share ? `<div class="flex items-center mb-1"><i class="fa fa-coins text-purple-600 mr-2 text-xs"></i><span class="text-xs font-bold text-purple-800">${app.share}</span></div>` : ''}
+                                ${app.progress ? `<div class="flex items-center"><i class="fa fa-spinner fa-spin text-green-600 mr-2 text-xs"></i><span class="text-xs text-green-700">${app.progress}</span></div>` : ''}
+                            </div>
+                        `;
+                    }
+                    const iconHTML = `
+                        <svg viewBox="0 0 100 100" class="w-10 h-10">
+                            <defs>
+                                <linearGradient id="loveRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f87171;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="49" fill="url(#loveRed)" />
+                            <!-- 红色爱心路径 -->
+                            <path d="M50,80
+                                C20,60 10,40 25,28
+                                C35,20 45,24 50,34
+                                C55,24 65,20 75,28
+                                C90,40 80,60 50,80 Z"
+                                fill="#ffffff" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" />
+                        </svg>
+                    `;
+                    return `
+                        <div class="app-item">
+                            <div class="flex items-start">
+                                <div class="icon-box bg-gradient-to-br ${colors.bg} flex items-center justify-center">
+                                    ${iconHTML}
+                                </div>
+                                <div class="flex-1 min-w-0 mx-3">
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
+                                    ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
+                                </div>
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); openModal('duopai-love-modal');">
+                                    ${btnText}
+                                </button>
+                            </div>
+                            ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
+                            ${extra}
+                            ${app.copy ? `
+                                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
+                                    <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
+                                    <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
+                                        <i class="fa fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
                 const colors = colorMap[app.color] || colorMap.blue;
                 
                 // 根据action字段确定按钮文字，支持自定义按钮文字
@@ -1315,7 +1806,7 @@
                 const highlightClass = app.highlight ? 'ring-2 ring-purple-400 shadow-lg shadow-purple-200 scale-105' : '';
                 
                 let extra = '';
-                if (isEco && (app.share || app.progress)) {
+                if (app.share || app.progress) {
                     extra = `
                         <div class="mt-3 pt-3 border-t border-purple-200 bg-purple-50 rounded-lg p-3">
                             ${app.share ? `<div class="flex items-center mb-1"><i class="fa fa-coins text-purple-600 mr-2 text-xs"></i><span class="text-xs font-bold text-purple-800">${app.share}</span></div>` : ''}
@@ -1352,7 +1843,8 @@
                 `;
             }).join('');
             
-            if (isEco) startAppCountdowns();
+            const hasCountdown = appList.some(a => a.countdown && a.targetDate);
+            if (hasCountdown) startAppCountdowns(appList);
         }
         
         // 显示/隐藏对接中的生态卡片
@@ -1490,11 +1982,11 @@
         
         // 事件倒计时
         function startEventCountdown() {
-            const target = new Date('2026-07-20T14:30:00');
+            const target = new Date('2026-08-16T14:30:00');
             const targetTime = target.getTime();
             
             // 格式化日期显示
-            document.getElementById('event-date').textContent = '2026年7月20日 14:30';
+            document.getElementById('event-date').textContent = '2026年8月16日 14:30';
             
             const update = () => {
                 const currentTime = new Date().getTime();
@@ -1520,8 +2012,8 @@
         }
         
         // 应用倒计时
-        function startAppCountdowns() {
-            appList2.forEach((app, index) => {
+        function startAppCountdowns(appList) {
+            appList.forEach((app, index) => {
                 if (app.countdown && app.targetDate) {
                     const target = new Date(app.targetDate).getTime();
                     const el = document.getElementById(`cd-${index}`);
