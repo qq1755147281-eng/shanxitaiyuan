@@ -487,9 +487,9 @@
                 <div class="card overflow-hidden relative">
                     <!-- 三个按钮 -->
                     <div class="flex gap-2 mb-3 mt-2">
-                        <button class="btn btn-purple flex-1 py-3 text-sm" onclick="playSound('click'); renderAppList(appList1); hideEcoDocking();">推荐派应用</button>
-                        <button class="btn btn-blue flex-1 py-3 text-sm" onclick="playSound('click'); renderAppList(appList2); showEcoDocking();">生态对接</button>
-                        <button class="btn btn-green flex-1 py-3 text-sm" onclick="playSound('click'); renderAppList(toolsList); hideEcoDocking();">工具</button>
+                        <button class="btn btn-purple flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(appList1); hideEcoDocking();">推荐派应用</button>
+                        <button class="btn btn-blue flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(appList2); showEcoDocking();">生态对接</button>
+                        <button class="btn btn-green flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(toolsList); hideEcoDocking();">工具</button>
                     </div>
                     
                     <!-- 应用列表 -->
@@ -1159,24 +1159,15 @@
             <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg z-10" onclick="playSound('close'); closeModal('umap-map-modal')">
                 <i class="fa fa-times"></i>
             </button>
-            <div class="text-center mb-3 pt-4">
-                <div id="umap-modal-icon" class="w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-3 bg-blue-600">
-                    <i class="fa fa-globe text-xl"></i>
-                </div>
+            <div class="text-center mb-3 pt-2">
                 <h2 id="umap-modal-title" class="text-base font-bold text-blue-800">Umap派地图</h2>
-                <p id="umap-modal-desc" class="text-gray-600 text-xs mt-2 leading-relaxed px-2">
+                <p id="umap-modal-desc" class="text-gray-600 text-xs mt-1 leading-relaxed px-2">
                     派币生态地图，看到全国所有的派友俱乐部。<br/>
                     微信扫码小程序，一键定位身边的派友聚集地。
                 </p>
             </div>
-            <!-- 动态话术区块 -->
-            <div id="umap-modal-features" class="rounded-xl p-3 bg-blue-50 border-2 border-blue-200">
-                <h3 id="umap-modal-features-title" class="font-semibold text-blue-800 text-xs mb-2">核心亮点</h3>
-                <ul id="umap-modal-features-list" class="text-xs text-gray-700 space-y-1.5 leading-relaxed">
-                    <li>• 全国派友俱乐部分布</li>
-                    <li>• 微信扫码即可进入</li>
-                </ul>
-            </div>
+            <!-- 长方形SVG展示图（动态） -->
+            <div id="umap-modal-image" class="w-full rounded-xl overflow-hidden border-2 border-blue-200 bg-blue-50 shadow-inner flex-1 flex items-center justify-center"></div>
             <div class="mt-4">
                 <button id="umap-modal-cta" class="btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 border-2 border-blue-900 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all" onclick="playSound('close'); closeModal('umap-map-modal');">
                     <i class="fa fa-home mr-2"></i>返回首页
@@ -1453,6 +1444,15 @@
             red: { bg: "from-red-100 to-red-200", text: "text-red-600", btn: "btn-red" }
         };
         
+        // 渲染应用名称：括号内容换到第二行，字号小一号
+        function formatAppName(name) {
+            const m = name.match(/^(.+?)[\(（](.+?)[\)）]\s*$/);
+            if (m) {
+                return `<h4 class="font-bold text-gray-800 text-sm mb-0 leading-tight">${m[1].trim()}</h4><div class="text-xs text-gray-500 leading-tight mt-0.5">（${m[2]}）</div>`;
+            }
+            return `<h4 class="font-bold text-gray-800 text-sm mb-1">${name}</h4>`;
+        }
+
         // 渲染应用列表
         function renderAppList(appList) {
             const container = document.getElementById('app-list');
@@ -1481,13 +1481,11 @@
                                     <p class="text-xs text-gray-600 mt-0.5">${app.desc}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-2 mb-3 justify-end">
-                                <button class="btn btn-orange font-bold shadow-md hover:shadow-lg border border-gray-800 px-4 py-1.5 text-sm" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
+                            <div class="flex items-center gap-2 mb-3">
+                                <button class="btn btn-orange font-bold shadow-md hover:shadow-lg border border-gray-800 px-6 py-1.5 text-sm flex-shrink-0" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
                                     <i class="fa fa-play-circle mr-1"></i>操作视频
                                 </button>
-                            </div>
-                            <div class="flex items-center bg-white/90 rounded-lg px-2 py-1 border-2 border-gray-800 gap-2">
-                                <span class="text-xs text-gray-600 truncate flex-1 min-w-0">${app.copyUrl}</span>
+                                <span class="text-xs text-gray-600 truncate bg-white/90 rounded-lg px-2 py-1 border-2 border-gray-800 max-w-[55%] min-w-0 text-center">${app.copyUrl}</span>
                                 <button class="btn btn-yellow btn-small border border-gray-800 flex-shrink-0 px-2" onclick="playSound('click'); copyToClipboard('${app.copyUrl}'); alert('已复制网址到剪贴板！');">
                                     <i class="fa fa-copy mr-1"></i>复制
                                 </button>
@@ -1527,7 +1525,7 @@
                                     ${iconHTML}
                                 </div>
                                 <div class="flex-1 min-w-0 mx-3">
-                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    ${formatAppName(app.name)}
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
@@ -1580,7 +1578,7 @@
                                     ${iconHTML}
                                 </div>
                                 <div class="flex-1 min-w-0 mx-3">
-                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    ${formatAppName(app.name)}
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
@@ -1716,11 +1714,11 @@
                                     ${iconHTML}
                                 </div>
                                 <div class="flex-1 min-w-0 mx-3">
-                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    ${formatAppName(app.name)}
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
-                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); openUmapModal('${JSON.stringify(app).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}');">
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick='playSound("click"); openUmapModal(${JSON.stringify(app).replace(/\\/g, "\\\\").replace(/'/g, "\\&#39;").replace(/"/g, "&quot;")});'>
                                     ${btnText}
                                 </button>
                             </div>
@@ -1776,7 +1774,7 @@
                                     ${iconHTML}
                                 </div>
                                 <div class="flex-1 min-w-0 mx-3">
-                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    ${formatAppName(app.name)}
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
@@ -1826,7 +1824,7 @@
                                 <i class="fa ${app.icon} ${colors.text} text-xl"></i>
                             </div>
                             <div class="flex-1 min-w-0 mx-3">
-                                <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                ${formatAppName(app.name)}
                                 <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                 ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                             </div>
@@ -1999,34 +1997,131 @@
             };
             const c = themeColors[theme] || themeColors.blue;
 
-            const iconBox = document.getElementById('umap-modal-icon');
-            iconBox.className = 'w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-3 ' + c.icon;
-            iconBox.innerHTML = '<i class="fa ' + (app.icon || 'fa-globe') + ' text-xl"></i>';
-
             const titleEl = document.getElementById('umap-modal-title');
             titleEl.textContent = app.name;
             titleEl.className = 'text-base font-bold ' + c.title;
 
-            document.getElementById('umap-modal-desc').textContent = app.desc || '';
+            const descEl = document.getElementById('umap-modal-desc');
+            descEl.textContent = '';
+            if (app.desc) {
+                descEl.innerHTML = app.desc + (app.btnText ? '<br/>' + app.btnText + '，了解更多详情。' : '<br/>微信扫码小程序一键体验。');
+            } else {
+                descEl.innerHTML = '点击下方按钮，查看更多详情。';
+            }
 
-            const featuresBox = document.getElementById('umap-modal-features');
-            featuresBox.className = 'rounded-xl p-3 border-2 ' + c.box;
-
-            const fTitle = document.getElementById('umap-modal-features-title');
-            fTitle.className = 'font-semibold text-xs mb-2 ' + c.title;
-            fTitle.textContent = app.modalFeaturesTitle || '核心亮点';
-
-            const list = document.getElementById('umap-modal-features-list');
-            const features = app.modalFeatures || [];
-            list.innerHTML = features.length
-                ? features.map(f => '<li>• ' + f + '</li>').join('')
-                : '<li>• 更多信息即将上线</li>';
+            // 动态SVG：按 iconType 切换主题插画
+            const imgBox = document.getElementById('umap-modal-image');
+            imgBox.className = 'w-full rounded-xl overflow-hidden border-2 shadow-inner flex-1 flex items-center justify-center ' + c.box;
+            imgBox.innerHTML = getUmapModalSvg(app.iconType || 'globe', app.name);
 
             const cta = document.getElementById('umap-modal-cta');
             cta.className = 'btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r ' + c.btn + ' border-2 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all';
-            cta.innerHTML = '<i class="fa fa-arrow-right mr-2"></i>' + (app.modalCTA || '立即参与');
+            cta.innerHTML = '<i class="fa fa-home mr-2"></i>返回首页';
 
             openModal('umap-map-modal');
+        }
+
+        // 根据 iconType 返回不同的长方形展示插画
+        function getUmapModalSvg(type, appName) {
+            if (type === 'soap') {
+                return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
+                    <defs>
+                        <linearGradient id="dqBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fce7f3;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#fbcfe8;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="dqBot" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f472b6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#be185d;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="600" height="360" fill="url(#dqBg)" />
+                    <g><rect x="130" y="70" width="50" height="16" rx="3" fill="#9d174d" /><rect x="138" y="84" width="34" height="8" fill="#9d174d" /><rect x="110" y="92" width="90" height="180" rx="10" fill="url(#dqBot)" stroke="#831843" stroke-width="2" /><rect x="120" y="120" width="70" height="100" rx="3" fill="#ffffff" /><text x="155" y="160" text-anchor="middle" font-size="14" font-weight="900" fill="#9d174d">鼎俏</text><text x="155" y="185" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">洗衣液</text></g>
+                    <g><rect x="265" y="60" width="50" height="16" rx="3" fill="#9d174d" /><rect x="273" y="74" width="34" height="8" fill="#9d174d" /><rect x="245" y="82" width="90" height="190" rx="10" fill="url(#dqBot)" stroke="#831843" stroke-width="2" /><rect x="255" y="110" width="70" height="100" rx="3" fill="#ffffff" /><text x="290" y="150" text-anchor="middle" font-size="14" font-weight="900" fill="#9d174d">鼎俏</text><text x="290" y="175" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">洗洁精</text></g>
+                    <g><rect x="400" y="70" width="50" height="16" rx="3" fill="#9d174d" /><rect x="408" y="84" width="34" height="8" fill="#9d174d" /><rect x="380" y="92" width="90" height="180" rx="10" fill="url(#dqBot)" stroke="#831843" stroke-width="2" /><rect x="390" y="120" width="70" height="100" rx="3" fill="#ffffff" /><text x="425" y="160" text-anchor="middle" font-size="14" font-weight="900" fill="#9d174d">鼎俏</text><text x="425" y="185" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">洁厕净</text></g>
+                    <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#9d174d">湖南鼎俏 · 老百姓的实惠日用</text>
+                </svg>`;
+            }
+            if (type === 'water') {
+                return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
+                    <defs>
+                        <linearGradient id="wtBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#dcfce7;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#bbf7d0;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="600" height="360" fill="url(#wtBg)" />
+                    <path d="M0,260 L120,140 L200,200 L320,100 L420,180 L520,140 L600,200 L600,360 L0,360 Z" fill="#86efac" />
+                    <path d="M0,300 L100,200 L220,260 L340,180 L460,240 L600,200 L600,360 L0,360 Z" fill="#4ade80" />
+                    <circle cx="500" cy="100" r="35" fill="#fbbf24" />
+                    <circle cx="500" cy="100" r="48" fill="#fef08a" opacity="0.5" />
+                    <g><rect x="270" y="80" width="60" height="20" rx="3" fill="#16a34a" /><rect x="278" y="98" width="44" height="10" fill="#16a34a" /><rect x="240" y="108" width="120" height="180" rx="15" fill="#ffffff" stroke="#15803d" stroke-width="2" /><ellipse cx="300" cy="200" rx="40" ry="50" fill="#86efac" opacity="0.7" /><text x="300" y="180" text-anchor="middle" font-size="16" font-weight="900" fill="#15803d">青蓝山泉</text><text x="300" y="220" text-anchor="middle" font-size="10" fill="#15803d">天然健康好水</text><text x="300" y="265" text-anchor="middle" font-size="13" font-weight="900" fill="#15803d">免费喝水</text></g>
+                    <g fill="#3b82f6" opacity="0.75"><path d="M150,250 C145,240 135,242 135,255 C135,268 150,285 150,285 C150,285 165,268 165,255 C165,242 155,240 150,250 Z" /><path d="M450,250 C445,240 435,242 435,255 C435,268 450,285 450,285 C450,285 465,268 465,255 C465,242 455,240 450,250 Z" /></g>
+                    <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#15803d">青蓝山泉 · 喝水也能赚钱</text>
+                </svg>`;
+            }
+            if (type === 'redpacket') {
+                return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
+                    <defs>
+                        <linearGradient id="oadBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fee2e2;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#fecaca;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="600" height="360" fill="url(#oadBg)" />
+                    <g><rect x="100" y="180" width="400" height="120" rx="10" fill="#1e40af" stroke="#1e3a8a" stroke-width="3" /><rect x="100" y="200" width="400" height="20" fill="#fbbf24" /><rect x="120" y="240" width="60" height="20" rx="3" fill="#fbbf24" /><text x="120" y="288" font-size="14" font-weight="bold" fill="#ffffff">1234 5678 9012 3456</text><text x="420" y="270" font-size="14" font-weight="bold" fill="#fbbf24">数字oad</text></g>
+                    <g><rect x="370" y="60" width="140" height="120" rx="8" fill="#dc2626" stroke="#fbbf24" stroke-width="3" /><circle cx="440" cy="100" r="20" fill="#fbbf24" /><text x="440" y="108" text-anchor="middle" font-size="24" font-weight="900" fill="#dc2626">¥</text><text x="440" y="150" text-anchor="middle" font-size="14" font-weight="900" fill="#fbbf24">99%补贴</text></g>
+                    <g><circle cx="100" cy="80" r="18" fill="#fbbf24" stroke="#d97706" stroke-width="2" /><text x="100" y="88" text-anchor="middle" font-size="16" font-weight="900" fill="#d97706">¥</text></g>
+                    <g><circle cx="200" cy="120" r="15" fill="#fbbf24" stroke="#d97706" stroke-width="2" /><text x="200" y="127" text-anchor="middle" font-size="14" font-weight="900" fill="#d97706">¥</text></g>
+                    <g><circle cx="500" cy="280" r="18" fill="#fbbf24" stroke="#d97706" stroke-width="2" /><text x="500" y="288" text-anchor="middle" font-size="16" font-weight="900" fill="#d97706">¥</text></g>
+                    <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#991b1b">数字银行 · 登录领高额补贴</text>
+                </svg>`;
+            }
+            // 默认 / 备用 / globe → Umap派地图
+            if (type === 'spare' || (appName && appName.indexOf('备用') === 0)) {
+                return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
+                    <defs>
+                        <linearGradient id="spBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#bfdbfe;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="600" height="360" fill="url(#spBg)" />
+                    <circle cx="300" cy="170" r="90" fill="#ffffff" stroke="#1e40af" stroke-width="4" />
+                    <line x1="300" y1="170" x2="300" y2="110" stroke="#1e40af" stroke-width="4" stroke-linecap="round" />
+                    <line x1="300" y1="170" x2="345" y2="170" stroke="#1e40af" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="300" cy="170" r="6" fill="#dc2626" />
+                    <g fill="#1e40af" font-weight="bold" font-size="14"><text x="300" y="105" text-anchor="middle">12</text><text x="370" y="175" text-anchor="middle">3</text><text x="300" y="240" text-anchor="middle">6</text><text x="230" y="175" text-anchor="middle">9</text></g>
+                    <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#1e3a8a">更多生态 · 敬请期待</text>
+                </svg>`;
+            }
+            // Umap派地图默认
+            return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
+                <defs>
+                    <linearGradient id="umBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#bfdbfe;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="600" height="360" fill="url(#umBg)" />
+                <g stroke="#60a5fa" stroke-width="1" opacity="0.4" fill="none">
+                    <line x1="0" y1="60" x2="600" y2="60" /><line x1="0" y1="120" x2="600" y2="120" /><line x1="0" y1="180" x2="600" y2="180" /><line x1="0" y1="240" x2="600" y2="240" /><line x1="0" y1="300" x2="600" y2="300" />
+                    <line x1="100" y1="0" x2="100" y2="360" /><line x1="200" y1="0" x2="200" y2="360" /><line x1="300" y1="0" x2="300" y2="360" /><line x1="400" y1="0" x2="400" y2="360" /><line x1="500" y1="0" x2="500" y2="360" />
+                </g>
+                <circle cx="300" cy="170" r="90" fill="#3b82f6" stroke="#1e3a8a" stroke-width="3" />
+                <ellipse cx="300" cy="170" rx="36" ry="90" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
+                <ellipse cx="300" cy="170" rx="72" ry="90" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
+                <ellipse cx="300" cy="170" rx="90" ry="22" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
+                <ellipse cx="300" cy="170" rx="90" ry="50" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
+                <ellipse cx="300" cy="170" rx="90" ry="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
+                <line x1="210" y1="170" x2="390" y2="170" stroke="#ffffff" stroke-width="2.5" opacity="0.95" />
+                <line x1="300" y1="80" x2="300" y2="260" stroke="#ffffff" stroke-width="2.5" opacity="0.95" />
+                <g fill="#dc2626" stroke="#7f1d1d" stroke-width="2"><path d="M150,90 C140,80 125,82 125,95 C125,108 150,128 150,128 C150,128 175,108 175,95 C175,82 160,80 150,90 Z" /><circle cx="150" cy="100" r="6" fill="#ffffff" /></g>
+                <g fill="#dc2626" stroke="#7f1d1d" stroke-width="2"><path d="M450,110 C440,100 425,102 425,115 C425,128 450,148 450,148 C450,148 475,128 475,115 C475,102 460,100 450,110 Z" /><circle cx="450" cy="120" r="6" fill="#ffffff" /></g>
+                <g fill="#dc2626" stroke="#7f1d1d" stroke-width="2"><path d="M180,260 C170,250 155,252 155,265 C155,278 180,298 180,298 C180,298 205,278 205,265 C205,252 190,250 180,260 Z" /><circle cx="180" cy="270" r="6" fill="#ffffff" /></g>
+                <g fill="#dc2626" stroke="#7f1d1d" stroke-width="2"><path d="M420,250 C410,240 395,242 395,255 C395,268 420,288 420,288 C420,288 445,268 445,255 C445,242 430,240 420,250 Z" /><circle cx="420" cy="260" r="6" fill="#ffffff" /></g>
+                <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#1e3a8a">Umap派地图 · 全国派友聚集地</text>
+            </svg>`;
         }
         
         // 事件倒计时
