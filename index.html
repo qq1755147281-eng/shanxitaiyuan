@@ -85,7 +85,19 @@
             color: white;
             box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
         }
-        
+
+        .btn-pink {
+            background: linear-gradient(135deg, #be185d 0%, #ec4899 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
         .btn-orange {
             background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
             color: white;
@@ -1141,112 +1153,32 @@
         </div>
     </div>
     
-    <!-- Umap派地图 悬浮弹窗（正方形，屏幕约50%） -->
+    <!-- 生态对接 悬浮弹窗（动态内容，根据点击的卡片显示不同话术） -->
     <div id="umap-map-modal" class="modal">
         <div class="modal-content relative modal-square">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('umap-map-modal')">
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg z-10" onclick="playSound('close'); closeModal('umap-map-modal')">
                 <i class="fa fa-times"></i>
             </button>
-            <div class="text-center mb-3 pt-2">
-                <h2 class="text-base font-bold text-blue-800">Umap派地图</h2>
-                <p class="text-gray-600 text-xs mt-1 leading-relaxed">
+            <div class="text-center mb-3 pt-4">
+                <div id="umap-modal-icon" class="w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-3 bg-blue-600">
+                    <i class="fa fa-globe text-xl"></i>
+                </div>
+                <h2 id="umap-modal-title" class="text-base font-bold text-blue-800">Umap派地图</h2>
+                <p id="umap-modal-desc" class="text-gray-600 text-xs mt-2 leading-relaxed px-2">
                     派币生态地图，看到全国所有的派友俱乐部。<br/>
                     微信扫码小程序，一键定位身边的派友聚集地。
                 </p>
             </div>
-            <!-- 长方形SVG展示图：派友俱乐部中国地图分布 -->
-            <div class="w-full rounded-xl overflow-hidden border-2 border-blue-200 bg-blue-50 shadow-inner">
-                <svg viewBox="0 0 600 360" class="w-full h-auto block">
-                    <defs>
-                        <linearGradient id="umapBg" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#bfdbfe;stop-opacity:1" />
-                        </linearGradient>
-                        <linearGradient id="umapLand" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
-                        </linearGradient>
-                        <radialGradient id="pulseRed" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
-                            <stop offset="70%" style="stop-color:#ef4444;stop-opacity:0.6" />
-                            <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0" />
-                        </radialGradient>
-                    </defs>
-                    <!-- 背景 -->
-                    <rect x="0" y="0" width="600" height="360" fill="url(#umapBg)" />
-                    <!-- 网格 -->
-                    <g stroke="#93c5fd" stroke-width="0.8" opacity="0.7">
-                        <line x1="0" y1="60" x2="600" y2="60" />
-                        <line x1="0" y1="120" x2="600" y2="120" />
-                        <line x1="0" y1="180" x2="600" y2="180" />
-                        <line x1="0" y1="240" x2="600" y2="240" />
-                        <line x1="0" y1="300" x2="600" y2="300" />
-                        <line x1="100" y1="0" x2="100" y2="360" />
-                        <line x1="200" y1="0" x2="200" y2="360" />
-                        <line x1="300" y1="0" x2="300" y2="360" />
-                        <line x1="400" y1="0" x2="400" y2="360" />
-                        <line x1="500" y1="0" x2="500" y2="360" />
-                    </g>
-                    <!-- 中国地图简化轮廓 -->
-                    <path d="M110,110
-                        L150,80 L210,70 L280,60 L350,65 L410,80 L460,100
-                        L500,120 L520,160 L510,210 L490,250 L460,280
-                        L420,300 L370,310 L310,305 L250,300 L200,285
-                        L160,260 L130,220 L105,180 Z"
-                        fill="url(#umapLand)" stroke="#1e3a8a" stroke-width="2" opacity="0.9" />
-                    <!-- 派友俱乐部标记点 + 脉冲光圈 -->
-                    <g>
-                        <!-- 北京 -->
-                        <circle cx="400" cy="130" r="22" fill="url(#pulseRed)" />
-                        <circle cx="400" cy="130" r="8" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <text x="400" y="113" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">北京</text>
-                        <!-- 上海 -->
-                        <circle cx="470" cy="210" r="20" fill="url(#pulseRed)" />
-                        <circle cx="470" cy="210" r="7" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <text x="470" y="193" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">上海</text>
-                        <!-- 广州 -->
-                        <circle cx="400" cy="275" r="20" fill="url(#pulseRed)" />
-                        <circle cx="400" cy="275" r="7" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <text x="400" y="298" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">广州</text>
-                        <!-- 成都 -->
-                        <circle cx="260" cy="220" r="18" fill="url(#pulseRed)" />
-                        <circle cx="260" cy="220" r="6.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <text x="260" y="203" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">成都</text>
-                        <!-- 太原 -->
-                        <circle cx="360" cy="160" r="18" fill="url(#pulseRed)" />
-                        <circle cx="360" cy="160" r="6.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <text x="360" y="143" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">太原</text>
-                        <!-- 深圳 -->
-                        <circle cx="420" cy="290" r="16" fill="url(#pulseRed)" />
-                        <circle cx="420" cy="290" r="6" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <!-- 西安 -->
-                        <circle cx="300" cy="190" r="16" fill="url(#pulseRed)" />
-                        <circle cx="300" cy="190" r="6" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <!-- 武汉 -->
-                        <circle cx="370" cy="220" r="14" fill="url(#pulseRed)" />
-                        <circle cx="370" cy="220" r="5.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <!-- 杭州 -->
-                        <circle cx="490" cy="225" r="14" fill="url(#pulseRed)" />
-                        <circle cx="490" cy="225" r="5.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <!-- 乌鲁木齐 -->
-                        <circle cx="150" cy="130" r="14" fill="url(#pulseRed)" />
-                        <circle cx="150" cy="130" r="5.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                        <!-- 哈尔滨 -->
-                        <circle cx="500" cy="75" r="14" fill="url(#pulseRed)" />
-                        <circle cx="500" cy="75" r="5.5" fill="#ef4444" stroke="#fff" stroke-width="2" />
-                    </g>
-                    <!-- 右下角图例 -->
-                    <g transform="translate(470,310)">
-                        <rect x="0" y="0" width="115" height="38" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="1" opacity="0.95" />
-                        <circle cx="18" cy="19" r="5" fill="#ef4444" stroke="#fff" stroke-width="1.5" />
-                        <text x="32" y="24" font-size="11" font-weight="bold" fill="#1e3a8a">派友俱乐部</text>
-                    </g>
-                    <!-- 标题水印 -->
-                    <text x="300" y="35" text-anchor="middle" font-size="18" font-weight="900" fill="#1e3a8a" opacity="0.9">UMAP · 派友生态全国分布图</text>
-                </svg>
+            <!-- 动态话术区块 -->
+            <div id="umap-modal-features" class="rounded-xl p-3 bg-blue-50 border-2 border-blue-200">
+                <h3 id="umap-modal-features-title" class="font-semibold text-blue-800 text-xs mb-2">核心亮点</h3>
+                <ul id="umap-modal-features-list" class="text-xs text-gray-700 space-y-1.5 leading-relaxed">
+                    <li>• 全国派友俱乐部分布</li>
+                    <li>• 微信扫码即可进入</li>
+                </ul>
             </div>
             <div class="mt-4">
-                <button class="btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 border-2 border-blue-900 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all" onclick="playSound('close'); closeModal('umap-map-modal');">
+                <button id="umap-modal-cta" class="btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 border-2 border-blue-900 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all" onclick="playSound('close'); closeModal('umap-map-modal');">
                     <i class="fa fa-home mr-2"></i>返回首页
                 </button>
             </div>
@@ -1478,19 +1410,19 @@
             { type: "eco-main", name: "派导航（不可下载，必须从派浏览器进入）", desc: "精选派99个派币生态。Pi Dapp生态。复制下面网址粘贴派浏览器进入。", icon: "fa-external-link", color: "orange", videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=814654", copyUrl: "https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad" },
             { type: "t-talk", name: "TELTLK - 派生态（可下载APP）", desc: "派友必备社群生态", icon: "fa-comment", color: "orange", url: "https://www.teltlk.com/#/register?invite=sss444", copyUrl: "https://www.teltlk.com/#/register?invite=sss444", copy: true },
             { type: "dopai", name: "DOPAI多派元宇宙（可下载APP）", desc: "元宇宙模块资产/场景", icon: "fa-bullseye", color: "orange", url: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copyUrl: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copy: true },
-            { name: "PIX-派信娱乐", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-11-11T13:19:31", share: "原始股份：200万枚", progress: "社区建设中" },
+            { name: "Happypi欢乐派（可下载app）", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-11-11T13:19:31", share: "原始股份：200万枚", progress: "社区建设中" },
             { name: "SPACE-派社区生态", desc: "Pi生态应用市场，汇聚各类优质生态应用，欢迎开发者入驻", icon: "fa-rocket", color: "blue", url: "https://spacepi333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-12-12T03:15:15", share: "已统计：200+生态应用", progress: "生态对接进行中" },
             { type: "umap-map", name: "Umap派地图（微信扫码小程序）", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
             { type: "duopai-love", name: "多派相亲派对（微信扫码小程序）", desc: "多派元宇宙开发的派友相亲平台。", icon: "fa-heart", color: "red", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" }
         ];
         
         const appList2 = [
-            { name: "实名DID数字凭证", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://mysticring.jiewai.pro/mysticringapp", copy: true, action: "download" },
-            { name: "OPA免费生态挖矿", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815" },
-            { type: "umap-map", name: "湖南鼎俏日用品有限公司", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
-            { type: "umap-map", name: "青蓝山泉免费喝水", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
-            { type: "umap-map", name: "数字oad银行送红包", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
-            { type: "umap-map", name: "备用", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" }
+            { name: "界外app（可下载app）", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://mysticring.jiewai.pro/mysticringapp", copy: true, action: "download" },
+            { name: "OPA免费生态挖矿（可下载app）", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815" },
+            { type: "umap-map", name: "湖南鼎俏日用品（微信小程序）", desc: "湖南鼎俏科技有限公司出品，老百姓的实惠日用品牌", icon: "fa-globe", color: "pink", iconType: "soap", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入", modalFeaturesTitle: "品牌亮点", modalCTA: "立即了解", modalFeatures: ["湖南鼎俏科技自主研发，源头工厂直供", "主营洗衣液、洁厕净等日用清洁系列", "价格亲民实惠，老百姓都用得起", "品质保障，好用不贵、家庭必备"] },
+            { type: "umap-map", name: "青蓝山泉免费喝水（微信小程序）", desc: "微信小程序上线，高品质山泉健康水，喝水还能赚钱", icon: "fa-globe", color: "green", iconType: "water", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入", modalFeaturesTitle: "喝水赚钱攻略", modalCTA: "立即免费喝水", modalFeatures: ["微信小程序即可使用，19.9 / 29.9 / 39.9 / 99.9 / 128.9 多档套餐可选", "每日签到送红包、签到越多返现越多", "花出去的钱还能拿回来，相当于实现免费喝水", "源自天然山泉，水质纯净健康，家人放心饮用"] },
+            { type: "umap-map", name: "数字oad银行送红包（微信小程序）", desc: "对接国家数字银行政策，登录绑卡即享高额补贴", icon: "fa-globe", color: "red", iconType: "redpacket", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入", modalFeaturesTitle: "红包补贴详情", modalCTA: "立即领红包", modalFeatures: ["对接国家数字银行，严格遵循国家政策，安全合规有保障", "登录绑定银行卡后，银行直接补贴 99% 的费用", "您只需支付 1 分钱 — 5 元基础快递费", "买到价值几十、几百甚至更高的优质商品", "各大银行补贴 30 / 50 / 80 / 100 元不等，数字人民币额外补贴 150 元"] },
+            { type: "umap-map", name: "备用（微信小程序）", desc: "更多生态应用持续对接中，敬请期待", icon: "fa-globe", color: "blue", iconType: "globe", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "敬请期待", modalFeaturesTitle: "生态占位", modalCTA: "敬请期待", modalFeatures: ["更多优质生态应用对接中…", "持续更新，敬请关注", "如有意向合作，可联系客服"] }
         ];
         
         const ecoDockingList = [
@@ -1514,11 +1446,11 @@
             purple: { bg: "from-purple-100 to-purple-200", text: "text-purple-600", btn: "btn-purple" },
             blue: { bg: "from-blue-100 to-blue-200", text: "text-blue-600", btn: "btn-blue" },
             green: { bg: "from-green-100 to-green-200", text: "text-green-600", btn: "btn-green" },
-            pink: { bg: "from-pink-100 to-pink-200", text: "text-pink-600", btn: "btn-purple" },
+            pink: { bg: "from-pink-100 to-pink-200", text: "text-pink-600", btn: "btn-pink" },
             teal: { bg: "from-teal-100 to-teal-200", text: "text-teal-600", btn: "btn-green" },
             gray: { bg: "from-gray-100 to-gray-200", text: "text-gray-600", btn: "btn-gray" },
             yellow: { bg: "from-yellow-100 to-yellow-200", text: "text-yellow-600", btn: "btn-orange" },
-            red: { bg: "from-red-100 to-red-200", text: "text-red-600", btn: "btn-orange" }
+            red: { bg: "from-red-100 to-red-200", text: "text-red-600", btn: "btn-red" }
         };
         
         // 渲染应用列表
@@ -1549,14 +1481,14 @@
                                     <p class="text-xs text-gray-600 mt-0.5">${app.desc}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-2 mb-3">
-                                <button class="btn flex-1 py-3 text-base font-bold bg-gradient-to-r from-orange-500 to-red-500 text-white border-2 border-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
-                                    <i class="fa fa-play-circle mr-2"></i>操作视频
+                            <div class="flex gap-2 mb-3 justify-end">
+                                <button class="btn btn-orange font-bold shadow-md hover:shadow-lg border border-gray-800 px-4 py-1.5 text-sm" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
+                                    <i class="fa fa-play-circle mr-1"></i>操作视频
                                 </button>
                             </div>
-                            <div class="flex items-center bg-white/90 rounded-lg p-3 border-2 border-gray-800">
-                                <span class="text-xs text-gray-600 truncate flex-1">${app.copyUrl}</span>
-                                <button class="btn btn-yellow btn-small border border-gray-800" onclick="playSound('click'); copyToClipboard('${app.copyUrl}'); alert('已复制网址到剪贴板！');">
+                            <div class="flex items-center bg-white/90 rounded-lg px-2 py-1 border-2 border-gray-800 gap-2">
+                                <span class="text-xs text-gray-600 truncate flex-1 min-w-0">${app.copyUrl}</span>
+                                <button class="btn btn-yellow btn-small border border-gray-800 flex-shrink-0 px-2" onclick="playSound('click'); copyToClipboard('${app.copyUrl}'); alert('已复制网址到剪贴板！');">
                                     <i class="fa fa-copy mr-1"></i>复制
                                 </button>
                             </div>
@@ -1683,27 +1615,100 @@
                             </div>
                         `;
                     }
-                    const iconHTML = `
-                        <svg viewBox="0 0 100 100" class="w-10 h-10">
-                            <defs>
-                                <linearGradient id="umapBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
-                                </linearGradient>
-                            </defs>
-                            <circle cx="50" cy="50" r="49" fill="url(#umapBlue)" />
-                            <!-- 经线（纵向网格线） -->
-                            <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
-                            <ellipse cx="50" cy="50" rx="40" ry="48" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
-                            <!-- 纬线（横向网格线） -->
-                            <ellipse cx="50" cy="50" rx="48" ry="12" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
-                            <ellipse cx="50" cy="50" rx="48" ry="28" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
-                            <ellipse cx="50" cy="50" rx="48" ry="44" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
-                            <!-- 中心赤道与本初子午线 -->
-                            <line x1="2" y1="50" x2="98" y2="50" stroke="#ffffff" stroke-width="1.6" opacity="0.95" />
-                            <line x1="50" y1="2" x2="50" y2="98" stroke="#ffffff" stroke-width="1.6" opacity="0.95" />
-                        </svg>
-                    `;
+                    const iconHTML = (() => {
+                        const t = app.iconType || 'globe';
+                        if (t === 'soap') {
+                            // 湖南鼎俏：日用品瓶子
+                            return `
+                                <svg viewBox="0 0 100 100" class="w-10 h-10">
+                                    <defs>
+                                        <linearGradient id="bgSoap" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#be185d;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle cx="50" cy="50" r="49" fill="url(#bgSoap)" />
+                                    <!-- 瓶盖 -->
+                                    <rect x="42" y="18" width="16" height="10" rx="2" fill="#ffffff" />
+                                    <!-- 瓶颈 -->
+                                    <rect x="44" y="27" width="12" height="6" fill="#ffffff" />
+                                    <!-- 瓶身 -->
+                                    <rect x="30" y="32" width="40" height="52" rx="5" fill="#ffffff" />
+                                    <!-- 标签 -->
+                                    <rect x="34" y="40" width="32" height="34" rx="2" fill="#fce7f3" />
+                                    <text x="50" y="55" text-anchor="middle" font-size="9" font-weight="bold" fill="#be185d">鼎俏</text>
+                                    <text x="50" y="68" text-anchor="middle" font-size="6" fill="#be185d">日用品</text>
+                                </svg>
+                            `;
+                        }
+                        if (t === 'water') {
+                            // 青蓝山泉：两瓶水
+                            return `
+                                <svg viewBox="0 0 100 100" class="w-10 h-10">
+                                    <defs>
+                                        <linearGradient id="bgWater" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle cx="50" cy="50" r="49" fill="url(#bgWater)" />
+                                    <!-- 左瓶 -->
+                                    <rect x="18" y="30" width="24" height="54" rx="4" fill="#ffffff" />
+                                    <rect x="26" y="20" width="8" height="12" rx="1" fill="#ffffff" />
+                                    <ellipse cx="30" cy="58" rx="7" ry="14" fill="#86efac" opacity="0.6" />
+                                    <text x="30" y="78" text-anchor="middle" font-size="6" font-weight="bold" fill="#15803d">泉</text>
+                                    <!-- 右瓶 -->
+                                    <rect x="58" y="30" width="24" height="54" rx="4" fill="#ffffff" />
+                                    <rect x="66" y="20" width="8" height="12" rx="1" fill="#ffffff" />
+                                    <ellipse cx="70" cy="58" rx="7" ry="14" fill="#86efac" opacity="0.6" />
+                                    <text x="70" y="78" text-anchor="middle" font-size="6" font-weight="bold" fill="#15803d">泉</text>
+                                </svg>
+                            `;
+                        }
+                        if (t === 'redpacket') {
+                            // 数字oad：银行卡 + 红包
+                            return `
+                                <svg viewBox="0 0 100 100" class="w-10 h-10">
+                                    <defs>
+                                        <linearGradient id="bgRedpacket" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#b91c1c;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle cx="50" cy="50" r="49" fill="url(#bgRedpacket)" />
+                                    <!-- 银行卡（下方） -->
+                                    <rect x="14" y="48" width="56" height="34" rx="3" fill="#ffffff" />
+                                    <rect x="14" y="55" width="56" height="6" fill="#fbbf24" />
+                                    <rect x="20" y="68" width="18" height="3" rx="1" fill="#dc2626" opacity="0.4" />
+                                    <rect x="42" y="68" width="22" height="3" rx="1" fill="#dc2626" opacity="0.4" />
+                                    <!-- 红包（上方叠加） -->
+                                    <rect x="52" y="18" width="34" height="30" rx="3" fill="#dc2626" stroke="#fbbf24" stroke-width="1.5" />
+                                    <circle cx="69" cy="30" r="5" fill="#fbbf24" />
+                                    <text x="69" y="34" text-anchor="middle" font-size="6" font-weight="bold" fill="#dc2626">¥</text>
+                                    <text x="69" y="44" text-anchor="middle" font-size="5" font-weight="bold" fill="#fbbf24">红包</text>
+                                </svg>
+                            `;
+                        }
+                        // 默认：地球（备用 / Umap派地图）
+                        return `
+                            <svg viewBox="0 0 100 100" class="w-10 h-10">
+                                <defs>
+                                    <linearGradient id="umapBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="50" cy="50" r="49" fill="url(#umapBlue)" />
+                                <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                                <ellipse cx="50" cy="50" rx="40" ry="48" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                                <ellipse cx="50" cy="50" rx="48" ry="12" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                                <ellipse cx="50" cy="50" rx="48" ry="28" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                                <ellipse cx="50" cy="50" rx="48" ry="44" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.85" />
+                                <line x1="2" y1="50" x2="98" y2="50" stroke="#ffffff" stroke-width="1.6" opacity="0.95" />
+                                <line x1="50" y1="2" x2="50" y2="98" stroke="#ffffff" stroke-width="1.6" opacity="0.95" />
+                            </svg>
+                        `;
+                    })();
                     return `
                         <div class="app-item">
                             <div class="flex items-start">
@@ -1715,7 +1720,7 @@
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
-                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); openModal('umap-map-modal');">
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); openUmapModal('${JSON.stringify(app).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}');">
                                     ${btnText}
                                 </button>
                             </div>
@@ -1978,6 +1983,50 @@
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
             document.body.style.overflow = '';
+        }
+
+        // 生态对接弹窗：动态填充标题、描述、亮点列表、按钮文案
+        function openUmapModal(appJson) {
+            const app = typeof appJson === 'string' ? JSON.parse(appJson) : appJson;
+            const theme = app.color || 'blue';
+            const themeColors = {
+                pink:  { icon: 'bg-pink-600',  box: 'bg-pink-50 border-pink-200',  title: 'text-pink-800',  btn: 'from-pink-500 to-pink-700 border-pink-900' },
+                green: { icon: 'bg-green-600', box: 'bg-green-50 border-green-200', title: 'text-green-800', btn: 'from-green-500 to-green-700 border-green-900' },
+                red:   { icon: 'bg-red-600',   box: 'bg-red-50 border-red-200',    title: 'text-red-800',   btn: 'from-red-500 to-red-700 border-red-900' },
+                blue:  { icon: 'bg-blue-600',  box: 'bg-blue-50 border-blue-200',  title: 'text-blue-800',  btn: 'from-blue-500 to-blue-700 border-blue-900' },
+                orange:{ icon: 'bg-orange-600',box: 'bg-orange-50 border-orange-200',title:'text-orange-800',btn: 'from-orange-500 to-orange-700 border-orange-900' },
+                purple:{ icon: 'bg-purple-600',box: 'bg-purple-50 border-purple-200',title:'text-purple-800',btn: 'from-purple-500 to-purple-700 border-purple-900' }
+            };
+            const c = themeColors[theme] || themeColors.blue;
+
+            const iconBox = document.getElementById('umap-modal-icon');
+            iconBox.className = 'w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-3 ' + c.icon;
+            iconBox.innerHTML = '<i class="fa ' + (app.icon || 'fa-globe') + ' text-xl"></i>';
+
+            const titleEl = document.getElementById('umap-modal-title');
+            titleEl.textContent = app.name;
+            titleEl.className = 'text-base font-bold ' + c.title;
+
+            document.getElementById('umap-modal-desc').textContent = app.desc || '';
+
+            const featuresBox = document.getElementById('umap-modal-features');
+            featuresBox.className = 'rounded-xl p-3 border-2 ' + c.box;
+
+            const fTitle = document.getElementById('umap-modal-features-title');
+            fTitle.className = 'font-semibold text-xs mb-2 ' + c.title;
+            fTitle.textContent = app.modalFeaturesTitle || '核心亮点';
+
+            const list = document.getElementById('umap-modal-features-list');
+            const features = app.modalFeatures || [];
+            list.innerHTML = features.length
+                ? features.map(f => '<li>• ' + f + '</li>').join('')
+                : '<li>• 更多信息即将上线</li>';
+
+            const cta = document.getElementById('umap-modal-cta');
+            cta.className = 'btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r ' + c.btn + ' border-2 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all';
+            cta.innerHTML = '<i class="fa fa-arrow-right mr-2"></i>' + (app.modalCTA || '立即参与');
+
+            openModal('umap-map-modal');
         }
         
         // 事件倒计时
