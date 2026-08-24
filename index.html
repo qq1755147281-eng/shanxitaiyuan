@@ -52,6 +52,24 @@
             margin-bottom: 12px;
             border: 1px solid rgba(0,0,0,0.04);
         }
+
+        /* 绿色发光小点（用于声明块前） */
+        .glow-dot {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            min-width: 9px;
+            min-height: 9px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 4px #10b981, 0 0 8px #34d399, 0 0 14px rgba(16, 185, 129, 0.6);
+            animation: glowPulse 1.8s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%   { box-shadow: 0 0 4px #10b981, 0 0 8px #34d399, 0 0 14px rgba(16,185,129,0.6); opacity: 1; }
+            50%  { box-shadow: 0 0 7px #10b981, 0 0 14px #6ee7b7, 0 0 22px rgba(16,185,129,0.85); opacity: 1; }
+            100% { box-shadow: 0 0 4px #10b981, 0 0 8px #34d399, 0 0 14px rgba(16,185,129,0.6); opacity: 1; }
+        }
         
         .btn {
             padding: 10px 20px;
@@ -769,7 +787,7 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-base font-bold text-gray-800">派币当前价格</h3>
-                            <p class="text-xs text-gray-500">每小时更新一次</p>
+                            <p class="text-xs text-gray-500">实时更新 · 每秒刷新一次</p>
                         </div>
                     </div>
                     <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-5 border border-yellow-200 text-center shadow-sm">
@@ -787,12 +805,44 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-base font-bold text-gray-800">派币价格走势图</h3>
-                            <p class="text-xs text-gray-500" id="pi-chart-range">按小时：0.08 ~ 0.11 美元</p>
+                            <p class="text-xs text-gray-500" id="pi-chart-range">实时走势：每秒滚动更新 · 0.08 ~ 0.11 美元</p>
                         </div>
                     </div>
 
                     <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-3 border border-gray-200">
                         <div id="pi-chart" style="height: 240px;"></div>
+                    </div>
+
+                    <!-- 全球交易所价格声明 -->
+                    <div class="mt-4 p-4 rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 via-white to-blue-50 shadow-inner">
+                        <div class="flex items-center mb-3">
+                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white mr-2 shadow">
+                                <i class="fa fa-globe"></i>
+                            </div>
+                            <h4 class="font-bold text-green-800 text-sm">全球交易所价格声明</h4>
+                        </div>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">全球交易所价格</span>：凡不以交易所价格为主的，所有价格都是耍流氓。</span>
+                            </li>
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">不对接银行变现</span>：任何声称可以直接银行变现的渠道，均需谨慎核实。</span>
+                            </li>
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">不对接暴富之说</span>：不存在"稳赚不赔""一夜暴富"的承诺价格。</span>
+                            </li>
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">共识价格</span>：交易所价格是全球币圈人所认可的共识价格。</span>
+                            </li>
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">请仔细学习并分辨</span>：理性看待市场价格，不轻信"内部价""承诺价"等诱导信息。</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
@@ -2191,7 +2241,41 @@
         const PRICE_MIN = 0.08;
         const PRICE_MAX = 0.11;
         const PRICE_MID = 0.095;
-        let fluctuationDirection = 1;
+        // 图表显示的点数（窗口大小），每秒推进一个点
+        const CHART_WINDOW = 168;
+        let piChartPoints = []; // {time, price}
+        let chartDrawPending = false;
+        let _piTick = 0;
+
+        // ---------- 每秒价格步进的固定公式 ----------
+        // 规则：
+        //   u = sin(tick * 9.137 + 3.7) * 10.827, 再取小数部分 => 0~1
+        //   stepAmp = 0.001 + u * 0.004    =>   0.001 ~ 0.005
+        //   direction: 当价格 <= PRICE_MIN 强制正；>= PRICE_MAX 强制负；否则用"周期波+伪随机"确定方向
+        //   输出：nextPrice 夹紧在 [PRICE_MIN, PRICE_MAX]
+        function stepPiPrice(prevPrice) {
+            _piTick++;
+            const p = Math.sin(_piTick * 9.137 + 3.7) * 10.827;
+            const u = p - Math.floor(p); // 0 ~ 1
+            const stepAmp = 0.001 + u * 0.004; // 0.001 ~ 0.005
+            let dir;
+            if (prevPrice <= PRICE_MIN + 0.0001) dir = 1; // 触底必须向上
+            else if (prevPrice >= PRICE_MAX - 0.0001) dir = -1; // 触顶必须向下
+            else {
+                // 周期波 + 伪随机方向交替，保证上下走动
+                const wave = Math.sin((_piTick / 37) * Math.PI * 2);
+                const rnd = (u - 0.5) * 2; // -1 ~ 1
+                dir = (wave + rnd) >= 0 ? 1 : -1;
+                // 如果按 dir + stepAmp 会直接越界，就反向走（避免出现"越界再回弹=0 变化"）
+                const wouldOverflow = (dir === 1 && prevPrice + stepAmp > PRICE_MAX)
+                                   || (dir === -1 && prevPrice - stepAmp < PRICE_MIN);
+                if (wouldOverflow) dir = -dir;
+            }
+            let next = prevPrice + dir * stepAmp;
+            // 夹紧兜底
+            next = Math.max(PRICE_MIN, Math.min(PRICE_MAX, next));
+            return Number(next.toFixed(5));
+        }
         
         let priceAlertData = {
             targetPrice: 0,
@@ -2199,29 +2283,22 @@
             isSet: false
         };
         
-        // 生成从 2026-08-24 00:00 开始，按小时连续 7 天的价格数据
-        // 价格在 0.08 ~ 0.11 美元之间上下浮动，每个小时有小波动
+        // 生成从 2026-08-24 00:00 开始，按小时连续 7 天的基础趋势数据（用于初始化图表窗口）
         function generateHourlyPriceData() {
             const START_DATE = new Date(2026, 7, 24, 0, 0, 0); // 2026-08-24 00:00
             const HOURS = 7 * 24; // 7 天共 168 小时
             const data = [];
-            // 用可复现的随机：基于小时数的伪随机，保证每次显示一致
-            // 加入"每小时上下浮动" + "持续趋势"，让价格在区间内真实波动
             let price = PRICE_MID;
             for (let h = 0; h < HOURS; h++) {
                 const t = START_DATE.getTime() + h * 3600 * 1000;
                 const pseudo = Math.sin(h * 12.9898 + 42.1) * 43758.5453;
                 const rand = pseudo - Math.floor(pseudo); // 0~1
-                // 小时级随机波动 ±0.003
                 const hourlyWave = (rand - 0.5) * 0.006;
-                // 周期性波动（3.5 天一个波段），幅度 ±0.012
                 const cycleWave = Math.sin((h / 84) * Math.PI * 2) * 0.012;
-                // 长周期缓慢趋势
                 const trendWave = Math.sin((h / 168) * Math.PI * 2) * 0.004;
                 price = PRICE_MID + hourlyWave + cycleWave + trendWave;
-                // 夹到 [PRICE_MIN, PRICE_MAX]
                 price = Math.max(PRICE_MIN, Math.min(PRICE_MAX, price));
-                data.push({ time: t, price: price });
+                data.push({ time: t, price: Number(price.toFixed(5)) });
             }
             return data;
         }
@@ -2231,21 +2308,69 @@
             const month = d.getMonth() + 1;
             const day = d.getDate();
             const hour = d.getHours();
-            // 只在 0 点显示日期，其他显示小时
+            const minute = d.getMinutes();
+            // 秒级密集数据：只在 0 分 / 30 分打点，避免重叠
+            if (total >= 120) {
+                if (minute === 0) return `${pad2(hour)}:00`;
+                if (minute === 30) return `${pad2(hour)}:30`;
+                return '';
+            }
             if (hour === 0) return `${month}/${day}`;
             if (hour === 6 || hour === 12 || hour === 18) return `${hour}:00`;
             return '';
         }
 
+        function pad2(n) { return n.toString().padStart(2, '0'); }
+
+        // 初始化图表窗口：末尾种子价之后按秒级步进生成 CHART_WINDOW 个点
+        function initChartWindow() {
+            const hourly = generateHourlyPriceData();
+            let seedPrice = hourly[hourly.length - 1].price;
+            const seedTime = hourly[hourly.length - 1].time; // 2026-08-30 23:00
+            const now = Date.now();
+            // 若当前真实时间晚于种子时间+窗口，就把起点拉回"现在-窗口秒"，让末端对应当前时间
+            const baseTime = now > seedTime + CHART_WINDOW * 1000
+                ? now - CHART_WINDOW * 1000
+                : seedTime;
+            const points = [];
+            _piTick = 0;
+            let p = seedPrice;
+            for (let i = 0; i < CHART_WINDOW; i++) {
+                p = stepPiPrice(p);
+                points.push({ time: baseTime + i * 1000, price: p });
+            }
+            piChartPoints = points;
+            currentPiPrice = points[points.length - 1].price;
+        }
+
+        function tickPiChart() {
+            if (piChartPoints.length === 0) { initChartWindow(); return; }
+            const last = piChartPoints[piChartPoints.length - 1];
+            const nextPrice = stepPiPrice(last.price);
+            const nextTime = Date.now();
+            piChartPoints.push({ time: nextTime, price: nextPrice });
+            if (piChartPoints.length > CHART_WINDOW) piChartPoints.shift();
+            currentPiPrice = nextPrice;
+        }
+
         // 初始化数据页面
         function initDataPage() {
+            if (piChartPoints.length === 0) initChartWindow();
             updatePiData();
             drawPiChart();
             if (dataUpdateInterval) clearInterval(dataUpdateInterval);
-            // 每 60 秒重绘一次（模拟"每小时刷新"的视觉，实际数据是按小时生成）
+            // 每秒更新：价格、时间、图表滚动一个点
             dataUpdateInterval = setInterval(() => {
+                tickPiChart();
                 updatePiData();
-            }, 60000);
+                if (!chartDrawPending) {
+                    chartDrawPending = true;
+                    requestAnimationFrame(() => {
+                        drawPiChart();
+                        chartDrawPending = false;
+                    });
+                }
+            }, 1000);
         }
 
         async function refreshData() {
@@ -2260,6 +2385,7 @@
             btn.style.opacity = '0.7';
 
             try {
+                initChartWindow();
                 updatePiData();
                 drawPiChart();
 
@@ -2279,9 +2405,8 @@
         }
 
         function updatePiData() {
-            const data = generateHourlyPriceData();
-            const lastPoint = data[data.length - 1];
-            const firstPoint = data[0];
+            const lastPoint = piChartPoints.length ? piChartPoints[piChartPoints.length - 1] : { time: Date.now(), price: currentPiPrice };
+            const firstPoint = piChartPoints.length ? piChartPoints[0] : lastPoint;
             currentPiPrice = lastPoint.price;
 
             const piPriceUsdEl = document.getElementById('pi-price-usd');
@@ -2291,26 +2416,28 @@
 
             if (piPriceUsdEl) piPriceUsdEl.textContent = '$' + currentPiPrice.toFixed(4);
 
+            // 使用真实的"当前系统时间"：YYYY-MM-DD hh:mm
             if (piUpdateTimeEl) {
-                const d = new Date(lastPoint.time);
-                const m = (d.getMonth() + 1).toString().padStart(2, '0');
-                const day = d.getDate().toString().padStart(2, '0');
-                const hh = d.getHours().toString().padStart(2, '0');
-                const mm = d.getMinutes().toString().padStart(2, '0');
-                piUpdateTimeEl.textContent = `更新至 2026-${m}-${day} ${hh}:${mm}`;
+                const d = new Date();
+                const y = d.getFullYear();
+                const m = pad2(d.getMonth() + 1);
+                const day = pad2(d.getDate());
+                const hh = pad2(d.getHours());
+                const mm = pad2(d.getMinutes());
+                piUpdateTimeEl.textContent = `更新至 ${y}-${m}-${day} ${hh}:${mm}`;
             }
 
             if (piChartRangeEl) {
-                piChartRangeEl.textContent = `按小时走势：0.08 ~ 0.11 美元（2026-08-24 起）`;
+                piChartRangeEl.textContent = `实时走势：每秒滚动更新 · 0.08 ~ 0.11 美元（2026-08-24 起）`;
             }
 
-            if (piChangeUsdEl) {
+            if (piChangeUsdEl && firstPoint !== lastPoint) {
                 const start = firstPoint.price;
                 const end = lastPoint.price;
                 const diff = end - start;
-                const pct = (diff / start) * 100;
+                const pct = start > 0 ? (diff / start) * 100 : 0;
                 const sign = pct >= 0 ? '+' : '';
-                piChangeUsdEl.textContent = `周期变化：${sign}$${diff.toFixed(4)} (${sign}${pct.toFixed(2)}%)`;
+                piChangeUsdEl.textContent = `窗口变化：${sign}$${diff.toFixed(4)} (${sign}${pct.toFixed(2)}%)`;
                 piChangeUsdEl.className = 'text-sm mt-3 font-bold ' + (pct >= 0 ? 'text-green-600' : 'text-red-600');
             }
         }
@@ -2318,8 +2445,9 @@
         function drawPiChart() {
             const chartEl = document.getElementById('pi-chart');
             if (!chartEl) return;
+            if (piChartPoints.length === 0) initChartWindow();
 
-            const points = generateHourlyPriceData();
+            const points = piChartPoints;
             const width = chartEl.offsetWidth || 340;
             const height = 240;
             const paddingL = 42;
@@ -2350,7 +2478,7 @@
             const lastX = paddingL + ((points.length - 1) / (points.length - 1)) * chartW;
             areaD += ' L ' + lastX + ' ' + (paddingT + chartH) + ' Z';
 
-            // 横向网格 & Y轴刻度（0.08, 0.085, 0.09, 0.095, 0.10, 0.105, 0.11）
+            // 横向网格 & Y轴刻度
             let gridLines = '';
             const yTicks = [0.080, 0.085, 0.090, 0.095, 0.100, 0.105, 0.110];
             let yLabels = '';
@@ -2360,10 +2488,11 @@
                 yLabels += `<text x="4" y="${y + 3}" font-size="10" fill="#6b7280">$${tick.toFixed(3)}</text>`;
             });
 
-            // X 轴标签：选每 12 小时（0点/12点）打点
+            // X 轴标签：每 1/6 窗口打一个点
             let xLabels = '';
             let xTicks = '';
-            for (let i = 0; i < points.length; i += 12) {
+            const step = Math.max(1, Math.floor(points.length / 6));
+            for (let i = 0; i < points.length; i += step) {
                 const p = points[i];
                 const x = paddingL + (i / (points.length - 1)) * chartW;
                 const label = formatHourLabel(p.time, i, points.length);
@@ -2372,6 +2501,18 @@
                     xTicks += `<line x1="${x}" y1="${paddingT + chartH}" x2="${x}" y2="${paddingT + chartH + 4}" stroke="#9ca3af" stroke-width="1"/>`;
                 }
             }
+
+            // 末端实时点高亮（呼吸动画）
+            const lp = points[points.length - 1];
+            const lx = paddingL + ((points.length - 1) / (points.length - 1)) * chartW;
+            const ly = paddingT + chartH - ((lp.price - min) / (max - min)) * chartH;
+            const liveDot = `
+                <circle cx="${lx}" cy="${ly}" r="4" fill="#10b981" stroke="#ffffff" stroke-width="2">
+                    <animate attributeName="r" values="3;6;3" dur="1.2s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="1.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="${lx}" cy="${ly}" r="2" fill="#ffffff" opacity="0.9"/>
+            `;
 
             chartEl.innerHTML = `
                 <svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -2387,6 +2528,7 @@
                     <path d="${pathD}" stroke="#10b981" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                     ${yLabels}
                     ${xLabels}
+                    ${liveDot}
                 </svg>
             `;
         }
