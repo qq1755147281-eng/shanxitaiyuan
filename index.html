@@ -717,290 +717,51 @@
                 <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl p-4 mb-3 text-white shadow-lg">
                     <div class="flex items-center justify-between">
                         <div class="flex-1">
-                            <h2 class="text-base font-bold mb-1 text-center">派币实时数据</h2>
-                            <p class="text-sm opacity-90 text-center">Pi Network 最新行情</p>
+                            <h2 class="text-base font-bold mb-1 text-center">派币数据</h2>
+                            <p class="text-sm opacity-90 text-center" id="pi-update-time">走势更新中...</p>
                         </div>
                         <button id="refresh-data-btn" class="ml-3 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg flex items-center transition-all" onclick="refreshData()">
                             <i class="fa fa-refresh mr-1"></i>
-                            <span class="text-sm">更新</span>
+                            <span class="text-sm">刷新</span>
                         </button>
                     </div>
                 </div>
-                
-                <!-- 派币价格（增强版） -->
+
+                <!-- 当前价格卡片 -->
                 <div class="card">
                     <div class="flex items-center mb-3">
                         <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white mr-3 shadow-md">
                             <span class="text-2xl font-bold">π</span>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-base font-bold text-gray-800">派币 (Pi Network)</h3>
-                            <p class="text-xs text-gray-500" id="pi-update-time">最后更新: --</p>
+                            <h3 class="text-base font-bold text-gray-800">派币当前价格</h3>
+                            <p class="text-xs text-gray-500">每小时更新一次</p>
                         </div>
                     </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 text-center shadow-sm">
-                            <p class="text-xs text-blue-600 mb-1">美元价格</p>
-                            <p class="text-2xl font-bold text-blue-800" id="pi-price-usd">$0.00</p>
-                            <p class="text-xs text-green-600 mt-1" id="pi-change-usd">+0.00%</p>
-                        </div>
-                        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-4 border border-red-200 text-center shadow-sm">
-                            <p class="text-xs text-red-600 mb-1">人民币价格</p>
-                            <p class="text-2xl font-bold text-red-800" id="pi-price-cny">¥0.00</p>
-                            <p class="text-xs text-green-600 mt-1" id="pi-change-cny">+0.00%</p>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-3 gap-2 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-                        <div class="text-center">
-                            <p class="text-xs text-gray-500">24h最高</p>
-                            <p class="text-sm font-bold text-gray-800 mt-1" id="pi-high">--</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-xs text-gray-500">24h最低</p>
-                            <p class="text-sm font-bold text-gray-800 mt-1" id="pi-low">--</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-xs text-gray-500">流通市值</p>
-                            <p class="text-sm font-bold text-gray-800 mt-1" id="pi-market-cap">--</p>
-                        </div>
+                    <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-5 border border-yellow-200 text-center shadow-sm">
+                        <p class="text-xs text-yellow-600 mb-2">美元</p>
+                        <p class="text-4xl font-bold text-yellow-800" id="pi-price-usd">$0.000</p>
+                        <p class="text-sm mt-3" id="pi-change-usd">+0.00%</p>
                     </div>
                 </div>
-                
-                <!-- 派币走势图 -->
+
+                <!-- 派币走势图（按小时，0.08~0.11 区间） -->
                 <div class="card">
                     <div class="flex items-center mb-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white mr-3 shadow">
                             <i class="fa fa-line-chart"></i>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-base font-bold text-gray-800">派币价格走势</h3>
-                            <p class="text-xs text-gray-500">最近30天趋势图</p>
+                            <h3 class="text-base font-bold text-gray-800">派币价格走势图</h3>
+                            <p class="text-xs text-gray-500" id="pi-chart-range">按小时：0.08 ~ 0.11 美元</p>
                         </div>
                     </div>
-                    
-                    <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-3 border border-gray-200 mb-3">
-                        <div id="pi-chart" style="height: 180px;"></div>
-                    </div>
-                    
-                    <div class="grid grid-cols-4 gap-2 text-center">
-                        <div class="p-2 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">7日</p>
-                            <p class="text-sm font-bold text-green-600" id="pi-trend-7d">+0.00%</p>
-                        </div>
-                        <div class="p-2 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">14日</p>
-                            <p class="text-sm font-bold text-green-600" id="pi-trend-14d">+0.00%</p>
-                        </div>
-                        <div class="p-2 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">21日</p>
-                            <p class="text-sm font-bold text-green-600" id="pi-trend-21d">+0.00%</p>
-                        </div>
-                        <div class="p-2 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">30日</p>
-                            <p class="text-sm font-bold text-green-600" id="pi-trend-30d">+0.00%</p>
-                        </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-3 border border-gray-200">
+                        <div id="pi-chart" style="height: 240px;"></div>
                     </div>
                 </div>
-                
-                <!-- 今日/昨日价格对比 -->
-                <div class="card">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white mr-3 shadow">
-                            <i class="fa fa-bar-chart"></i>
-                        </div>
-                        <h3 class="text-base font-bold text-gray-800">价格数据对比</h3>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 mb-3">
-                        <div class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200 text-center">
-                            <p class="text-xs text-green-600 mb-2">今日价格</p>
-                            <p class="text-lg font-bold text-green-800" id="pi-today-usd">$0.00</p>
-                            <p class="text-xs text-green-700 mt-1" id="pi-today-cny">¥0.00</p>
-                        </div>
-                        <div class="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl border border-orange-200 text-center">
-                            <p class="text-xs text-orange-600 mb-2">昨日价格</p>
-                            <p class="text-lg font-bold text-orange-800" id="pi-yesterday-usd">$0.00</p>
-                            <p class="text-xs text-orange-700 mt-1" id="pi-yesterday-cny">¥0.00</p>
-                        </div>
-                    </div>
-                    
-                    <div class="p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200 text-center">
-                        <p class="text-xs text-gray-600 mb-1">24h价格变动</p>
-                        <p class="text-base font-bold" id="pi-24h-change">+$0.00 (+0.00%)</p>
-                    </div>
-                </div>
-                
-                <!-- 社区服务工具 -->
-                <div class="card">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white mr-3 shadow">
-                            <i class="fa fa-users"></i>
-                        </div>
-                        <h3 class="text-base font-bold text-gray-800">社区服务工具</h3>
-                    </div>
-                    
-                    <div class="grid grid-cols-4 gap-2 mb-3">
-                        <div class="text-center p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 cursor-pointer hover:scale-105 transition-transform" onclick="openPriceCalculator()">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow">
-                                <i class="fa fa-calculator"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-800">价格计算</p>
-                        </div>
-                        <div class="text-center p-3 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 cursor-pointer hover:scale-105 transition-transform" onclick="openCurrencyExchange()">
-                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow">
-                                <i class="fa fa-refresh"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-800">货币兑换</p>
-                        </div>
-                        <div class="text-center p-3 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200 cursor-pointer hover:scale-105 transition-transform" onclick="openPriceAlert()">
-                            <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow">
-                                <i class="fa fa-bell"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-800">价格提醒</p>
-                        </div>
-                        <div class="text-center p-3 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200 cursor-pointer hover:scale-105 transition-transform" onclick="playSound('click')">
-                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow">
-                                <i class="fa fa-book"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-800">行情资讯</p>
-                        </div>
-                    </div>
-                    
-                    <div class="p-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200 text-center">
-                        <p class="text-xs text-gray-600">
-                            <i class="fa fa-info-circle text-purple-500 mr-1"></i>
-                            派币数据仅供参考，不构成投资建议
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- 价格提醒设置 -->
-                <div id="price-alert-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-                    <div class="bg-white rounded-2xl p-5 mx-4 max-w-sm w-full shadow-2xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800">价格提醒设置</h3>
-                            <button onclick="closePriceAlert()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="text-sm font-bold text-gray-700 mb-2 block">当派币价格达到</label>
-                                <div class="flex items-center bg-gray-50 rounded-xl p-3 border border-gray-200">
-                                    <span class="text-gray-600 mr-2 font-bold">$</span>
-                                    <input type="number" id="alert-price" placeholder="输入目标价格" class="flex-1 bg-transparent outline-none text-gray-800 text-base" step="0.01" min="0">
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="setAlertDirection('above')" id="alert-above-btn" class="p-3 rounded-xl bg-red-50 border-2 border-red-200 text-red-700 font-bold text-sm hover:bg-red-100 transition-all">
-                                    <i class="fa fa-arrow-up mr-1"></i>超过此价
-                                </button>
-                                <button onclick="setAlertDirection('below')" id="alert-below-btn" class="p-3 rounded-xl bg-green-50 border-2 border-green-200 text-green-700 font-bold text-sm hover:bg-green-100 transition-all">
-                                    <i class="fa fa-arrow-down mr-1"></i>低于此价
-                                </button>
-                            </div>
-                            
-                            <div id="alert-status" class="p-3 bg-yellow-50 rounded-xl border border-yellow-200 text-center">
-                                <p class="text-xs text-yellow-700">
-                                    <i class="fa fa-exclamation-circle mr-1"></i>
-                                    <span id="alert-status-text">未设置价格提醒</span>
-                                </p>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="savePriceAlert()" class="p-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-transform">
-                                    <i class="fa fa-check mr-1"></i>设置提醒
-                                </button>
-                                <button onclick="cancelPriceAlert()" class="p-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-transform">
-                                    <i class="fa fa-trash mr-1"></i>取消提醒
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 价格计算器弹窗 -->
-                <div id="calculator-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-                    <div class="bg-white rounded-2xl p-5 mx-4 max-w-sm w-full shadow-2xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800">价格计算器</h3>
-                            <button onclick="closeCalculator()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="text-sm font-bold text-gray-700 mb-2 block">派币数量</label>
-                                <div class="flex items-center bg-gray-50 rounded-xl p-3 border border-gray-200">
-                                    <span class="text-yellow-600 mr-2 font-bold text-lg">π</span>
-                                    <input type="number" id="calc-amount" placeholder="输入数量" class="flex-1 bg-transparent outline-none text-gray-800 text-base" oninput="calculatePrice()">
-                                </div>
-                            </div>
-                            
-                            <div class="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200 text-center">
-                                <p class="text-xs text-blue-600 mb-1">等值美元</p>
-                                <p class="text-2xl font-bold text-blue-800" id="calc-usd">$0.00</p>
-                            </div>
-                            
-                            <div class="p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-xl border border-red-200 text-center">
-                                <p class="text-xs text-red-600 mb-1">等值人民币</p>
-                                <p class="text-2xl font-bold text-red-800" id="calc-cny">¥0.00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 货币兑换弹窗 -->
-                <div id="exchange-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-                    <div class="bg-white rounded-2xl p-5 mx-4 max-w-sm w-full shadow-2xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800">货币兑换</h3>
-                            <button onclick="closeExchange()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="text-sm font-bold text-gray-700 mb-2 block">金额</label>
-                                <div class="flex items-center bg-gray-50 rounded-xl p-3 border border-gray-200">
-                                    <select id="ex-from-currency" class="bg-transparent outline-none text-gray-700 mr-2 font-bold" onchange="calculateExchange()">
-                                        <option value="pi">π</option>
-                                        <option value="usd">$</option>
-                                        <option value="cny">¥</option>
-                                    </select>
-                                    <input type="number" id="ex-amount" placeholder="输入金额" class="flex-1 bg-transparent outline-none text-gray-800 text-base" oninput="calculateExchange()">
-                                </div>
-                            </div>
-                            
-                            <div class="text-center text-gray-500">
-                                <i class="fa fa-exchange text-xl"></i>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-2">
-                                <div class="p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200 text-center">
-                                    <p class="text-xs text-blue-600 mb-1">美元</p>
-                                    <p class="text-lg font-bold text-blue-800" id="ex-usd">$0.00</p>
-                                </div>
-                                <div class="p-3 bg-gradient-to-br from-red-50 to-red-100 rounded-xl border border-red-200 text-center">
-                                    <p class="text-xs text-red-600 mb-1">人民币</p>
-                                    <p class="text-lg font-bold text-red-800" id="ex-cny">¥0.00</p>
-                                </div>
-                            </div>
-                            
-                            <div class="p-3 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200 text-center">
-                                <p class="text-xs text-yellow-700 mb-1">派币数量</p>
-                                <p class="text-lg font-bold text-yellow-800" id="ex-pi">π 0.00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
+
                 <div style="height: 80px"></div>
             </div>
             
@@ -2085,11 +1846,10 @@
         
         // 数据页面功能
         let dataUpdateInterval = null;
-        let currentPiPrice = 314159.0;
-        let yesterdayPiPrice = 314100.0;
-        let cnyRate = 7.2;
-        const BASE_PRICE = 314159.0;
-        const PRICE_FLUCTUATION = 1000;
+        let currentPiPrice = 0.095;
+        const PRICE_MIN = 0.08;
+        const PRICE_MAX = 0.11;
+        const PRICE_MID = 0.095;
         let fluctuationDirection = 1;
         
         let priceAlertData = {
@@ -2098,38 +1858,76 @@
             isSet: false
         };
         
+        // 生成从 2026-08-24 00:00 开始，按小时连续 7 天的价格数据
+        // 价格在 0.08 ~ 0.11 美元之间上下浮动，每个小时有小波动
+        function generateHourlyPriceData() {
+            const START_DATE = new Date(2026, 7, 24, 0, 0, 0); // 2026-08-24 00:00
+            const HOURS = 7 * 24; // 7 天共 168 小时
+            const data = [];
+            // 用可复现的随机：基于小时数的伪随机，保证每次显示一致
+            // 加入"每小时上下浮动" + "持续趋势"，让价格在区间内真实波动
+            let price = PRICE_MID;
+            for (let h = 0; h < HOURS; h++) {
+                const t = START_DATE.getTime() + h * 3600 * 1000;
+                const pseudo = Math.sin(h * 12.9898 + 42.1) * 43758.5453;
+                const rand = pseudo - Math.floor(pseudo); // 0~1
+                // 小时级随机波动 ±0.003
+                const hourlyWave = (rand - 0.5) * 0.006;
+                // 周期性波动（3.5 天一个波段），幅度 ±0.012
+                const cycleWave = Math.sin((h / 84) * Math.PI * 2) * 0.012;
+                // 长周期缓慢趋势
+                const trendWave = Math.sin((h / 168) * Math.PI * 2) * 0.004;
+                price = PRICE_MID + hourlyWave + cycleWave + trendWave;
+                // 夹到 [PRICE_MIN, PRICE_MAX]
+                price = Math.max(PRICE_MIN, Math.min(PRICE_MAX, price));
+                data.push({ time: t, price: price });
+            }
+            return data;
+        }
+
+        function formatHourLabel(timestamp, idx, total) {
+            const d = new Date(timestamp);
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            const hour = d.getHours();
+            // 只在 0 点显示日期，其他显示小时
+            if (hour === 0) return `${month}/${day}`;
+            if (hour === 6 || hour === 12 || hour === 18) return `${hour}:00`;
+            return '';
+        }
+
         // 初始化数据页面
         function initDataPage() {
             updatePiData();
             drawPiChart();
             if (dataUpdateInterval) clearInterval(dataUpdateInterval);
+            // 每 60 秒重绘一次（模拟"每小时刷新"的视觉，实际数据是按小时生成）
             dataUpdateInterval = setInterval(() => {
                 updatePiData();
-                checkPriceAlert();
-            }, 1000);
+            }, 60000);
         }
-        
+
         async function refreshData() {
             const btn = document.getElementById('refresh-data-btn');
             if (!btn) return;
-            
+
             const icon = btn.querySelector('i');
             if (icon) {
                 icon.style.animation = 'spin 0.6s linear infinite';
             }
             btn.disabled = true;
             btn.style.opacity = '0.7';
-            
+
             try {
                 updatePiData();
                 drawPiChart();
-                
+
                 const originalText = btn.querySelector('span').textContent;
-                btn.querySelector('span').textContent = '已更新!';
+                btn.querySelector('span').textContent = '已刷新!';
                 setTimeout(() => {
                     btn.querySelector('span').textContent = originalText;
                 }, 1000);
-                
+
             } finally {
                 if (icon) {
                     icon.style.animation = '';
@@ -2138,137 +1936,116 @@
                 btn.style.opacity = '1';
             }
         }
-        
+
         function updatePiData() {
-            // 每秒±$1000浮动，围绕基准价格波动
-            const fluctuation = (Math.random() - 0.5) * 2 * PRICE_FLUCTUATION;
-            currentPiPrice = BASE_PRICE + fluctuation;
-            const piPriceCny = currentPiPrice * cnyRate;
-            
+            const data = generateHourlyPriceData();
+            const lastPoint = data[data.length - 1];
+            const firstPoint = data[0];
+            currentPiPrice = lastPoint.price;
+
             const piPriceUsdEl = document.getElementById('pi-price-usd');
-            const piPriceCnyEl = document.getElementById('pi-price-cny');
             const piUpdateTimeEl = document.getElementById('pi-update-time');
-            
-            if (piPriceUsdEl) piPriceUsdEl.textContent = '$' + currentPiPrice.toFixed(2);
-            if (piPriceCnyEl) piPriceCnyEl.textContent = '¥' + piPriceCny.toFixed(2);
+            const piChangeUsdEl = document.getElementById('pi-change-usd');
+            const piChartRangeEl = document.getElementById('pi-chart-range');
+
+            if (piPriceUsdEl) piPriceUsdEl.textContent = '$' + currentPiPrice.toFixed(4);
+
             if (piUpdateTimeEl) {
-                const now = new Date();
-                piUpdateTimeEl.textContent = '最后更新: ' + now.toLocaleTimeString('zh-CN');
+                const d = new Date(lastPoint.time);
+                const m = (d.getMonth() + 1).toString().padStart(2, '0');
+                const day = d.getDate().toString().padStart(2, '0');
+                const hh = d.getHours().toString().padStart(2, '0');
+                const mm = d.getMinutes().toString().padStart(2, '0');
+                piUpdateTimeEl.textContent = `更新至 2026-${m}-${day} ${hh}:${mm}`;
             }
-            
-            const priceChangeUsd = currentPiPrice - yesterdayPiPrice;
-            const changePercent = (priceChangeUsd / yesterdayPiPrice) * 100;
-            
-            const usdChangeEl = document.getElementById('pi-change-usd');
-            const cnyChangeEl = document.getElementById('pi-change-cny');
-            
-            if (usdChangeEl) {
-                usdChangeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
-                usdChangeEl.className = 'text-xs mt-1 ' + (changePercent >= 0 ? 'text-green-600' : 'text-red-600');
+
+            if (piChartRangeEl) {
+                piChartRangeEl.textContent = `按小时走势：0.08 ~ 0.11 美元（2026-08-24 起）`;
             }
-            if (cnyChangeEl) {
-                cnyChangeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
-                cnyChangeEl.className = 'text-xs mt-1 ' + (changePercent >= 0 ? 'text-green-600' : 'text-red-600');
-            }
-            
-            const highEl = document.getElementById('pi-high');
-            const lowEl = document.getElementById('pi-low');
-            const marketCapEl = document.getElementById('pi-market-cap');
-            
-            const highPrice = currentPiPrice + PRICE_FLUCTUATION;
-            const lowPrice = currentPiPrice - PRICE_FLUCTUATION;
-            const marketCap = currentPiPrice * 100000000;
-            
-            if (highEl) highEl.textContent = '$' + highPrice.toFixed(2);
-            if (lowEl) lowEl.textContent = '$' + lowPrice.toFixed(2);
-            if (marketCapEl) marketCapEl.textContent = '$' + (marketCap / 1000000000).toFixed(2) + 'B';
-            
-            const trends = [7, 14, 21, 30];
-            trends.forEach((d, i) => {
-                const el = document.getElementById('pi-trend-' + d + 'd');
-                if (el) {
-                    const change = (Math.random() - 0.3) * (0.5 + i * 0.2);
-                    el.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-                    el.className = 'text-sm font-bold ' + (change >= 0 ? 'text-green-600' : 'text-red-600');
-                }
-            });
-            
-            const todayUsdEl = document.getElementById('pi-today-usd');
-            const todayCnyEl = document.getElementById('pi-today-cny');
-            const yesterdayUsdEl = document.getElementById('pi-yesterday-usd');
-            const yesterdayCnyEl = document.getElementById('pi-yesterday-cny');
-            
-            if (todayUsdEl) todayUsdEl.textContent = '$' + currentPiPrice.toFixed(2);
-            if (todayCnyEl) todayCnyEl.textContent = '¥' + piPriceCny.toFixed(2);
-            if (yesterdayUsdEl) yesterdayUsdEl.textContent = '$' + yesterdayPiPrice.toFixed(2);
-            if (yesterdayCnyEl) yesterdayCnyEl.textContent = '¥' + (yesterdayPiPrice * cnyRate).toFixed(2);
-            
-            const changeEl = document.getElementById('pi-24h-change');
-            if (changeEl) {
-                const sign = priceChangeUsd >= 0 ? '+' : '';
-                changeEl.textContent = sign + '$' + priceChangeUsd.toFixed(2) + ' (' + sign + changePercent.toFixed(2) + '%)';
-                changeEl.className = 'text-base font-bold ' + (priceChangeUsd >= 0 ? 'text-green-600' : 'text-red-600');
+
+            if (piChangeUsdEl) {
+                const start = firstPoint.price;
+                const end = lastPoint.price;
+                const diff = end - start;
+                const pct = (diff / start) * 100;
+                const sign = pct >= 0 ? '+' : '';
+                piChangeUsdEl.textContent = `周期变化：${sign}$${diff.toFixed(4)} (${sign}${pct.toFixed(2)}%)`;
+                piChangeUsdEl.className = 'text-sm mt-3 font-bold ' + (pct >= 0 ? 'text-green-600' : 'text-red-600');
             }
         }
-        
+
         function drawPiChart() {
             const chartEl = document.getElementById('pi-chart');
             if (!chartEl) return;
-            
-            const days = 30;
-            const data = [];
-            let price = BASE_PRICE - 500;
-            for (let i = 0; i < days; i++) {
-                const volatility = (Math.random() - 0.5) * PRICE_FLUCTUATION * 2;
-                price += volatility;
-                price = Math.max(BASE_PRICE - PRICE_FLUCTUATION * 3, Math.min(BASE_PRICE + PRICE_FLUCTUATION * 3, price));
-                data.push(price);
-            }
-            
-            const width = chartEl.offsetWidth || 320;
-            const height = 180;
-            const padding = 20;
-            
-            const min = Math.min(...data) * 0.95;
-            const max = Math.max(...data) * 1.05;
-            
+
+            const points = generateHourlyPriceData();
+            const width = chartEl.offsetWidth || 340;
+            const height = 240;
+            const paddingL = 42;
+            const paddingR = 12;
+            const paddingT = 16;
+            const paddingB = 28;
+            const chartW = width - paddingL - paddingR;
+            const chartH = height - paddingT - paddingB;
+
+            const min = PRICE_MIN - 0.001;
+            const max = PRICE_MAX + 0.001;
+
             let pathD = '';
             let areaD = '';
-            
-            data.forEach((price, i) => {
-                const x = padding + (i / (days - 1)) * (width - 2 * padding);
-                const y = height - padding - ((price - min) / (max - min)) * (height - 2 * padding);
+
+            points.forEach((p, i) => {
+                const x = paddingL + (i / (points.length - 1)) * chartW;
+                const y = paddingT + chartH - ((p.price - min) / (max - min)) * chartH;
                 if (i === 0) {
                     pathD += 'M ' + x + ' ' + y;
-                    areaD += 'M ' + x + ' ' + (height - padding) + ' L ' + x + ' ' + y;
+                    areaD += 'M ' + x + ' ' + (paddingT + chartH) + ' L ' + x + ' ' + y;
                 } else {
                     pathD += ' L ' + x + ' ' + y;
                     areaD += ' L ' + x + ' ' + y;
                 }
             });
-            
-            const lastX = padding + ((days - 1) / (days - 1)) * (width - 2 * padding);
-            areaD += ' L ' + lastX + ' ' + (height - padding) + ' Z';
-            
+
+            const lastX = paddingL + ((points.length - 1) / (points.length - 1)) * chartW;
+            areaD += ' L ' + lastX + ' ' + (paddingT + chartH) + ' Z';
+
+            // 横向网格 & Y轴刻度（0.08, 0.085, 0.09, 0.095, 0.10, 0.105, 0.11）
             let gridLines = '';
-            for (let i = 0; i <= 4; i++) {
-                const y = padding + (i / 4) * (height - 2 * padding);
-                gridLines += '<line x1="' + padding + '" y1="' + y + '" x2="' + (width - padding) + '" y2="' + y + '" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>';
+            const yTicks = [0.080, 0.085, 0.090, 0.095, 0.100, 0.105, 0.110];
+            let yLabels = '';
+            yTicks.forEach((tick) => {
+                const y = paddingT + chartH - ((tick - min) / (max - min)) * chartH;
+                gridLines += `<line x1="${paddingL}" y1="${y}" x2="${width - paddingR}" y2="${y}" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>`;
+                yLabels += `<text x="4" y="${y + 3}" font-size="10" fill="#6b7280">$${tick.toFixed(3)}</text>`;
+            });
+
+            // X 轴标签：选每 12 小时（0点/12点）打点
+            let xLabels = '';
+            let xTicks = '';
+            for (let i = 0; i < points.length; i += 12) {
+                const p = points[i];
+                const x = paddingL + (i / (points.length - 1)) * chartW;
+                const label = formatHourLabel(p.time, i, points.length);
+                if (label) {
+                    xLabels += `<text x="${x}" y="${height - 8}" font-size="9" fill="#6b7280" text-anchor="middle">${label}</text>`;
+                    xTicks += `<line x1="${x}" y1="${paddingT + chartH}" x2="${x}" y2="${paddingT + chartH + 4}" stroke="#9ca3af" stroke-width="1"/>`;
+                }
             }
-            
+
             chartEl.innerHTML = `
-                <svg width="100%" height="180" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+                <svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.3"/>
+                            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.35"/>
                             <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.05"/>
                         </linearGradient>
                     </defs>
                     ${gridLines}
+                    ${xTicks}
                     <path d="${areaD}" fill="url(#chartGradient)" stroke="none"/>
-                    <path d="${pathD}" stroke="#10b981" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    <text x="${padding}" y="12" font-size="10" fill="#6b7280">$${max.toFixed(0)}</text>
-                    <text x="${padding}" y="${height - padding + 14}" font-size="10" fill="#6b7280">$${min.toFixed(0)}</text>
+                    <path d="${pathD}" stroke="#10b981" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${yLabels}
+                    ${xLabels}
                 </svg>
             `;
         }
