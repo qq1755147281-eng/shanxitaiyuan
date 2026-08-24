@@ -52,6 +52,24 @@
             margin-bottom: 12px;
             border: 1px solid rgba(0,0,0,0.04);
         }
+
+        /* 绿色发光小点（用于声明块前） */
+        .glow-dot {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            min-width: 9px;
+            min-height: 9px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 4px #10b981, 0 0 8px #34d399, 0 0 14px rgba(16, 185, 129, 0.6);
+            animation: glowPulse 1.8s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%   { box-shadow: 0 0 4px #10b981, 0 0 8px #34d399, 0 0 14px rgba(16,185,129,0.6); opacity: 1; }
+            50%  { box-shadow: 0 0 7px #10b981, 0 0 14px #6ee7b7, 0 0 22px rgba(16,185,129,0.85); opacity: 1; }
+            100% { box-shadow: 0 0 4px #10b981, 0 0 8px #34d399, 0 0 14px rgba(16,185,129,0.6); opacity: 1; }
+        }
         
         .btn {
             padding: 10px 20px;
@@ -155,6 +173,11 @@
         
         .nav-item.active {
             color: #1e40af;
+        }
+
+        /* 反诈导航项激活时：图标和文字变红（其他项保持蓝色） */
+        .nav-item.active[data-page="profile-page"] {
+            color: #dc2626 !important;
         }
         
         .nav-icon {
@@ -268,6 +291,35 @@
                 max-width: 92vw !important;
                 height: auto;
                 min-height: 70vh;
+            }
+        }
+
+        /* 反诈大弹窗：占据屏幕约60%（约60vw x 60vh），内容区可滚动，底部固定关闭按钮 */
+        .modal-60 {
+            width: min(60vw, 60vh, 680px) !important;
+            max-width: min(60vw, 60vh, 680px) !important;
+            height: min(60vw, 60vh, 680px);
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 22px 12px 22px !important;
+        }
+        .modal-60 .modal-60-body {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .modal-60 .modal-60-footer {
+            flex: 0 0 auto;
+            padding-top: 12px;
+            margin-top: 4px;
+            border-top: 1px solid #e5e7eb;
+        }
+        @media (max-width: 640px) {
+            .modal-60 {
+                width: 94vw !important;
+                max-width: 94vw !important;
+                height: 82vh !important;
             }
         }
         
@@ -717,325 +769,150 @@
                 <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl p-4 mb-3 text-white shadow-lg">
                     <div class="flex items-center justify-between">
                         <div class="flex-1">
-                            <h2 class="text-base font-bold mb-1 text-center">派币实时数据</h2>
-                            <p class="text-sm opacity-90 text-center">Pi Network 最新行情</p>
+                            <h2 class="text-base font-bold mb-1 text-center">派币数据</h2>
+                            <p class="text-sm opacity-90 text-center" id="pi-update-time">走势更新中...</p>
                         </div>
                         <button id="refresh-data-btn" class="ml-3 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg flex items-center transition-all" onclick="refreshData()">
                             <i class="fa fa-refresh mr-1"></i>
-                            <span class="text-sm">更新</span>
+                            <span class="text-sm">刷新</span>
                         </button>
                     </div>
                 </div>
-                
-                <!-- 派币价格（增强版） -->
+
+                <!-- 当前价格卡片 -->
                 <div class="card">
                     <div class="flex items-center mb-3">
                         <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white mr-3 shadow-md">
                             <span class="text-2xl font-bold">π</span>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-base font-bold text-gray-800">派币 (Pi Network)</h3>
-                            <p class="text-xs text-gray-500" id="pi-update-time">最后更新: --</p>
+                            <h3 class="text-base font-bold text-gray-800">派币当前价格</h3>
+                            <p class="text-xs text-gray-500">实时更新 · 每秒刷新一次</p>
                         </div>
                     </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 text-center shadow-sm">
-                            <p class="text-xs text-blue-600 mb-1">美元价格</p>
-                            <p class="text-2xl font-bold text-blue-800" id="pi-price-usd">$0.00</p>
-                            <p class="text-xs text-green-600 mt-1" id="pi-change-usd">+0.00%</p>
-                        </div>
-                        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-4 border border-red-200 text-center shadow-sm">
-                            <p class="text-xs text-red-600 mb-1">人民币价格</p>
-                            <p class="text-2xl font-bold text-red-800" id="pi-price-cny">¥0.00</p>
-                            <p class="text-xs text-green-600 mt-1" id="pi-change-cny">+0.00%</p>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-3 gap-2 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-                        <div class="text-center">
-                            <p class="text-xs text-gray-500">24h最高</p>
-                            <p class="text-sm font-bold text-gray-800 mt-1" id="pi-high">--</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-xs text-gray-500">24h最低</p>
-                            <p class="text-sm font-bold text-gray-800 mt-1" id="pi-low">--</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-xs text-gray-500">流通市值</p>
-                            <p class="text-sm font-bold text-gray-800 mt-1" id="pi-market-cap">--</p>
-                        </div>
+                    <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-5 border border-yellow-200 text-center shadow-sm">
+                        <p class="text-xs text-yellow-600 mb-2">美元</p>
+                        <p class="text-4xl font-bold text-yellow-800" id="pi-price-usd">$0.000</p>
+                        <p class="text-sm mt-3" id="pi-change-usd">+0.00%</p>
                     </div>
                 </div>
-                
-                <!-- 派币走势图 -->
+
+                <!-- 派币走势图（按小时，0.08~0.11 区间） -->
                 <div class="card">
                     <div class="flex items-center mb-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white mr-3 shadow">
                             <i class="fa fa-line-chart"></i>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-base font-bold text-gray-800">派币价格走势</h3>
-                            <p class="text-xs text-gray-500">最近30天趋势图</p>
+                            <h3 class="text-base font-bold text-gray-800">派币价格走势图</h3>
+                            <p class="text-xs text-gray-500" id="pi-chart-range">实时走势：每秒滚动更新 · 0.08 ~ 0.11 美元</p>
                         </div>
                     </div>
-                    
-                    <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-3 border border-gray-200 mb-3">
-                        <div id="pi-chart" style="height: 180px;"></div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-3 border border-gray-200">
+                        <div id="pi-chart" style="height: 240px;"></div>
                     </div>
-                    
-                    <div class="grid grid-cols-4 gap-2 text-center">
-                        <div class="p-2 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">7日</p>
-                            <p class="text-sm font-bold text-green-600" id="pi-trend-7d">+0.00%</p>
+
+                    <!-- 全球交易所价格声明 -->
+                    <div class="mt-4 p-4 rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 via-white to-blue-50 shadow-inner">
+                        <div class="flex items-center mb-3">
+                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white mr-2 shadow">
+                                <i class="fa fa-globe"></i>
+                            </div>
+                            <h4 class="font-bold text-green-800 text-sm">全球交易所价格声明</h4>
                         </div>
-                        <div class="p-2 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">14日</p>
-                            <p class="text-sm font-bold text-green-600" id="pi-trend-14d">+0.00%</p>
-                        </div>
-                        <div class="p-2 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">21日</p>
-                            <p class="text-sm font-bold text-green-600" id="pi-trend-21d">+0.00%</p>
-                        </div>
-                        <div class="p-2 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">30日</p>
-                            <p class="text-sm font-bold text-green-600" id="pi-trend-30d">+0.00%</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 今日/昨日价格对比 -->
-                <div class="card">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white mr-3 shadow">
-                            <i class="fa fa-bar-chart"></i>
-                        </div>
-                        <h3 class="text-base font-bold text-gray-800">价格数据对比</h3>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 mb-3">
-                        <div class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200 text-center">
-                            <p class="text-xs text-green-600 mb-2">今日价格</p>
-                            <p class="text-lg font-bold text-green-800" id="pi-today-usd">$0.00</p>
-                            <p class="text-xs text-green-700 mt-1" id="pi-today-cny">¥0.00</p>
-                        </div>
-                        <div class="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl border border-orange-200 text-center">
-                            <p class="text-xs text-orange-600 mb-2">昨日价格</p>
-                            <p class="text-lg font-bold text-orange-800" id="pi-yesterday-usd">$0.00</p>
-                            <p class="text-xs text-orange-700 mt-1" id="pi-yesterday-cny">¥0.00</p>
-                        </div>
-                    </div>
-                    
-                    <div class="p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200 text-center">
-                        <p class="text-xs text-gray-600 mb-1">24h价格变动</p>
-                        <p class="text-base font-bold" id="pi-24h-change">+$0.00 (+0.00%)</p>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">全球交易所价格</span>：凡不以交易所价格为主的，所有价格都是耍流氓。</span>
+                            </li>
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">不对接银行变现</span>：任何声称可以直接银行变现的渠道，均需谨慎核实。</span>
+                            </li>
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">不对接暴富之说</span>：不存在"稳赚不赔""一夜暴富"的承诺价格。</span>
+                            </li>
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">共识价格</span>：交易所价格是全球币圈人所认可的共识价格。</span>
+                            </li>
+                            <li class="flex items-start leading-relaxed">
+                                <span class="glow-dot mr-2 mt-1 flex-shrink-0"></span>
+                                <span class="text-xs text-gray-700"><span class="font-bold text-gray-800">请仔细学习并分辨</span>：理性看待市场价格，不轻信"内部价""承诺价"等诱导信息。</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                
-                <!-- 社区服务工具 -->
-                <div class="card">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white mr-3 shadow">
-                            <i class="fa fa-users"></i>
-                        </div>
-                        <h3 class="text-base font-bold text-gray-800">社区服务工具</h3>
-                    </div>
-                    
-                    <div class="grid grid-cols-4 gap-2 mb-3">
-                        <div class="text-center p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 cursor-pointer hover:scale-105 transition-transform" onclick="openPriceCalculator()">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow">
-                                <i class="fa fa-calculator"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-800">价格计算</p>
-                        </div>
-                        <div class="text-center p-3 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 cursor-pointer hover:scale-105 transition-transform" onclick="openCurrencyExchange()">
-                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow">
-                                <i class="fa fa-refresh"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-800">货币兑换</p>
-                        </div>
-                        <div class="text-center p-3 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200 cursor-pointer hover:scale-105 transition-transform" onclick="openPriceAlert()">
-                            <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow">
-                                <i class="fa fa-bell"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-800">价格提醒</p>
-                        </div>
-                        <div class="text-center p-3 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200 cursor-pointer hover:scale-105 transition-transform" onclick="playSound('click')">
-                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow">
-                                <i class="fa fa-book"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-800">行情资讯</p>
-                        </div>
-                    </div>
-                    
-                    <div class="p-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200 text-center">
-                        <p class="text-xs text-gray-600">
-                            <i class="fa fa-info-circle text-purple-500 mr-1"></i>
-                            派币数据仅供参考，不构成投资建议
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- 价格提醒设置 -->
-                <div id="price-alert-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-                    <div class="bg-white rounded-2xl p-5 mx-4 max-w-sm w-full shadow-2xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800">价格提醒设置</h3>
-                            <button onclick="closePriceAlert()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="text-sm font-bold text-gray-700 mb-2 block">当派币价格达到</label>
-                                <div class="flex items-center bg-gray-50 rounded-xl p-3 border border-gray-200">
-                                    <span class="text-gray-600 mr-2 font-bold">$</span>
-                                    <input type="number" id="alert-price" placeholder="输入目标价格" class="flex-1 bg-transparent outline-none text-gray-800 text-base" step="0.01" min="0">
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="setAlertDirection('above')" id="alert-above-btn" class="p-3 rounded-xl bg-red-50 border-2 border-red-200 text-red-700 font-bold text-sm hover:bg-red-100 transition-all">
-                                    <i class="fa fa-arrow-up mr-1"></i>超过此价
-                                </button>
-                                <button onclick="setAlertDirection('below')" id="alert-below-btn" class="p-3 rounded-xl bg-green-50 border-2 border-green-200 text-green-700 font-bold text-sm hover:bg-green-100 transition-all">
-                                    <i class="fa fa-arrow-down mr-1"></i>低于此价
-                                </button>
-                            </div>
-                            
-                            <div id="alert-status" class="p-3 bg-yellow-50 rounded-xl border border-yellow-200 text-center">
-                                <p class="text-xs text-yellow-700">
-                                    <i class="fa fa-exclamation-circle mr-1"></i>
-                                    <span id="alert-status-text">未设置价格提醒</span>
-                                </p>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="savePriceAlert()" class="p-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-transform">
-                                    <i class="fa fa-check mr-1"></i>设置提醒
-                                </button>
-                                <button onclick="cancelPriceAlert()" class="p-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-transform">
-                                    <i class="fa fa-trash mr-1"></i>取消提醒
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 价格计算器弹窗 -->
-                <div id="calculator-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-                    <div class="bg-white rounded-2xl p-5 mx-4 max-w-sm w-full shadow-2xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800">价格计算器</h3>
-                            <button onclick="closeCalculator()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="text-sm font-bold text-gray-700 mb-2 block">派币数量</label>
-                                <div class="flex items-center bg-gray-50 rounded-xl p-3 border border-gray-200">
-                                    <span class="text-yellow-600 mr-2 font-bold text-lg">π</span>
-                                    <input type="number" id="calc-amount" placeholder="输入数量" class="flex-1 bg-transparent outline-none text-gray-800 text-base" oninput="calculatePrice()">
-                                </div>
-                            </div>
-                            
-                            <div class="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200 text-center">
-                                <p class="text-xs text-blue-600 mb-1">等值美元</p>
-                                <p class="text-2xl font-bold text-blue-800" id="calc-usd">$0.00</p>
-                            </div>
-                            
-                            <div class="p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-xl border border-red-200 text-center">
-                                <p class="text-xs text-red-600 mb-1">等值人民币</p>
-                                <p class="text-2xl font-bold text-red-800" id="calc-cny">¥0.00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 货币兑换弹窗 -->
-                <div id="exchange-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-                    <div class="bg-white rounded-2xl p-5 mx-4 max-w-sm w-full shadow-2xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800">货币兑换</h3>
-                            <button onclick="closeExchange()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="text-sm font-bold text-gray-700 mb-2 block">金额</label>
-                                <div class="flex items-center bg-gray-50 rounded-xl p-3 border border-gray-200">
-                                    <select id="ex-from-currency" class="bg-transparent outline-none text-gray-700 mr-2 font-bold" onchange="calculateExchange()">
-                                        <option value="pi">π</option>
-                                        <option value="usd">$</option>
-                                        <option value="cny">¥</option>
-                                    </select>
-                                    <input type="number" id="ex-amount" placeholder="输入金额" class="flex-1 bg-transparent outline-none text-gray-800 text-base" oninput="calculateExchange()">
-                                </div>
-                            </div>
-                            
-                            <div class="text-center text-gray-500">
-                                <i class="fa fa-exchange text-xl"></i>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-2">
-                                <div class="p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200 text-center">
-                                    <p class="text-xs text-blue-600 mb-1">美元</p>
-                                    <p class="text-lg font-bold text-blue-800" id="ex-usd">$0.00</p>
-                                </div>
-                                <div class="p-3 bg-gradient-to-br from-red-50 to-red-100 rounded-xl border border-red-200 text-center">
-                                    <p class="text-xs text-red-600 mb-1">人民币</p>
-                                    <p class="text-lg font-bold text-red-800" id="ex-cny">¥0.00</p>
-                                </div>
-                            </div>
-                            
-                            <div class="p-3 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200 text-center">
-                                <p class="text-xs text-yellow-700 mb-1">派币数量</p>
-                                <p class="text-lg font-bold text-yellow-800" id="ex-pi">π 0.00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
+
                 <div style="height: 80px"></div>
             </div>
             
-            <!-- 福利空投页面 -->
+            <!-- 反诈页面 -->
             <div id="profile-page" class="page hidden">
-                <div class="bg-gradient-to-r from-yellow-400 to-red-400 rounded-2xl p-4 mb-3 text-white shadow-lg">
-                    <h1 class="text-base font-bold mb-1 text-center">福利中心板块</h1>
-                    <p class="text-sm opacity-90 text-center">对接的福利生态</p>
+                <div class="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-4 mb-3 text-white shadow-lg">
+                    <h1 class="text-base font-bold mb-1 text-center">反诈中心板块</h1>
+                    <p class="text-sm opacity-90 text-center">生态反诈安全提示</p>
                 </div>
                 
                 <div class="space-y-3 mb-3">
-                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-4 border-2 border-blue-200 cursor-pointer" onclick="playSound('success'); openModal('pi-network-modal')">
+                    <!-- 1. 反诈博主板块 -->
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl shadow-lg p-4 border-2 border-red-200 cursor-pointer" onclick="playSound('success'); openModal('fz-bozhu-modal')">
                         <div class="flex items-start">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
-                                <i class="fa fa-id-card text-lg"></i>
+                            <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
+                                <i class="fa fa-user-circle text-lg"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-base font-bold text-blue-800 mb-1">实名 DID 数字身份凭证</h3>
-                                <p class="text-xs text-blue-600 mb-2">Web3 实名认证与身份凭证</p>
-                                <p class="text-xs text-gray-700 mb-2">完成实名认证，获得数字身份凭证，畅享 Web3 生态应用！</p>
-                                <button class="btn btn-blue w-full py-2 text-xs" onclick="playSound('click')">立即认证</button>
+                                <h3 class="text-base font-bold text-red-800 mb-1">反诈博主板块</h3>
+                                <p class="text-xs text-red-600 mb-2">派友反诈博主 · 科普反诈知识</p>
+                                <p class="text-xs text-gray-700 mb-2">汇聚反诈先锋博主，拆解各类 Web3 新型骗局，提高派友防骗意识！</p>
+                                <button class="btn btn-red w-full py-2 text-xs" onclick="event.stopPropagation(); playSound('click')">进入板块</button>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-lg p-4 border-2 border-green-200 cursor-pointer" onclick="playSound('success'); openModal('ecosystem-modal')">
+
+                    <!-- 2. 反诈社区板块 -->
+                    <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl shadow-lg p-4 border-2 border-pink-200 cursor-pointer" onclick="playSound('success'); openModal('fz-shequ-modal')">
                         <div class="flex items-start">
-                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
-                                <i class="fa fa-yen-sign text-lg"></i>
+                            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
+                                <i class="fa fa-users text-lg"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-base font-bold text-green-800 mb-1">数字人民币</h3>
-                                <p class="text-xs text-green-600 mb-2">e-CNY 数字人民币体验</p>
-                                <p class="text-xs text-gray-700 mb-2">体验数字人民币钱包与支付场景，感受法定货币数字化创新！</p>
-                                <button class="btn btn-green w-full py-2 text-xs" onclick="playSound('click')">查看详情</button>
+                                <h3 class="text-base font-bold text-pink-800 mb-1">反诈社区板块</h3>
+                                <p class="text-xs text-pink-600 mb-2">派友互助社区 · 实时曝光骗局</p>
+                                <p class="text-xs text-gray-700 mb-2">加入反诈社区，分享受骗经历，互相提醒预警，共同守护派生态！</p>
+                                <button class="btn btn-pink w-full py-2 text-xs" onclick="event.stopPropagation(); playSound('click')">进入板块</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. 反诈造谣中心板块 -->
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl shadow-lg p-4 border-2 border-orange-200 cursor-pointer" onclick="playSound('success'); openModal('fz-zaoyao-modal')">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
+                                <i class="fa fa-exclamation-triangle text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-bold text-orange-800 mb-1">反诈造谣中心板块</h3>
+                                <p class="text-xs text-orange-600 mb-2">谣言粉碎中心 · 权威信息发布</p>
+                                <p class="text-xs text-gray-700 mb-2">官方辟谣！粉碎派生态谣言与虚假宣传，以官方信息为准，拒绝被忽悠。</p>
+                                <button class="btn btn-orange w-full py-2 text-xs" onclick="event.stopPropagation(); playSound('click')">进入板块</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. 反诈GCV价暴富板块 -->
+                    <div class="bg-gradient-to-br from-rose-50 to-rose-100 rounded-xl shadow-lg p-4 border-2 border-rose-200 cursor-pointer" onclick="playSound('success'); openModal('fz-gcv-modal')">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gradient-to-br from-rose-500 to-rose-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
+                                <i class="fa fa-money text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-bold text-rose-800 mb-1">反诈GCV价暴富板块</h3>
+                                <p class="text-xs text-rose-600 mb-2">警惕GCV高价暴富骗局 · 理性看待币价</p>
+                                <p class="text-xs text-gray-700 mb-2">防范"GCV 高价暴富"诱导类诈骗：不信暴富神话，不转款给陌生账户！</p>
+                                <button class="btn btn-red w-full py-2 text-xs" style="background: linear-gradient(135deg, #9f1239 0%, #f43f5e 100%); box-shadow: 0 2px 8px rgba(244,63,94,0.3);" onclick="event.stopPropagation(); playSound('click')">进入板块</button>
                             </div>
                         </div>
                     </div>
@@ -1064,61 +941,336 @@
                 <span class="nav-label">数据</span>
             </div>
             <div class="nav-item" data-page="profile-page" onclick="playSound('nav')">
-                <i class="fa fa-gift nav-icon"></i>
-                <span class="nav-label">福利空投</span>
+                <i class="fa fa-shield nav-icon"></i>
+                <span class="nav-label">反诈</span>
             </div>
         </div>
     </div>
     
     <!-- 模态框 -->
-    <div id="pi-network-modal" class="modal">
-        <div class="modal-content relative">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('pi-network-modal')">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="text-center mb-4 pt-4">
-                <div class="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-white mx-auto mb-3">
-                    <i class="fa fa-id-card text-xl"></i>
+    <div id="fz-bozhu-modal" class="modal">
+        <div class="modal-content modal-60">
+            <!-- 头部 -->
+            <div class="text-center mb-4 flex-shrink-0">
+                <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white mx-auto mb-2 shadow-md">
+                    <i class="fa fa-user-circle text-2xl"></i>
                 </div>
-                <h2 class="text-base font-bold text-blue-800">实名 DID 数字身份凭证</h2>
-                <p class="text-gray-600 text-xs mt-1">完成实名认证，获得可跨应用使用的 Web3 身份凭证！</p>
+                <h2 class="text-base font-bold text-red-800">反诈博主板块</h2>
+                <p class="text-gray-500 text-xs mt-1">以下博主免费科普反诈知识 · 拒绝任何收费</p>
             </div>
-            <div class="space-y-3">
-                <div class="bg-blue-50 p-3 rounded-lg">
-                    <h3 class="font-semibold text-blue-800 text-xs">凭证权益</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1">
-                        <li>• 实名认证：个人信息仅本地加密存储</li>
-                        <li>• DID 凭证：去中心化身份标识符</li>
-                        <li>• 生态通用：可用于登录 Web3 生态应用</li>
-                    </ul>
+
+            <!-- 内容滚动区 -->
+            <div class="modal-60-body">
+                <!-- 博主1 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">老</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">老派防骗日记</h3>
+                            <p class="text-xs text-gray-500">认证：Pi 社区反诈志愿者 · 5 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">每日更新</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">擅长拆解"代做KYC""假映射"等套路，每天更新 1 个真实受骗案例，新派友必看。</p>
                 </div>
-                <button class="btn btn-blue w-full py-2 text-xs" onclick="playSound('click')">立即申请凭证</button>
+                <!-- 博主2 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">派</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">派圈反诈先锋</h3>
+                            <p class="text-xs text-gray-500">认证：链上安全分析师 · 3.2 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">钓鱼检测</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">主打"钓鱼链接识别"与"假钱包打假"，提供免费可疑链接核查服务。</p>
+                </div>
+                <!-- 博主3 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">吴</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">吴姐说骗局</h3>
+                            <p class="text-xs text-gray-500">认证：退休民警 · 反诈宣传员 · 8.7 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">普法科普</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">从法律角度解读币圈常见骗局，遇到被骗如何报案、如何保留证据，讲得非常清楚。</p>
+                </div>
+                <!-- 博主4 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">安</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">安全小哥阿凯</h3>
+                            <p class="text-xs text-gray-500">认证：Web3 安全公司研究员 · 2.4 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">技术反诈</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">技术流博主，演示"假助记词""伪造授权签名"原理，教你一眼识别恶意 DApp。</p>
+                </div>
+                <!-- 博主5 -->
+                <div class="p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">小</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">小派律师说法</h3>
+                            <p class="text-xs text-gray-500">认证：执业律师 · 1.8 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">法律咨询</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">分享币圈维权与报案流程，免费解答"转错账""被代投跑路"等法律问题。</p>
+                </div>
+            </div>
+
+            <!-- 底部：唯一关闭按钮 -->
+            <div class="modal-60-footer">
+                <button class="btn btn-red w-full py-2.5 text-sm font-bold" onclick="playSound('close'); closeModal('fz-bozhu-modal')">
+                    <i class="fa fa-times mr-1"></i>关闭
+                </button>
             </div>
         </div>
     </div>
-    
-    <div id="ecosystem-modal" class="modal">
-        <div class="modal-content relative">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('ecosystem-modal')">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="text-center mb-4 pt-4">
-                <div class="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center text-white mx-auto mb-3">
-                    <i class="fa fa-yen-sign text-xl"></i>
+
+    <div id="fz-shequ-modal" class="modal">
+        <div class="modal-content modal-60">
+            <!-- 头部 -->
+            <div class="text-center mb-4 flex-shrink-0">
+                <div class="w-14 h-14 rounded-full bg-pink-600 flex items-center justify-center text-white mx-auto mb-2 shadow-md">
+                    <i class="fa fa-users text-2xl"></i>
                 </div>
-                <h2 class="text-base font-bold text-green-800">数字人民币</h2>
-                <p class="text-gray-600 text-xs mt-1">体验 e-CNY 数字人民币钱包与支付场景！</p>
+                <h2 class="text-base font-bold text-pink-800">反诈社区板块</h2>
+                <p class="text-gray-500 text-xs mt-1">派友互助 · 真实曝光 · 集体防骗</p>
             </div>
-            <div class="space-y-3">
-                <div class="bg-green-50 p-3 rounded-lg">
-                    <h3 class="font-semibold text-green-800 text-xs">核心场景</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1">
-                        <li>• 数字钱包：开通数字人民币钱包</li>
-                        <li>• 消费支付：支持 e-CNY 结算的商户消费</li>
-                        <li>• 转账汇款：点对点实时到账无手续费</li>
-                    </ul>
+
+            <!-- 内容滚动区 -->
+            <div class="modal-60-body">
+                <!-- 社区1 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-pink-100 bg-pink-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center mr-2">
+                            <i class="fa fa-comments"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">派友反诈互助群</h3>
+                            <p class="text-xs text-gray-500">人数：4,800+ · 群主：社区志愿者</p>
+                        </div>
+                        <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">免费加入</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">群内每日汇总最新诈骗手法、可疑群主账号、假冒客服黑名单，老派友 24 小时值班答疑。</p>
                 </div>
-                <button class="btn btn-green w-full py-2 text-xs" onclick="playSound('click')">开通数字人民币</button>
+                <!-- 社区2 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-pink-100 bg-pink-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center mr-2">
+                            <i class="fa fa-flag"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">骗局曝光专栏</h3>
+                            <p class="text-xs text-gray-500">曝光次数：6,200+ · 实时更新</p>
+                        </div>
+                        <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">黑名单共享</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">派友实名举报受骗经历，附聊天记录截图、收款账号、对方微信/QQ 号，帮助更多人避坑。</p>
+                </div>
+                <!-- 社区3 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-pink-100 bg-pink-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center mr-2">
+                            <i class="fa fa-shield"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">老人派友守护专区</h3>
+                            <p class="text-xs text-gray-500">面向：50 岁以上派友 · 子女也可加入</p>
+                        </div>
+                        <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">一对一帮扶</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">针对老年派友易被"暴富话术"、"政府项目"诱导的问题，志愿者手把手教如何识别。</p>
+                </div>
+                <!-- 社区4 -->
+                <div class="p-3 rounded-xl border-2 border-pink-100 bg-pink-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center mr-2">
+                            <i class="fa fa-balance-scale"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">维权 & 报案协助</h3>
+                            <p class="text-xs text-gray-500">志愿者：退休警官 + 执业律师</p>
+                        </div>
+                        <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">免费咨询</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">已被骗？志愿者教你：① 保留聊天 / 转账证据 ② 到辖区派出所做笔录流程 ③ 立案后配合问询技巧。</p>
+                </div>
+            </div>
+
+            <!-- 底部：唯一关闭按钮 -->
+            <div class="modal-60-footer">
+                <button class="btn btn-pink w-full py-2.5 text-sm font-bold" onclick="playSound('close'); closeModal('fz-shequ-modal')">
+                    <i class="fa fa-times mr-1"></i>关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fz-zaoyao-modal" class="modal">
+        <div class="modal-content modal-60">
+            <!-- 头部 -->
+            <div class="text-center mb-4 flex-shrink-0">
+                <div class="w-14 h-14 rounded-full bg-orange-600 flex items-center justify-center text-white mx-auto mb-2 shadow-md">
+                    <i class="fa fa-exclamation-triangle text-2xl"></i>
+                </div>
+                <h2 class="text-base font-bold text-orange-800">反诈造谣中心板块</h2>
+                <p class="text-gray-500 text-xs mt-1">谣言止于智者 · 一切以官方公告为准</p>
+            </div>
+
+            <!-- 内容滚动区 -->
+            <div class="modal-60-body">
+                <!-- 谣言1 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：派币马上上主网，现在交钱可以优先映射</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"名额有限！现在转账 500 USDT 给客服，直接帮你完成 KYC+映射，跳过全球排队。"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>派网络从未委托任何第三方代做 KYC 或代映射，所有流程均在官方 APP 内免费完成。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 谣言2 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：GCV 共识价 = $314,159，1 枚买 1 套房</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"未来 1 Pi = 314159 美元，我手上有内部分配额度，今天打款 1 万明天给你 10 枚！"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>币价由市场决定，没有任何组织可以"承诺"固定价格。凡是提前收"认购款"的，全是骗局。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 谣言3 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：点击这个链接领 Pi 空投，需要填助记词</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"官方回馈老用户，免费领 1000 Pi 空投，打开链接登录验证一下钱包即可。"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>任何索要助记词或私钥的"领空投"页面都是钓鱼。助记词=全部资产，一旦泄露币会被全部转走！</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 谣言4 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：官方授权"KYC 代办服务"，收费 299 元包过</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"KYC 通过率只有 30%，我是官方代理，交 299 元 100% 保证通过，不过全额退。"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>KYC 不收费，没有任何"代办包过"服务。钱一转过去对方立即拉黑，根本不存在"退款"。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 谣言5 -->
+                <div class="p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：国家数字货币试点，派友优先入股，日息 5%</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"中央推出数字人民币合作项目，派友专属通道，投 1 万每天返利 500，连续返 30 天。"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>数字人民币由央行发行，没有任何"高息分红""入股返利"项目，这是典型的庞氏骗局。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部：唯一关闭按钮 -->
+            <div class="modal-60-footer">
+                <button class="btn btn-orange w-full py-2.5 text-sm font-bold" onclick="playSound('close'); closeModal('fz-zaoyao-modal')">
+                    <i class="fa fa-times mr-1"></i>关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fz-gcv-modal" class="modal">
+        <div class="modal-content modal-60">
+            <!-- 头部 -->
+            <div class="text-center mb-4 flex-shrink-0">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow-md" style="background: linear-gradient(135deg, #9f1239, #f43f5e);">
+                    <i class="fa fa-money text-2xl"></i>
+                </div>
+                <h2 class="text-base font-bold text-rose-800">反诈 GCV 价暴富板块</h2>
+                <p class="text-gray-500 text-xs mt-1">警惕"一枚暴富" · 理性看待币价 · 守住你的口袋</p>
+            </div>
+
+            <!-- 内容滚动区 -->
+            <div class="modal-60-body">
+                <!-- 骗局1 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">1</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">话术洗脑：喊出"GCV $314,159 共识价"</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">诱导入坑</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"只要全体派友共识，1 枚 Pi 就值 31 万美元！这不是币，这是改变你家族三代命运的机会。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>币价不由"喊单"决定，任何说"我们说了算价格"的群，下一步就是收你的钱。</p>
+                    </div>
+                </div>
+                <!-- 骗局2 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">2</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">收费进群："内部 VIP 暴富通道"</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">收门槛费</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"普通群只教皮毛，VIP 群有官方一手消息，进群费 2,980 元，3 天内你就能回本 10 倍。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>真能"3 天 10 倍"，他为什么不自己赚、还要收 2,980 元的进群费？</p>
+                    </div>
+                </div>
+                <!-- 骗局3 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">3</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">高价代卖：帮你以 GCV 价卖掉 Pi</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">收手续费</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"我对接了国外顶级买家，1 枚 $100,000 回收。你先打 5% 保证金 5,000 元，款到 3 天后结清全款。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>真实交易是"你先收到钱再打币"，反过来让你先打"保证金/手续费/税款"的，全是骗子。</p>
+                    </div>
+                </div>
+                <!-- 骗局4 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">4</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">专属钱包：下载"GCV 生态钱包"认领高价</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">盗你私钥</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"普通钱包看不到 GCV 额度，必须用这款专属钱包导入助记词，激活后就能以 $31 万卖出。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>这是最常见的钓鱼钱包——你一导入助记词，下一秒你的 Pi/其他币就被转空。</p>
+                    </div>
+                </div>
+                <!-- 骗局5 -->
+                <div class="p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">5</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">代持锁仓：把币放我这，一年后给你 GCV 价现金</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">直接骗币</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"你把币打到我官方锁仓地址，签署《代持协议》，满 1 年按 $31 万/枚结算，签合同盖章。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>链上转币不可逆，所谓"合同""公章"10 元就能刻一套，币转走就再也找不回来了。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部：唯一关闭按钮 -->
+            <div class="modal-60-footer">
+                <button class="btn w-full py-2.5 text-sm font-bold text-white" style="background: linear-gradient(135deg, #9f1239 0%, #f43f5e 100%); box-shadow: 0 2px 8px rgba(244,63,94,0.3);" onclick="playSound('close'); closeModal('fz-gcv-modal')">
+                    <i class="fa fa-times mr-1"></i>关闭
+                </button>
             </div>
         </div>
     </div>
@@ -1159,15 +1311,24 @@
             <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg z-10" onclick="playSound('close'); closeModal('umap-map-modal')">
                 <i class="fa fa-times"></i>
             </button>
-            <div class="text-center mb-3 pt-2">
+            <div class="text-center mb-3 pt-4">
+                <div id="umap-modal-icon" class="w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-3 bg-blue-600">
+                    <i class="fa fa-globe text-xl"></i>
+                </div>
                 <h2 id="umap-modal-title" class="text-base font-bold text-blue-800">Umap派地图</h2>
-                <p id="umap-modal-desc" class="text-gray-600 text-xs mt-1 leading-relaxed px-2">
+                <p id="umap-modal-desc" class="text-gray-600 text-xs mt-2 leading-relaxed px-2">
                     派币生态地图，看到全国所有的派友俱乐部。<br/>
                     微信扫码小程序，一键定位身边的派友聚集地。
                 </p>
             </div>
-            <!-- 长方形SVG展示图（动态） -->
-            <div id="umap-modal-image" class="w-full rounded-xl overflow-hidden border-2 border-blue-200 bg-blue-50 shadow-inner flex-1 flex items-center justify-center"></div>
+            <!-- 动态话术区块 -->
+            <div id="umap-modal-features" class="rounded-xl p-3 bg-blue-50 border-2 border-blue-200">
+                <h3 id="umap-modal-features-title" class="font-semibold text-blue-800 text-xs mb-2">核心亮点</h3>
+                <ul id="umap-modal-features-list" class="text-xs text-gray-700 space-y-1.5 leading-relaxed">
+                    <li>• 全国派友俱乐部分布</li>
+                    <li>• 微信扫码即可进入</li>
+                </ul>
+            </div>
             <div class="mt-4">
                 <button id="umap-modal-cta" class="btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 border-2 border-blue-900 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all" onclick="playSound('close'); closeModal('umap-map-modal');">
                     <i class="fa fa-home mr-2"></i>返回首页
@@ -1408,7 +1569,7 @@
         ];
         
         const appList2 = [
-            { name: "界外app（可下载app）", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://mysticring.jiewai.pro/mysticringapp", copy: true, action: "download" },
+            { name: "界外app（可下载app）", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://share.feijipan.com/s/Zn6o51Cs", copy: true, action: "download" },
             { name: "OPA免费生态挖矿（可下载app）", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815" },
             { type: "umap-map", name: "湖南鼎俏日用品（微信小程序）", desc: "湖南鼎俏科技有限公司出品，老百姓的实惠日用品牌", icon: "fa-globe", color: "pink", iconType: "soap", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入", modalFeaturesTitle: "品牌亮点", modalCTA: "立即了解", modalFeatures: ["湖南鼎俏科技自主研发，源头工厂直供", "主营洗衣液、洁厕净等日用清洁系列", "价格亲民实惠，老百姓都用得起", "品质保障，好用不贵、家庭必备"] },
             { type: "umap-map", name: "青蓝山泉免费喝水（微信小程序）", desc: "微信小程序上线，高品质山泉健康水，喝水还能赚钱", icon: "fa-globe", color: "green", iconType: "water", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入", modalFeaturesTitle: "喝水赚钱攻略", modalCTA: "立即免费喝水", modalFeatures: ["微信小程序即可使用，19.9 / 29.9 / 39.9 / 99.9 / 128.9 多档套餐可选", "每日签到送红包、签到越多返现越多", "花出去的钱还能拿回来，相当于实现免费喝水", "源自天然山泉，水质纯净健康，家人放心饮用"] },
@@ -1444,15 +1605,6 @@
             red: { bg: "from-red-100 to-red-200", text: "text-red-600", btn: "btn-red" }
         };
         
-        // 渲染应用名称：括号内容换到第二行，字号小一号
-        function formatAppName(name) {
-            const m = name.match(/^(.+?)[\(（](.+?)[\)）]\s*$/);
-            if (m) {
-                return `<h4 class="font-bold text-gray-800 text-sm mb-0 leading-tight">${m[1].trim()}</h4><div class="text-xs text-gray-500 leading-tight mt-0.5">（${m[2]}）</div>`;
-            }
-            return `<h4 class="font-bold text-gray-800 text-sm mb-1">${name}</h4>`;
-        }
-
         // 渲染应用列表
         function renderAppList(appList) {
             const container = document.getElementById('app-list');
@@ -1481,11 +1633,13 @@
                                     <p class="text-xs text-gray-600 mt-0.5">${app.desc}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2 mb-3">
-                                <button class="btn btn-orange font-bold shadow-md hover:shadow-lg border border-gray-800 px-6 py-1.5 text-sm flex-shrink-0" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
+                            <div class="flex gap-2 mb-3 justify-end">
+                                <button class="btn btn-orange font-bold shadow-md hover:shadow-lg border border-gray-800 px-4 py-1.5 text-sm" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
                                     <i class="fa fa-play-circle mr-1"></i>操作视频
                                 </button>
-                                <span class="text-xs text-gray-600 truncate bg-white/90 rounded-lg px-2 py-1 border-2 border-gray-800 max-w-[55%] min-w-0 text-center">${app.copyUrl}</span>
+                            </div>
+                            <div class="flex items-center bg-white/90 rounded-lg px-2 py-1 border-2 border-gray-800 gap-2">
+                                <span class="text-xs text-gray-600 truncate flex-1 min-w-0">${app.copyUrl}</span>
                                 <button class="btn btn-yellow btn-small border border-gray-800 flex-shrink-0 px-2" onclick="playSound('click'); copyToClipboard('${app.copyUrl}'); alert('已复制网址到剪贴板！');">
                                     <i class="fa fa-copy mr-1"></i>复制
                                 </button>
@@ -1525,7 +1679,7 @@
                                     ${iconHTML}
                                 </div>
                                 <div class="flex-1 min-w-0 mx-3">
-                                    ${formatAppName(app.name)}
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
@@ -1578,7 +1732,7 @@
                                     ${iconHTML}
                                 </div>
                                 <div class="flex-1 min-w-0 mx-3">
-                                    ${formatAppName(app.name)}
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
@@ -1714,11 +1868,11 @@
                                     ${iconHTML}
                                 </div>
                                 <div class="flex-1 min-w-0 mx-3">
-                                    ${formatAppName(app.name)}
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
-                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick='playSound("click"); openUmapModal(${JSON.stringify(app).replace(/\\/g, "\\\\").replace(/'/g, "\\&#39;").replace(/"/g, "&quot;")});'>
+                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); openUmapModal('${JSON.stringify(app).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}');">
                                     ${btnText}
                                 </button>
                             </div>
@@ -1774,7 +1928,7 @@
                                     ${iconHTML}
                                 </div>
                                 <div class="flex-1 min-w-0 mx-3">
-                                    ${formatAppName(app.name)}
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
@@ -1824,7 +1978,7 @@
                                 <i class="fa ${app.icon} ${colors.text} text-xl"></i>
                             </div>
                             <div class="flex-1 min-w-0 mx-3">
-                                ${formatAppName(app.name)}
+                                <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
                                 <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                 ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                             </div>
@@ -1997,131 +2151,34 @@
             };
             const c = themeColors[theme] || themeColors.blue;
 
+            const iconBox = document.getElementById('umap-modal-icon');
+            iconBox.className = 'w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-3 ' + c.icon;
+            iconBox.innerHTML = '<i class="fa ' + (app.icon || 'fa-globe') + ' text-xl"></i>';
+
             const titleEl = document.getElementById('umap-modal-title');
             titleEl.textContent = app.name;
             titleEl.className = 'text-base font-bold ' + c.title;
 
-            const descEl = document.getElementById('umap-modal-desc');
-            descEl.textContent = '';
-            if (app.desc) {
-                descEl.innerHTML = app.desc + (app.btnText ? '<br/>' + app.btnText + '，了解更多详情。' : '<br/>微信扫码小程序一键体验。');
-            } else {
-                descEl.innerHTML = '点击下方按钮，查看更多详情。';
-            }
+            document.getElementById('umap-modal-desc').textContent = app.desc || '';
 
-            // 动态SVG：按 iconType 切换主题插画
-            const imgBox = document.getElementById('umap-modal-image');
-            imgBox.className = 'w-full rounded-xl overflow-hidden border-2 shadow-inner flex-1 flex items-center justify-center ' + c.box;
-            imgBox.innerHTML = getUmapModalSvg(app.iconType || 'globe', app.name);
+            const featuresBox = document.getElementById('umap-modal-features');
+            featuresBox.className = 'rounded-xl p-3 border-2 ' + c.box;
+
+            const fTitle = document.getElementById('umap-modal-features-title');
+            fTitle.className = 'font-semibold text-xs mb-2 ' + c.title;
+            fTitle.textContent = app.modalFeaturesTitle || '核心亮点';
+
+            const list = document.getElementById('umap-modal-features-list');
+            const features = app.modalFeatures || [];
+            list.innerHTML = features.length
+                ? features.map(f => '<li>• ' + f + '</li>').join('')
+                : '<li>• 更多信息即将上线</li>';
 
             const cta = document.getElementById('umap-modal-cta');
             cta.className = 'btn w-full py-3 text-sm font-bold text-white bg-gradient-to-r ' + c.btn + ' border-2 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all';
-            cta.innerHTML = '<i class="fa fa-home mr-2"></i>返回首页';
+            cta.innerHTML = '<i class="fa fa-arrow-right mr-2"></i>' + (app.modalCTA || '立即参与');
 
             openModal('umap-map-modal');
-        }
-
-        // 根据 iconType 返回不同的长方形展示插画
-        function getUmapModalSvg(type, appName) {
-            if (type === 'soap') {
-                return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
-                    <defs>
-                        <linearGradient id="dqBg" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#fce7f3;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#fbcfe8;stop-opacity:1" />
-                        </linearGradient>
-                        <linearGradient id="dqBot" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#f472b6;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#be185d;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <rect x="0" y="0" width="600" height="360" fill="url(#dqBg)" />
-                    <g><rect x="130" y="70" width="50" height="16" rx="3" fill="#9d174d" /><rect x="138" y="84" width="34" height="8" fill="#9d174d" /><rect x="110" y="92" width="90" height="180" rx="10" fill="url(#dqBot)" stroke="#831843" stroke-width="2" /><rect x="120" y="120" width="70" height="100" rx="3" fill="#ffffff" /><text x="155" y="160" text-anchor="middle" font-size="14" font-weight="900" fill="#9d174d">鼎俏</text><text x="155" y="185" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">洗衣液</text></g>
-                    <g><rect x="265" y="60" width="50" height="16" rx="3" fill="#9d174d" /><rect x="273" y="74" width="34" height="8" fill="#9d174d" /><rect x="245" y="82" width="90" height="190" rx="10" fill="url(#dqBot)" stroke="#831843" stroke-width="2" /><rect x="255" y="110" width="70" height="100" rx="3" fill="#ffffff" /><text x="290" y="150" text-anchor="middle" font-size="14" font-weight="900" fill="#9d174d">鼎俏</text><text x="290" y="175" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">洗洁精</text></g>
-                    <g><rect x="400" y="70" width="50" height="16" rx="3" fill="#9d174d" /><rect x="408" y="84" width="34" height="8" fill="#9d174d" /><rect x="380" y="92" width="90" height="180" rx="10" fill="url(#dqBot)" stroke="#831843" stroke-width="2" /><rect x="390" y="120" width="70" height="100" rx="3" fill="#ffffff" /><text x="425" y="160" text-anchor="middle" font-size="14" font-weight="900" fill="#9d174d">鼎俏</text><text x="425" y="185" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">洁厕净</text></g>
-                    <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#9d174d">湖南鼎俏 · 老百姓的实惠日用</text>
-                </svg>`;
-            }
-            if (type === 'water') {
-                return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
-                    <defs>
-                        <linearGradient id="wtBg" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#dcfce7;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#bbf7d0;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <rect x="0" y="0" width="600" height="360" fill="url(#wtBg)" />
-                    <path d="M0,260 L120,140 L200,200 L320,100 L420,180 L520,140 L600,200 L600,360 L0,360 Z" fill="#86efac" />
-                    <path d="M0,300 L100,200 L220,260 L340,180 L460,240 L600,200 L600,360 L0,360 Z" fill="#4ade80" />
-                    <circle cx="500" cy="100" r="35" fill="#fbbf24" />
-                    <circle cx="500" cy="100" r="48" fill="#fef08a" opacity="0.5" />
-                    <g><rect x="270" y="80" width="60" height="20" rx="3" fill="#16a34a" /><rect x="278" y="98" width="44" height="10" fill="#16a34a" /><rect x="240" y="108" width="120" height="180" rx="15" fill="#ffffff" stroke="#15803d" stroke-width="2" /><ellipse cx="300" cy="200" rx="40" ry="50" fill="#86efac" opacity="0.7" /><text x="300" y="180" text-anchor="middle" font-size="16" font-weight="900" fill="#15803d">青蓝山泉</text><text x="300" y="220" text-anchor="middle" font-size="10" fill="#15803d">天然健康好水</text><text x="300" y="265" text-anchor="middle" font-size="13" font-weight="900" fill="#15803d">免费喝水</text></g>
-                    <g fill="#3b82f6" opacity="0.75"><path d="M150,250 C145,240 135,242 135,255 C135,268 150,285 150,285 C150,285 165,268 165,255 C165,242 155,240 150,250 Z" /><path d="M450,250 C445,240 435,242 435,255 C435,268 450,285 450,285 C450,285 465,268 465,255 C465,242 455,240 450,250 Z" /></g>
-                    <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#15803d">青蓝山泉 · 喝水也能赚钱</text>
-                </svg>`;
-            }
-            if (type === 'redpacket') {
-                return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
-                    <defs>
-                        <linearGradient id="oadBg" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#fee2e2;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#fecaca;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <rect x="0" y="0" width="600" height="360" fill="url(#oadBg)" />
-                    <g><rect x="100" y="180" width="400" height="120" rx="10" fill="#1e40af" stroke="#1e3a8a" stroke-width="3" /><rect x="100" y="200" width="400" height="20" fill="#fbbf24" /><rect x="120" y="240" width="60" height="20" rx="3" fill="#fbbf24" /><text x="120" y="288" font-size="14" font-weight="bold" fill="#ffffff">1234 5678 9012 3456</text><text x="420" y="270" font-size="14" font-weight="bold" fill="#fbbf24">数字oad</text></g>
-                    <g><rect x="370" y="60" width="140" height="120" rx="8" fill="#dc2626" stroke="#fbbf24" stroke-width="3" /><circle cx="440" cy="100" r="20" fill="#fbbf24" /><text x="440" y="108" text-anchor="middle" font-size="24" font-weight="900" fill="#dc2626">¥</text><text x="440" y="150" text-anchor="middle" font-size="14" font-weight="900" fill="#fbbf24">99%补贴</text></g>
-                    <g><circle cx="100" cy="80" r="18" fill="#fbbf24" stroke="#d97706" stroke-width="2" /><text x="100" y="88" text-anchor="middle" font-size="16" font-weight="900" fill="#d97706">¥</text></g>
-                    <g><circle cx="200" cy="120" r="15" fill="#fbbf24" stroke="#d97706" stroke-width="2" /><text x="200" y="127" text-anchor="middle" font-size="14" font-weight="900" fill="#d97706">¥</text></g>
-                    <g><circle cx="500" cy="280" r="18" fill="#fbbf24" stroke="#d97706" stroke-width="2" /><text x="500" y="288" text-anchor="middle" font-size="16" font-weight="900" fill="#d97706">¥</text></g>
-                    <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#991b1b">数字银行 · 登录领高额补贴</text>
-                </svg>`;
-            }
-            // 默认 / 备用 / globe → Umap派地图
-            if (type === 'spare' || (appName && appName.indexOf('备用') === 0)) {
-                return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
-                    <defs>
-                        <linearGradient id="spBg" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#bfdbfe;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <rect x="0" y="0" width="600" height="360" fill="url(#spBg)" />
-                    <circle cx="300" cy="170" r="90" fill="#ffffff" stroke="#1e40af" stroke-width="4" />
-                    <line x1="300" y1="170" x2="300" y2="110" stroke="#1e40af" stroke-width="4" stroke-linecap="round" />
-                    <line x1="300" y1="170" x2="345" y2="170" stroke="#1e40af" stroke-width="3" stroke-linecap="round" />
-                    <circle cx="300" cy="170" r="6" fill="#dc2626" />
-                    <g fill="#1e40af" font-weight="bold" font-size="14"><text x="300" y="105" text-anchor="middle">12</text><text x="370" y="175" text-anchor="middle">3</text><text x="300" y="240" text-anchor="middle">6</text><text x="230" y="175" text-anchor="middle">9</text></g>
-                    <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#1e3a8a">更多生态 · 敬请期待</text>
-                </svg>`;
-            }
-            // Umap派地图默认
-            return `<svg viewBox="0 0 600 360" class="w-full h-auto block">
-                <defs>
-                    <linearGradient id="umBg" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#bfdbfe;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-                <rect x="0" y="0" width="600" height="360" fill="url(#umBg)" />
-                <g stroke="#60a5fa" stroke-width="1" opacity="0.4" fill="none">
-                    <line x1="0" y1="60" x2="600" y2="60" /><line x1="0" y1="120" x2="600" y2="120" /><line x1="0" y1="180" x2="600" y2="180" /><line x1="0" y1="240" x2="600" y2="240" /><line x1="0" y1="300" x2="600" y2="300" />
-                    <line x1="100" y1="0" x2="100" y2="360" /><line x1="200" y1="0" x2="200" y2="360" /><line x1="300" y1="0" x2="300" y2="360" /><line x1="400" y1="0" x2="400" y2="360" /><line x1="500" y1="0" x2="500" y2="360" />
-                </g>
-                <circle cx="300" cy="170" r="90" fill="#3b82f6" stroke="#1e3a8a" stroke-width="3" />
-                <ellipse cx="300" cy="170" rx="36" ry="90" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
-                <ellipse cx="300" cy="170" rx="72" ry="90" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
-                <ellipse cx="300" cy="170" rx="90" ry="22" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
-                <ellipse cx="300" cy="170" rx="90" ry="50" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
-                <ellipse cx="300" cy="170" rx="90" ry="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" />
-                <line x1="210" y1="170" x2="390" y2="170" stroke="#ffffff" stroke-width="2.5" opacity="0.95" />
-                <line x1="300" y1="80" x2="300" y2="260" stroke="#ffffff" stroke-width="2.5" opacity="0.95" />
-                <g fill="#dc2626" stroke="#7f1d1d" stroke-width="2"><path d="M150,90 C140,80 125,82 125,95 C125,108 150,128 150,128 C150,128 175,108 175,95 C175,82 160,80 150,90 Z" /><circle cx="150" cy="100" r="6" fill="#ffffff" /></g>
-                <g fill="#dc2626" stroke="#7f1d1d" stroke-width="2"><path d="M450,110 C440,100 425,102 425,115 C425,128 450,148 450,148 C450,148 475,128 475,115 C475,102 460,100 450,110 Z" /><circle cx="450" cy="120" r="6" fill="#ffffff" /></g>
-                <g fill="#dc2626" stroke="#7f1d1d" stroke-width="2"><path d="M180,260 C170,250 155,252 155,265 C155,278 180,298 180,298 C180,298 205,278 205,265 C205,252 190,250 180,260 Z" /><circle cx="180" cy="270" r="6" fill="#ffffff" /></g>
-                <g fill="#dc2626" stroke="#7f1d1d" stroke-width="2"><path d="M420,250 C410,240 395,242 395,255 C395,268 420,288 420,288 C420,288 445,268 445,255 C445,242 430,240 420,250 Z" /><circle cx="420" cy="260" r="6" fill="#ffffff" /></g>
-                <text x="300" y="328" text-anchor="middle" font-size="20" font-weight="900" fill="#1e3a8a">Umap派地图 · 全国派友聚集地</text>
-            </svg>`;
         }
         
         // 事件倒计时
@@ -2180,12 +2237,45 @@
         
         // 数据页面功能
         let dataUpdateInterval = null;
-        let currentPiPrice = 314159.0;
-        let yesterdayPiPrice = 314100.0;
-        let cnyRate = 7.2;
-        const BASE_PRICE = 314159.0;
-        const PRICE_FLUCTUATION = 1000;
-        let fluctuationDirection = 1;
+        let currentPiPrice = 0.095;
+        const PRICE_MIN = 0.08;
+        const PRICE_MAX = 0.11;
+        const PRICE_MID = 0.095;
+        // 图表显示的点数（窗口大小），每秒推进一个点
+        const CHART_WINDOW = 168;
+        let piChartPoints = []; // {time, price}
+        let chartDrawPending = false;
+        let _piTick = 0;
+
+        // ---------- 每秒价格步进的固定公式 ----------
+        // 规则：
+        //   u = sin(tick * 9.137 + 3.7) * 10.827, 再取小数部分 => 0~1
+        //   stepAmp = 0.001 + u * 0.004    =>   0.001 ~ 0.005
+        //   direction: 当价格 <= PRICE_MIN 强制正；>= PRICE_MAX 强制负；否则用"周期波+伪随机"确定方向
+        //   输出：nextPrice 夹紧在 [PRICE_MIN, PRICE_MAX]
+        function stepPiPrice(prevPrice) {
+            _piTick++;
+            const p = Math.sin(_piTick * 9.137 + 3.7) * 10.827;
+            const u = p - Math.floor(p); // 0 ~ 1
+            const stepAmp = 0.001 + u * 0.004; // 0.001 ~ 0.005
+            let dir;
+            if (prevPrice <= PRICE_MIN + 0.0001) dir = 1; // 触底必须向上
+            else if (prevPrice >= PRICE_MAX - 0.0001) dir = -1; // 触顶必须向下
+            else {
+                // 周期波 + 伪随机方向交替，保证上下走动
+                const wave = Math.sin((_piTick / 37) * Math.PI * 2);
+                const rnd = (u - 0.5) * 2; // -1 ~ 1
+                dir = (wave + rnd) >= 0 ? 1 : -1;
+                // 如果按 dir + stepAmp 会直接越界，就反向走（避免出现"越界再回弹=0 变化"）
+                const wouldOverflow = (dir === 1 && prevPrice + stepAmp > PRICE_MAX)
+                                   || (dir === -1 && prevPrice - stepAmp < PRICE_MIN);
+                if (wouldOverflow) dir = -dir;
+            }
+            let next = prevPrice + dir * stepAmp;
+            // 夹紧兜底
+            next = Math.max(PRICE_MIN, Math.min(PRICE_MAX, next));
+            return Number(next.toFixed(5));
+        }
         
         let priceAlertData = {
             targetPrice: 0,
@@ -2193,38 +2283,118 @@
             isSet: false
         };
         
+        // 生成从 2026-08-24 00:00 开始，按小时连续 7 天的基础趋势数据（用于初始化图表窗口）
+        function generateHourlyPriceData() {
+            const START_DATE = new Date(2026, 7, 24, 0, 0, 0); // 2026-08-24 00:00
+            const HOURS = 7 * 24; // 7 天共 168 小时
+            const data = [];
+            let price = PRICE_MID;
+            for (let h = 0; h < HOURS; h++) {
+                const t = START_DATE.getTime() + h * 3600 * 1000;
+                const pseudo = Math.sin(h * 12.9898 + 42.1) * 43758.5453;
+                const rand = pseudo - Math.floor(pseudo); // 0~1
+                const hourlyWave = (rand - 0.5) * 0.006;
+                const cycleWave = Math.sin((h / 84) * Math.PI * 2) * 0.012;
+                const trendWave = Math.sin((h / 168) * Math.PI * 2) * 0.004;
+                price = PRICE_MID + hourlyWave + cycleWave + trendWave;
+                price = Math.max(PRICE_MIN, Math.min(PRICE_MAX, price));
+                data.push({ time: t, price: Number(price.toFixed(5)) });
+            }
+            return data;
+        }
+
+        function formatHourLabel(timestamp, idx, total) {
+            const d = new Date(timestamp);
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            const hour = d.getHours();
+            const minute = d.getMinutes();
+            // 秒级密集数据：只在 0 分 / 30 分打点，避免重叠
+            if (total >= 120) {
+                if (minute === 0) return `${pad2(hour)}:00`;
+                if (minute === 30) return `${pad2(hour)}:30`;
+                return '';
+            }
+            if (hour === 0) return `${month}/${day}`;
+            if (hour === 6 || hour === 12 || hour === 18) return `${hour}:00`;
+            return '';
+        }
+
+        function pad2(n) { return n.toString().padStart(2, '0'); }
+
+        // 初始化图表窗口：末尾种子价之后按秒级步进生成 CHART_WINDOW 个点
+        function initChartWindow() {
+            const hourly = generateHourlyPriceData();
+            let seedPrice = hourly[hourly.length - 1].price;
+            const seedTime = hourly[hourly.length - 1].time; // 2026-08-30 23:00
+            const now = Date.now();
+            // 若当前真实时间晚于种子时间+窗口，就把起点拉回"现在-窗口秒"，让末端对应当前时间
+            const baseTime = now > seedTime + CHART_WINDOW * 1000
+                ? now - CHART_WINDOW * 1000
+                : seedTime;
+            const points = [];
+            _piTick = 0;
+            let p = seedPrice;
+            for (let i = 0; i < CHART_WINDOW; i++) {
+                p = stepPiPrice(p);
+                points.push({ time: baseTime + i * 1000, price: p });
+            }
+            piChartPoints = points;
+            currentPiPrice = points[points.length - 1].price;
+        }
+
+        function tickPiChart() {
+            if (piChartPoints.length === 0) { initChartWindow(); return; }
+            const last = piChartPoints[piChartPoints.length - 1];
+            const nextPrice = stepPiPrice(last.price);
+            const nextTime = Date.now();
+            piChartPoints.push({ time: nextTime, price: nextPrice });
+            if (piChartPoints.length > CHART_WINDOW) piChartPoints.shift();
+            currentPiPrice = nextPrice;
+        }
+
         // 初始化数据页面
         function initDataPage() {
+            if (piChartPoints.length === 0) initChartWindow();
             updatePiData();
             drawPiChart();
             if (dataUpdateInterval) clearInterval(dataUpdateInterval);
+            // 每秒更新：价格、时间、图表滚动一个点
             dataUpdateInterval = setInterval(() => {
+                tickPiChart();
                 updatePiData();
-                checkPriceAlert();
+                if (!chartDrawPending) {
+                    chartDrawPending = true;
+                    requestAnimationFrame(() => {
+                        drawPiChart();
+                        chartDrawPending = false;
+                    });
+                }
             }, 1000);
         }
-        
+
         async function refreshData() {
             const btn = document.getElementById('refresh-data-btn');
             if (!btn) return;
-            
+
             const icon = btn.querySelector('i');
             if (icon) {
                 icon.style.animation = 'spin 0.6s linear infinite';
             }
             btn.disabled = true;
             btn.style.opacity = '0.7';
-            
+
             try {
+                initChartWindow();
                 updatePiData();
                 drawPiChart();
-                
+
                 const originalText = btn.querySelector('span').textContent;
-                btn.querySelector('span').textContent = '已更新!';
+                btn.querySelector('span').textContent = '已刷新!';
                 setTimeout(() => {
                     btn.querySelector('span').textContent = originalText;
                 }, 1000);
-                
+
             } finally {
                 if (icon) {
                     icon.style.animation = '';
@@ -2233,137 +2403,132 @@
                 btn.style.opacity = '1';
             }
         }
-        
+
         function updatePiData() {
-            // 每秒±$1000浮动，围绕基准价格波动
-            const fluctuation = (Math.random() - 0.5) * 2 * PRICE_FLUCTUATION;
-            currentPiPrice = BASE_PRICE + fluctuation;
-            const piPriceCny = currentPiPrice * cnyRate;
-            
+            const lastPoint = piChartPoints.length ? piChartPoints[piChartPoints.length - 1] : { time: Date.now(), price: currentPiPrice };
+            const firstPoint = piChartPoints.length ? piChartPoints[0] : lastPoint;
+            currentPiPrice = lastPoint.price;
+
             const piPriceUsdEl = document.getElementById('pi-price-usd');
-            const piPriceCnyEl = document.getElementById('pi-price-cny');
             const piUpdateTimeEl = document.getElementById('pi-update-time');
-            
-            if (piPriceUsdEl) piPriceUsdEl.textContent = '$' + currentPiPrice.toFixed(2);
-            if (piPriceCnyEl) piPriceCnyEl.textContent = '¥' + piPriceCny.toFixed(2);
+            const piChangeUsdEl = document.getElementById('pi-change-usd');
+            const piChartRangeEl = document.getElementById('pi-chart-range');
+
+            if (piPriceUsdEl) piPriceUsdEl.textContent = '$' + currentPiPrice.toFixed(4);
+
+            // 使用真实的"当前系统时间"：YYYY-MM-DD hh:mm
             if (piUpdateTimeEl) {
-                const now = new Date();
-                piUpdateTimeEl.textContent = '最后更新: ' + now.toLocaleTimeString('zh-CN');
+                const d = new Date();
+                const y = d.getFullYear();
+                const m = pad2(d.getMonth() + 1);
+                const day = pad2(d.getDate());
+                const hh = pad2(d.getHours());
+                const mm = pad2(d.getMinutes());
+                piUpdateTimeEl.textContent = `更新至 ${y}-${m}-${day} ${hh}:${mm}`;
             }
-            
-            const priceChangeUsd = currentPiPrice - yesterdayPiPrice;
-            const changePercent = (priceChangeUsd / yesterdayPiPrice) * 100;
-            
-            const usdChangeEl = document.getElementById('pi-change-usd');
-            const cnyChangeEl = document.getElementById('pi-change-cny');
-            
-            if (usdChangeEl) {
-                usdChangeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
-                usdChangeEl.className = 'text-xs mt-1 ' + (changePercent >= 0 ? 'text-green-600' : 'text-red-600');
+
+            if (piChartRangeEl) {
+                piChartRangeEl.textContent = `实时走势：每秒滚动更新 · 0.08 ~ 0.11 美元（2026-08-24 起）`;
             }
-            if (cnyChangeEl) {
-                cnyChangeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
-                cnyChangeEl.className = 'text-xs mt-1 ' + (changePercent >= 0 ? 'text-green-600' : 'text-red-600');
-            }
-            
-            const highEl = document.getElementById('pi-high');
-            const lowEl = document.getElementById('pi-low');
-            const marketCapEl = document.getElementById('pi-market-cap');
-            
-            const highPrice = currentPiPrice + PRICE_FLUCTUATION;
-            const lowPrice = currentPiPrice - PRICE_FLUCTUATION;
-            const marketCap = currentPiPrice * 100000000;
-            
-            if (highEl) highEl.textContent = '$' + highPrice.toFixed(2);
-            if (lowEl) lowEl.textContent = '$' + lowPrice.toFixed(2);
-            if (marketCapEl) marketCapEl.textContent = '$' + (marketCap / 1000000000).toFixed(2) + 'B';
-            
-            const trends = [7, 14, 21, 30];
-            trends.forEach((d, i) => {
-                const el = document.getElementById('pi-trend-' + d + 'd');
-                if (el) {
-                    const change = (Math.random() - 0.3) * (0.5 + i * 0.2);
-                    el.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-                    el.className = 'text-sm font-bold ' + (change >= 0 ? 'text-green-600' : 'text-red-600');
-                }
-            });
-            
-            const todayUsdEl = document.getElementById('pi-today-usd');
-            const todayCnyEl = document.getElementById('pi-today-cny');
-            const yesterdayUsdEl = document.getElementById('pi-yesterday-usd');
-            const yesterdayCnyEl = document.getElementById('pi-yesterday-cny');
-            
-            if (todayUsdEl) todayUsdEl.textContent = '$' + currentPiPrice.toFixed(2);
-            if (todayCnyEl) todayCnyEl.textContent = '¥' + piPriceCny.toFixed(2);
-            if (yesterdayUsdEl) yesterdayUsdEl.textContent = '$' + yesterdayPiPrice.toFixed(2);
-            if (yesterdayCnyEl) yesterdayCnyEl.textContent = '¥' + (yesterdayPiPrice * cnyRate).toFixed(2);
-            
-            const changeEl = document.getElementById('pi-24h-change');
-            if (changeEl) {
-                const sign = priceChangeUsd >= 0 ? '+' : '';
-                changeEl.textContent = sign + '$' + priceChangeUsd.toFixed(2) + ' (' + sign + changePercent.toFixed(2) + '%)';
-                changeEl.className = 'text-base font-bold ' + (priceChangeUsd >= 0 ? 'text-green-600' : 'text-red-600');
+
+            if (piChangeUsdEl && firstPoint !== lastPoint) {
+                const start = firstPoint.price;
+                const end = lastPoint.price;
+                const diff = end - start;
+                const pct = start > 0 ? (diff / start) * 100 : 0;
+                const sign = pct >= 0 ? '+' : '';
+                piChangeUsdEl.textContent = `窗口变化：${sign}$${diff.toFixed(4)} (${sign}${pct.toFixed(2)}%)`;
+                piChangeUsdEl.className = 'text-sm mt-3 font-bold ' + (pct >= 0 ? 'text-green-600' : 'text-red-600');
             }
         }
-        
+
         function drawPiChart() {
             const chartEl = document.getElementById('pi-chart');
             if (!chartEl) return;
-            
-            const days = 30;
-            const data = [];
-            let price = BASE_PRICE - 500;
-            for (let i = 0; i < days; i++) {
-                const volatility = (Math.random() - 0.5) * PRICE_FLUCTUATION * 2;
-                price += volatility;
-                price = Math.max(BASE_PRICE - PRICE_FLUCTUATION * 3, Math.min(BASE_PRICE + PRICE_FLUCTUATION * 3, price));
-                data.push(price);
-            }
-            
-            const width = chartEl.offsetWidth || 320;
-            const height = 180;
-            const padding = 20;
-            
-            const min = Math.min(...data) * 0.95;
-            const max = Math.max(...data) * 1.05;
-            
+            if (piChartPoints.length === 0) initChartWindow();
+
+            const points = piChartPoints;
+            const width = chartEl.offsetWidth || 340;
+            const height = 240;
+            const paddingL = 42;
+            const paddingR = 12;
+            const paddingT = 16;
+            const paddingB = 28;
+            const chartW = width - paddingL - paddingR;
+            const chartH = height - paddingT - paddingB;
+
+            const min = PRICE_MIN - 0.001;
+            const max = PRICE_MAX + 0.001;
+
             let pathD = '';
             let areaD = '';
-            
-            data.forEach((price, i) => {
-                const x = padding + (i / (days - 1)) * (width - 2 * padding);
-                const y = height - padding - ((price - min) / (max - min)) * (height - 2 * padding);
+
+            points.forEach((p, i) => {
+                const x = paddingL + (i / (points.length - 1)) * chartW;
+                const y = paddingT + chartH - ((p.price - min) / (max - min)) * chartH;
                 if (i === 0) {
                     pathD += 'M ' + x + ' ' + y;
-                    areaD += 'M ' + x + ' ' + (height - padding) + ' L ' + x + ' ' + y;
+                    areaD += 'M ' + x + ' ' + (paddingT + chartH) + ' L ' + x + ' ' + y;
                 } else {
                     pathD += ' L ' + x + ' ' + y;
                     areaD += ' L ' + x + ' ' + y;
                 }
             });
-            
-            const lastX = padding + ((days - 1) / (days - 1)) * (width - 2 * padding);
-            areaD += ' L ' + lastX + ' ' + (height - padding) + ' Z';
-            
+
+            const lastX = paddingL + ((points.length - 1) / (points.length - 1)) * chartW;
+            areaD += ' L ' + lastX + ' ' + (paddingT + chartH) + ' Z';
+
+            // 横向网格 & Y轴刻度
             let gridLines = '';
-            for (let i = 0; i <= 4; i++) {
-                const y = padding + (i / 4) * (height - 2 * padding);
-                gridLines += '<line x1="' + padding + '" y1="' + y + '" x2="' + (width - padding) + '" y2="' + y + '" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>';
+            const yTicks = [0.080, 0.085, 0.090, 0.095, 0.100, 0.105, 0.110];
+            let yLabels = '';
+            yTicks.forEach((tick) => {
+                const y = paddingT + chartH - ((tick - min) / (max - min)) * chartH;
+                gridLines += `<line x1="${paddingL}" y1="${y}" x2="${width - paddingR}" y2="${y}" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>`;
+                yLabels += `<text x="4" y="${y + 3}" font-size="10" fill="#6b7280">$${tick.toFixed(3)}</text>`;
+            });
+
+            // X 轴标签：每 1/6 窗口打一个点
+            let xLabels = '';
+            let xTicks = '';
+            const step = Math.max(1, Math.floor(points.length / 6));
+            for (let i = 0; i < points.length; i += step) {
+                const p = points[i];
+                const x = paddingL + (i / (points.length - 1)) * chartW;
+                const label = formatHourLabel(p.time, i, points.length);
+                if (label) {
+                    xLabels += `<text x="${x}" y="${height - 8}" font-size="9" fill="#6b7280" text-anchor="middle">${label}</text>`;
+                    xTicks += `<line x1="${x}" y1="${paddingT + chartH}" x2="${x}" y2="${paddingT + chartH + 4}" stroke="#9ca3af" stroke-width="1"/>`;
+                }
             }
-            
+
+            // 末端实时点高亮（呼吸动画）
+            const lp = points[points.length - 1];
+            const lx = paddingL + ((points.length - 1) / (points.length - 1)) * chartW;
+            const ly = paddingT + chartH - ((lp.price - min) / (max - min)) * chartH;
+            const liveDot = `
+                <circle cx="${lx}" cy="${ly}" r="4" fill="#10b981" stroke="#ffffff" stroke-width="2">
+                    <animate attributeName="r" values="3;6;3" dur="1.2s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="1.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="${lx}" cy="${ly}" r="2" fill="#ffffff" opacity="0.9"/>
+            `;
+
             chartEl.innerHTML = `
-                <svg width="100%" height="180" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+                <svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.3"/>
+                            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.35"/>
                             <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.05"/>
                         </linearGradient>
                     </defs>
                     ${gridLines}
+                    ${xTicks}
                     <path d="${areaD}" fill="url(#chartGradient)" stroke="none"/>
-                    <path d="${pathD}" stroke="#10b981" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    <text x="${padding}" y="12" font-size="10" fill="#6b7280">$${max.toFixed(0)}</text>
-                    <text x="${padding}" y="${height - padding + 14}" font-size="10" fill="#6b7280">$${min.toFixed(0)}</text>
+                    <path d="${pathD}" stroke="#10b981" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${yLabels}
+                    ${xLabels}
+                    ${liveDot}
                 </svg>
             `;
         }
