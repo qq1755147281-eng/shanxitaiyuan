@@ -805,7 +805,7 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-base font-bold text-gray-800">派币价格走势图</h3>
-                            <p class="text-xs text-gray-500" id="pi-chart-range">实时走势：每秒滚动更新 · 0.05 ~ 0.11 美元</p>
+                            <p class="text-xs text-gray-500" id="pi-chart-range">实时走势：每秒滚动更新 · 0.08 ~ 0.11 美元</p>
                         </div>
                     </div>
 
@@ -2120,14 +2120,8 @@
             document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
             document.getElementById(pageName).classList.remove('hidden');
             
-            // 如果是数据页面，初始化数据：每次进入都重置为全新的真随机走势 + 零点零几起步
+            // 如果是数据页面，初始化数据
             if (pageName === 'data-page') {
-                // 清空旧的区间和定时器，确保随机性重置
-                if (dataUpdateInterval) { clearInterval(dataUpdateInterval); dataUpdateInterval = null; }
-                piChartPoints = [];
-                _piTick = 0;
-                _trendDir = 0;
-                _trendTTL = 0;
                 initDataPage();
             }
         }
@@ -2243,67 +2237,44 @@
         
         // 数据页面功能
         let dataUpdateInterval = null;
-        let currentPiPrice = 0.085;
-        const PRICE_MIN = 0.05;
+        let currentPiPrice = 0.095;
+        const PRICE_MIN = 0.08;
         const PRICE_MAX = 0.11;
-        const PRICE_MID = 0.080;   // 中枢（用户说"大概总值要在0.008左右。或者说0.1美元左右"，在两者中间）
-        const PRICE_MEAN = 0.085;  // 均值回复中心：0.08~0.1 的中间
+        const PRICE_MID = 0.095;
         // 图表显示的点数（窗口大小），每秒推进一个点
         const CHART_WINDOW = 168;
         let piChartPoints = []; // {time, price}
         let chartDrawPending = false;
-        // 微趋势惯性：短时间内保持同一个方向的概率更高，像交易所真实行情
-        let _trendDir = 0;
-        let _trendTTL = 0;
-
-        // ---------- 每秒价格步进：Math.random() 真随机，模拟交易所行情 ----------
-        // 用户要求（严格执行）：
-        //   · 每秒步长 |Δp| ∈ [0.0001, 0.0030]   （0.0001~0.003 之间随机）
-        //   · 随机的涨或者跌
-        //   · 价格大概在 $0.08 ~ $0.1 附近（"总值 0.008 左右 或 0.1 美元左右"）
-        //   · 上限：≤ $0.11（不能超过 0.11）
-        //   · 下限：≥ $0.05（最低不得低于 0.05）
         let _piTick = 0;
+
+        // ---------- 每秒价格步进的固定公式 ----------
+        // 规则：
+        //   u = sin(tick * 9.137 + 3.7) * 10.827, 再取小数部分 => 0~1
+        //   stepAmp = 0.001 + u * 0.004    =>   0.001 ~ 0.005
+        //   direction: 当价格 <= PRICE_MIN 强制正；>= PRICE_MAX 强制负；否则用"周期波+伪随机"确定方向
+        //   输出：nextPrice 夹紧在 [PRICE_MIN, PRICE_MAX]
         function stepPiPrice(prevPrice) {
             _piTick++;
-
-            // 1. 步长：0.0001 ~ 0.0030，纯随机
-            //    toFixed(4) 避免浮点尾差，再夹紧一次兜底
-            let stepAmpRaw = 0.0001 + Math.random() * 0.0029; // 0.0001 ~ 0.0030
-            let stepAmp = Number(stepAmpRaw.toFixed(4));
-            if (stepAmp < 0.0001) stepAmp = 0.0001;
-            if (stepAmp > 0.0030) stepAmp = 0.0030;
-
-            // ---- 2. 方向决定：随机涨跌 + 均值回复（弱） ----
+            const p = Math.sin(_piTick * 9.137 + 3.7) * 10.827;
+            const u = p - Math.floor(p); // 0 ~ 1
+            const stepAmp = 0.001 + u * 0.004; // 0.001 ~ 0.005
             let dir;
-            // 边界硬保护：触底必须向上，触顶必须向下
-            if (prevPrice <= PRICE_MIN + 0.00001) { dir = 1; }
-            else if (prevPrice >= PRICE_MAX - 0.00001) { dir = -1; }
+            if (prevPrice <= PRICE_MIN + 0.0001) dir = 1; // 触底必须向上
+            else if (prevPrice >= PRICE_MAX - 0.0001) dir = -1; // 触顶必须向下
             else {
-                // 2a. 基础：50/50 随机涨跌（纯随机）
-                const baseRand = Math.random(); // 0~1
-                // 2b. 弱均值回复：偏离 $0.085 中心越远，越倾向反向拉回
-                //     权重不大，不会抹掉随机感，只让价格长期停在 0.08~0.1 附近
-                const distFromMean = prevPrice - PRICE_MEAN; // +：偏高；-：偏低
-                const pullBack = -distFromMean * 6; // 偏高时负(偏跌)，偏低时正(偏涨)
-                // 2c. 边界缓冲：靠近 $0.05 / $0.11 时加一个额外反向拉力
-                let bufferBias = 0;
-                if (prevPrice < 0.058) bufferBias = (0.058 - prevPrice) * 20;   // 接近 0.05，拉回
-                if (prevPrice > 0.105) bufferBias = -(prevPrice - 0.105) * 20;    // 接近 0.11，拉回
-                // 基础 50/50 基准在 0.5，加上 pullBack + bufferBias 调整
-                const score = (baseRand - 0.5) * 2 + pullBack + bufferBias; // -1 ~ 1 附近
-                dir = score >= 0 ? 1 : -1;
+                // 周期波 + 伪随机方向交替，保证上下走动
+                const wave = Math.sin((_piTick / 37) * Math.PI * 2);
+                const rnd = (u - 0.5) * 2; // -1 ~ 1
+                dir = (wave + rnd) >= 0 ? 1 : -1;
+                // 如果按 dir + stepAmp 会直接越界，就反向走（避免出现"越界再回弹=0 变化"）
+                const wouldOverflow = (dir === 1 && prevPrice + stepAmp > PRICE_MAX)
+                                   || (dir === -1 && prevPrice - stepAmp < PRICE_MIN);
+                if (wouldOverflow) dir = -dir;
             }
-
-            // 如果按 dir + stepAmp 直接越界 → 反向走一步（杜绝 0 变化）
-            const wouldOverflow = (dir === 1 && prevPrice + stepAmp > PRICE_MAX)
-                               || (dir === -1 && prevPrice - stepAmp < PRICE_MIN);
-            if (wouldOverflow) dir = -dir;
-
             let next = prevPrice + dir * stepAmp;
-            // 硬夹紧兜底
+            // 夹紧兜底
             next = Math.max(PRICE_MIN, Math.min(PRICE_MAX, next));
-            return Number(next.toFixed(4)); // 保留 4 位小数，对应 $0.0850 这种显示
+            return Number(next.toFixed(5));
         }
         
         let priceAlertData = {
@@ -2317,26 +2288,15 @@
             const START_DATE = new Date(2026, 7, 24, 0, 0, 0); // 2026-08-24 00:00
             const HOURS = 7 * 24; // 7 天共 168 小时
             const data = [];
-            // 真随机历史走势：不再固定 sin 曲线，模仿交易所的有涨有跌
-            let price = 0.078 + Math.random() * 0.01; // 真随机历史起点：0.078 ~ 0.088
-            let localTrend = Math.random() < 0.5 ? -1 : 1;
-            let trendTTL = 6 + Math.floor(Math.random() * 15); // 6~20 小时的短趋势
+            let price = PRICE_MID;
             for (let h = 0; h < HOURS; h++) {
                 const t = START_DATE.getTime() + h * 3600 * 1000;
-                // 每小时步长：零点零几（0.001 ~ 0.006），方向跟随短趋势 + 随机抖动
-                if (trendTTL <= 0) {
-                    localTrend = Math.random() < 0.5 ? -1 : 1;
-                    trendTTL = 6 + Math.floor(Math.random() * 15);
-                }
-                trendTTL--;
-                const amp = 0.001 + Math.random() * 0.005;
-                // 趋势跟随 + 噪声
-                const drift = localTrend * 0.55 + (Math.random() - 0.5);
-                const dir = drift >= 0 ? 1 : -1;
-                price = price + dir * amp;
-                // 边界反弹：靠近顶/底时给反向牵引
-                if (price > PRICE_MAX - 0.001) price = PRICE_MAX - 0.001 - Math.random() * 0.003;
-                if (price < PRICE_MIN + 0.001) price = PRICE_MIN + 0.001 + Math.random() * 0.003;
+                const pseudo = Math.sin(h * 12.9898 + 42.1) * 43758.5453;
+                const rand = pseudo - Math.floor(pseudo); // 0~1
+                const hourlyWave = (rand - 0.5) * 0.006;
+                const cycleWave = Math.sin((h / 84) * Math.PI * 2) * 0.012;
+                const trendWave = Math.sin((h / 168) * Math.PI * 2) * 0.004;
+                price = PRICE_MID + hourlyWave + cycleWave + trendWave;
                 price = Math.max(PRICE_MIN, Math.min(PRICE_MAX, price));
                 data.push({ time: t, price: Number(price.toFixed(5)) });
             }
@@ -2362,19 +2322,19 @@
 
         function pad2(n) { return n.toString().padStart(2, '0'); }
 
-        // 初始化图表窗口：零点零几中下部起步，按真随机秒级步进生成 CHART_WINDOW 个点
+        // 初始化图表窗口：末尾种子价之后按秒级步进生成 CHART_WINDOW 个点
         function initChartWindow() {
+            const hourly = generateHourlyPriceData();
+            let seedPrice = hourly[hourly.length - 1].price;
+            const seedTime = hourly[hourly.length - 1].time; // 2026-08-30 23:00
             const now = Date.now();
-            // 初始价格：0.082 ~ 0.088（中心 0.085 附近），在 $0.08~0.1 中枢内起步
-            const seedPrice = Number((0.082 + Math.random() * 0.006).toFixed(4));
-            const baseTime = now - CHART_WINDOW * 1000;
+            // 若当前真实时间晚于种子时间+窗口，就把起点拉回"现在-窗口秒"，让末端对应当前时间
+            const baseTime = now > seedTime + CHART_WINDOW * 1000
+                ? now - CHART_WINDOW * 1000
+                : seedTime;
             const points = [];
             _piTick = 0;
-            _trendDir = 0;
-            _trendTTL = 0;
             let p = seedPrice;
-            // 前 CHART_WINDOW 步里不要启动向下偏置（startupBias 只影响"实时 tick"）
-            // 但先给个统一的 0 值，保证历史窗口也是真随机走势
             for (let i = 0; i < CHART_WINDOW; i++) {
                 p = stepPiPrice(p);
                 points.push({ time: baseTime + i * 1000, price: p });
@@ -2468,7 +2428,7 @@
             }
 
             if (piChartRangeEl) {
-                piChartRangeEl.textContent = `实时走势：每秒滚动更新 · 0.05 ~ 0.11 美元（2026-08-24 起）`;
+                piChartRangeEl.textContent = `实时走势：每秒滚动更新 · 0.08 ~ 0.11 美元（2026-08-24 起）`;
             }
 
             if (piChangeUsdEl && firstPoint !== lastPoint) {
@@ -2518,9 +2478,9 @@
             const lastX = paddingL + ((points.length - 1) / (points.length - 1)) * chartW;
             areaD += ' L ' + lastX + ' ' + (paddingT + chartH) + ' Z';
 
-            // 横向网格 & Y轴刻度：覆盖 0.05 ~ 0.11
+            // 横向网格 & Y轴刻度
             let gridLines = '';
-            const yTicks = [0.050, 0.060, 0.070, 0.080, 0.090, 0.100, 0.110];
+            const yTicks = [0.080, 0.085, 0.090, 0.095, 0.100, 0.105, 0.110];
             let yLabels = '';
             yTicks.forEach((tick) => {
                 const y = paddingT + chartH - ((tick - min) / (max - min)) * chartH;
