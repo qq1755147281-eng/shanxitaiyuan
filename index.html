@@ -275,6 +275,35 @@
                 min-height: 70vh;
             }
         }
+
+        /* 反诈大弹窗：占据屏幕约60%（约60vw x 60vh），内容区可滚动，底部固定关闭按钮 */
+        .modal-60 {
+            width: min(60vw, 60vh, 680px) !important;
+            max-width: min(60vw, 60vh, 680px) !important;
+            height: min(60vw, 60vh, 680px);
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 22px 12px 22px !important;
+        }
+        .modal-60 .modal-60-body {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .modal-60 .modal-60-footer {
+            flex: 0 0 auto;
+            padding-top: 12px;
+            margin-top: 4px;
+            border-top: 1px solid #e5e7eb;
+        }
+        @media (max-width: 640px) {
+            .modal-60 {
+                width: 94vw !important;
+                max-width: 94vw !important;
+                height: 82vh !important;
+            }
+        }
         
         /* 悬浮圆圈 */
         #floating-circle {
@@ -870,136 +899,328 @@
     
     <!-- 模态框 -->
     <div id="fz-bozhu-modal" class="modal">
-        <div class="modal-content relative">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('fz-bozhu-modal')">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="text-center mb-4 pt-4">
-                <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white mx-auto mb-3">
-                    <i class="fa fa-user-circle text-xl"></i>
+        <div class="modal-content modal-60">
+            <!-- 头部 -->
+            <div class="text-center mb-4 flex-shrink-0">
+                <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white mx-auto mb-2 shadow-md">
+                    <i class="fa fa-user-circle text-2xl"></i>
                 </div>
                 <h2 class="text-base font-bold text-red-800">反诈博主板块</h2>
-                <p class="text-gray-600 text-xs mt-1">反诈先锋博主合集 · 拆解 Web3 新型骗局</p>
+                <p class="text-gray-500 text-xs mt-1">以下博主免费科普反诈知识 · 拒绝任何收费</p>
             </div>
-            <div class="space-y-3">
-                <div class="bg-red-50 p-3 rounded-lg border-2 border-red-200">
-                    <h3 class="font-semibold text-red-800 text-xs flex items-center"><i class="fa fa-microphone mr-1"></i>反诈博主能帮你做什么</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
-                        <li>• 拆解各类派生态新型骗局套路与陷阱</li>
-                        <li>• 科普实名认证、空投、映射等常见风险</li>
-                        <li>• 分析虚假钱包、虚假交易所钓鱼链接</li>
-                        <li>• 分享真实受骗案例，避免二次踩坑</li>
-                    </ul>
+
+            <!-- 内容滚动区 -->
+            <div class="modal-60-body">
+                <!-- 博主1 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">老</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">老派防骗日记</h3>
+                            <p class="text-xs text-gray-500">认证：Pi 社区反诈志愿者 · 5 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">每日更新</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">擅长拆解"代做KYC""假映射"等套路，每天更新 1 个真实受骗案例，新派友必看。</p>
                 </div>
-                <div class="bg-yellow-50 p-3 rounded-lg border-2 border-yellow-200">
-                    <h3 class="font-semibold text-yellow-800 text-xs flex items-center"><i class="fa fa-lightbulb-o mr-1"></i>防骗口诀</h3>
-                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">陌生链接不下载、扫码不转款、暴富广告不心动、私信借钱先核实！</p>
+                <!-- 博主2 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">派</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">派圈反诈先锋</h3>
+                            <p class="text-xs text-gray-500">认证：链上安全分析师 · 3.2 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">钓鱼检测</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">主打"钓鱼链接识别"与"假钱包打假"，提供免费可疑链接核查服务。</p>
                 </div>
-                <button class="btn btn-red w-full py-2 text-xs" onclick="playSound('click')">关注反诈博主</button>
+                <!-- 博主3 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">吴</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">吴姐说骗局</h3>
+                            <p class="text-xs text-gray-500">认证：退休民警 · 反诈宣传员 · 8.7 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">普法科普</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">从法律角度解读币圈常见骗局，遇到被骗如何报案、如何保留证据，讲得非常清楚。</p>
+                </div>
+                <!-- 博主4 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">安</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">安全小哥阿凯</h3>
+                            <p class="text-xs text-gray-500">认证：Web3 安全公司研究员 · 2.4 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">技术反诈</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">技术流博主，演示"假助记词""伪造授权签名"原理，教你一眼识别恶意 DApp。</p>
+                </div>
+                <!-- 博主5 -->
+                <div class="p-3 rounded-xl border-2 border-red-100 bg-red-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mr-2 font-bold">小</div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">小派律师说法</h3>
+                            <p class="text-xs text-gray-500">认证：执业律师 · 1.8 万粉</p>
+                        </div>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">法律咨询</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">分享币圈维权与报案流程，免费解答"转错账""被代投跑路"等法律问题。</p>
+                </div>
+            </div>
+
+            <!-- 底部：唯一关闭按钮 -->
+            <div class="modal-60-footer">
+                <button class="btn btn-red w-full py-2.5 text-sm font-bold" onclick="playSound('close'); closeModal('fz-bozhu-modal')">
+                    <i class="fa fa-times mr-1"></i>关闭
+                </button>
             </div>
         </div>
     </div>
 
     <div id="fz-shequ-modal" class="modal">
-        <div class="modal-content relative">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('fz-shequ-modal')">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="text-center mb-4 pt-4">
-                <div class="w-14 h-14 rounded-full bg-pink-600 flex items-center justify-center text-white mx-auto mb-3">
-                    <i class="fa fa-users text-xl"></i>
+        <div class="modal-content modal-60">
+            <!-- 头部 -->
+            <div class="text-center mb-4 flex-shrink-0">
+                <div class="w-14 h-14 rounded-full bg-pink-600 flex items-center justify-center text-white mx-auto mb-2 shadow-md">
+                    <i class="fa fa-users text-2xl"></i>
                 </div>
                 <h2 class="text-base font-bold text-pink-800">反诈社区板块</h2>
-                <p class="text-gray-600 text-xs mt-1">派友互助社区 · 实时曝光骗局 · 互相预警</p>
+                <p class="text-gray-500 text-xs mt-1">派友互助 · 真实曝光 · 集体防骗</p>
             </div>
-            <div class="space-y-3">
-                <div class="bg-pink-50 p-3 rounded-lg border-2 border-pink-200">
-                    <h3 class="font-semibold text-pink-800 text-xs flex items-center"><i class="fa fa-bullhorn mr-1"></i>社区三大功能</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
-                        <li>• 实时曝光：曝光假冒项目、诈骗群主与黑名单</li>
-                        <li>• 互助核实：遇到可疑情况，社区集体帮你分析</li>
-                        <li>• 经验分享：老派友分享防骗经验与避坑指南</li>
-                    </ul>
+
+            <!-- 内容滚动区 -->
+            <div class="modal-60-body">
+                <!-- 社区1 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-pink-100 bg-pink-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center mr-2">
+                            <i class="fa fa-comments"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">派友反诈互助群</h3>
+                            <p class="text-xs text-gray-500">人数：4,800+ · 群主：社区志愿者</p>
+                        </div>
+                        <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">免费加入</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">群内每日汇总最新诈骗手法、可疑群主账号、假冒客服黑名单，老派友 24 小时值班答疑。</p>
                 </div>
-                <div class="bg-gray-50 p-3 rounded-lg border-2 border-gray-200">
-                    <h3 class="font-semibold text-gray-800 text-xs flex items-center"><i class="fa fa-flag mr-1"></i>高危预警（请勿相信）</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
-                        <li>❌ 微信群"客服"主动私信帮你映射</li>
-                        <li>❌ 要求提供助记词或私钥的任何页面</li>
-                        <li>❌ 转账后"翻倍返还"的空投活动</li>
-                    </ul>
+                <!-- 社区2 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-pink-100 bg-pink-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center mr-2">
+                            <i class="fa fa-flag"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">骗局曝光专栏</h3>
+                            <p class="text-xs text-gray-500">曝光次数：6,200+ · 实时更新</p>
+                        </div>
+                        <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">黑名单共享</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">派友实名举报受骗经历，附聊天记录截图、收款账号、对方微信/QQ 号，帮助更多人避坑。</p>
                 </div>
-                <button class="btn btn-pink w-full py-2 text-xs" onclick="playSound('click')">加入反诈社区</button>
+                <!-- 社区3 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-pink-100 bg-pink-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center mr-2">
+                            <i class="fa fa-shield"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">老人派友守护专区</h3>
+                            <p class="text-xs text-gray-500">面向：50 岁以上派友 · 子女也可加入</p>
+                        </div>
+                        <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">一对一帮扶</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">针对老年派友易被"暴富话术"、"政府项目"诱导的问题，志愿者手把手教如何识别。</p>
+                </div>
+                <!-- 社区4 -->
+                <div class="p-3 rounded-xl border-2 border-pink-100 bg-pink-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center mr-2">
+                            <i class="fa fa-balance-scale"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-gray-800">维权 & 报案协助</h3>
+                            <p class="text-xs text-gray-500">志愿者：退休警官 + 执业律师</p>
+                        </div>
+                        <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">免费咨询</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">已被骗？志愿者教你：① 保留聊天 / 转账证据 ② 到辖区派出所做笔录流程 ③ 立案后配合问询技巧。</p>
+                </div>
+            </div>
+
+            <!-- 底部：唯一关闭按钮 -->
+            <div class="modal-60-footer">
+                <button class="btn btn-pink w-full py-2.5 text-sm font-bold" onclick="playSound('close'); closeModal('fz-shequ-modal')">
+                    <i class="fa fa-times mr-1"></i>关闭
+                </button>
             </div>
         </div>
     </div>
 
     <div id="fz-zaoyao-modal" class="modal">
-        <div class="modal-content relative">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('fz-zaoyao-modal')">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="text-center mb-4 pt-4">
-                <div class="w-14 h-14 rounded-full bg-orange-600 flex items-center justify-center text-white mx-auto mb-3">
-                    <i class="fa fa-exclamation-triangle text-xl"></i>
+        <div class="modal-content modal-60">
+            <!-- 头部 -->
+            <div class="text-center mb-4 flex-shrink-0">
+                <div class="w-14 h-14 rounded-full bg-orange-600 flex items-center justify-center text-white mx-auto mb-2 shadow-md">
+                    <i class="fa fa-exclamation-triangle text-2xl"></i>
                 </div>
                 <h2 class="text-base font-bold text-orange-800">反诈造谣中心板块</h2>
-                <p class="text-gray-600 text-xs mt-1">谣言粉碎机 · 以官方信息为准</p>
+                <p class="text-gray-500 text-xs mt-1">谣言止于智者 · 一切以官方公告为准</p>
             </div>
-            <div class="space-y-3">
-                <div class="bg-orange-50 p-3 rounded-lg border-2 border-orange-200">
-                    <h3 class="font-semibold text-orange-800 text-xs flex items-center"><i class="fa fa-ban mr-1"></i>已辟谣的常见谣言</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
-                        <li>⚠️ 谣言："派币马上上主网，现在交钱优先映射"</li>
-                        <li>⚠️ 谣言："官方授权 KYC 代办，付费即可通过"</li>
-                        <li>⚠️ 谣言："GCV=314159 美元，赶紧加群抢购"</li>
-                        <li>⚠️ 谣言："点击链接领千万 Pi 空投，要填私钥"</li>
-                    </ul>
+
+            <!-- 内容滚动区 -->
+            <div class="modal-60-body">
+                <!-- 谣言1 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：派币马上上主网，现在交钱可以优先映射</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"名额有限！现在转账 500 USDT 给客服，直接帮你完成 KYC+映射，跳过全球排队。"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>派网络从未委托任何第三方代做 KYC 或代映射，所有流程均在官方 APP 内免费完成。</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-blue-50 p-3 rounded-lg border-2 border-blue-200">
-                    <h3 class="font-semibold text-blue-800 text-xs flex items-center"><i class="fa fa-check-circle mr-1"></i>获取官方权威信息</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
-                        <li>✅ 一切以派应用内与官方公告为准</li>
-                        <li>✅ 不相信微信群、朋友圈转发的"内部消息"</li>
-                        <li>✅ 遇到重大消息，多看几个正规渠道交叉验证</li>
-                    </ul>
+                <!-- 谣言2 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：GCV 共识价 = $314,159，1 枚买 1 套房</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"未来 1 Pi = 314159 美元，我手上有内部分配额度，今天打款 1 万明天给你 10 枚！"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>币价由市场决定，没有任何组织可以"承诺"固定价格。凡是提前收"认购款"的，全是骗局。</p>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn btn-orange w-full py-2 text-xs" onclick="playSound('click')">查看更多辟谣</button>
+                <!-- 谣言3 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：点击这个链接领 Pi 空投，需要填助记词</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"官方回馈老用户，免费领 1000 Pi 空投，打开链接登录验证一下钱包即可。"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>任何索要助记词或私钥的"领空投"页面都是钓鱼。助记词=全部资产，一旦泄露币会被全部转走！</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 谣言4 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：官方授权"KYC 代办服务"，收费 299 元包过</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"KYC 通过率只有 30%，我是官方代理，交 299 元 100% 保证通过，不过全额退。"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>KYC 不收费，没有任何"代办包过"服务。钱一转过去对方立即拉黑，根本不存在"退款"。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 谣言5 -->
+                <div class="p-3 rounded-xl border-2 border-orange-100 bg-orange-50/60">
+                    <div class="flex items-start">
+                        <span class="text-lg mr-2">⛔️</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-bold text-orange-800 mb-1">谣言：国家数字货币试点，派友优先入股，日息 5%</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed mb-1"><span class="text-red-600 font-bold">骗子话术：</span>"中央推出数字人民币合作项目，派友专属通道，投 1 万每天返利 500，连续返 30 天。"</p>
+                            <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">官方辟谣：</span>数字人民币由央行发行，没有任何"高息分红""入股返利"项目，这是典型的庞氏骗局。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部：唯一关闭按钮 -->
+            <div class="modal-60-footer">
+                <button class="btn btn-orange w-full py-2.5 text-sm font-bold" onclick="playSound('close'); closeModal('fz-zaoyao-modal')">
+                    <i class="fa fa-times mr-1"></i>关闭
+                </button>
             </div>
         </div>
     </div>
 
     <div id="fz-gcv-modal" class="modal">
-        <div class="modal-content relative">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('fz-gcv-modal')">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="text-center mb-4 pt-4">
-                <div class="w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-3" style="background: linear-gradient(135deg, #9f1239, #f43f5e);">
-                    <i class="fa fa-money text-xl"></i>
+        <div class="modal-content modal-60">
+            <!-- 头部 -->
+            <div class="text-center mb-4 flex-shrink-0">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-2 shadow-md" style="background: linear-gradient(135deg, #9f1239, #f43f5e);">
+                    <i class="fa fa-money text-2xl"></i>
                 </div>
-                <h2 class="text-base font-bold text-rose-800">反诈GCV价暴富板块</h2>
-                <p class="text-gray-600 text-xs mt-1">警惕 GCV 高价暴富骗局 · 理性看待币价</p>
+                <h2 class="text-base font-bold text-rose-800">反诈 GCV 价暴富板块</h2>
+                <p class="text-gray-500 text-xs mt-1">警惕"一枚暴富" · 理性看待币价 · 守住你的口袋</p>
             </div>
-            <div class="space-y-3">
-                <div class="bg-rose-50 p-3 rounded-lg border-2 border-rose-200">
-                    <h3 class="font-semibold text-rose-800 text-xs flex items-center"><i class="fa fa-bomb mr-1"></i>典型骗局套路</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
-                        <li>🚩 话术："GCV 共识价 = $314159，一枚暴富"</li>
-                        <li>🚩 进群：先交"门槛费"或"保证金"进内部群</li>
-                        <li>🚩 钱包：诱导下载"专属钱包"，输入私钥助记词</li>
-                        <li>🚩 代卖：声称帮你"高价代卖"Pi，先打款收手续费</li>
-                    </ul>
+
+            <!-- 内容滚动区 -->
+            <div class="modal-60-body">
+                <!-- 骗局1 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">1</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">话术洗脑：喊出"GCV $314,159 共识价"</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">诱导入坑</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"只要全体派友共识，1 枚 Pi 就值 31 万美元！这不是币，这是改变你家族三代命运的机会。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>币价不由"喊单"决定，任何说"我们说了算价格"的群，下一步就是收你的钱。</p>
+                    </div>
                 </div>
-                <div class="bg-green-50 p-3 rounded-lg border-2 border-green-200">
-                    <h3 class="font-semibold text-green-800 text-xs flex items-center"><i class="fa fa-shield mr-1"></i>三不原则守住你的币</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
-                        <li>🛡️ 不信"暴富神话"——天上不会掉馅饼</li>
-                        <li>🛡️ 不转款到陌生账户——先核实收款方身份</li>
-                        <li>🛡️ 不给助记词/私钥——谁要都不给（包括"客服"）</li>
-                    </ul>
+                <!-- 骗局2 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">2</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">收费进群："内部 VIP 暴富通道"</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">收门槛费</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"普通群只教皮毛，VIP 群有官方一手消息，进群费 2,980 元，3 天内你就能回本 10 倍。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>真能"3 天 10 倍"，他为什么不自己赚、还要收 2,980 元的进群费？</p>
+                    </div>
                 </div>
-                <button class="btn w-full py-2 text-xs text-white" style="background: linear-gradient(135deg, #9f1239 0%, #f43f5e 100%); box-shadow: 0 2px 8px rgba(244,63,94,0.3);" onclick="playSound('click')">我已了解，拒绝骗局</button>
+                <!-- 骗局3 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">3</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">高价代卖：帮你以 GCV 价卖掉 Pi</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">收手续费</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"我对接了国外顶级买家，1 枚 $100,000 回收。你先打 5% 保证金 5,000 元，款到 3 天后结清全款。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>真实交易是"你先收到钱再打币"，反过来让你先打"保证金/手续费/税款"的，全是骗子。</p>
+                    </div>
+                </div>
+                <!-- 骗局4 -->
+                <div class="mb-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">4</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">专属钱包：下载"GCV 生态钱包"认领高价</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">盗你私钥</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"普通钱包看不到 GCV 额度，必须用这款专属钱包导入助记词，激活后就能以 $31 万卖出。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>这是最常见的钓鱼钱包——你一导入助记词，下一秒你的 Pi/其他币就被转空。</p>
+                    </div>
+                </div>
+                <!-- 骗局5 -->
+                <div class="p-3 rounded-xl border-2 border-rose-100 bg-rose-50/60">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center mr-2 font-bold text-sm">5</div>
+                        <h3 class="text-sm font-bold text-rose-800 flex-1">代持锁仓：把币放我这，一年后给你 GCV 价现金</h3>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">直接骗币</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-red-600 font-bold">🎙 骗子语录：</span>"你把币打到我官方锁仓地址，签署《代持协议》，满 1 年按 $31 万/枚结算，签合同盖章。"</p>
+                        <p class="text-xs text-gray-700 leading-relaxed"><span class="text-green-700 font-bold">💡 反诈提醒：</span>链上转币不可逆，所谓"合同""公章"10 元就能刻一套，币转走就再也找不回来了。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部：唯一关闭按钮 -->
+            <div class="modal-60-footer">
+                <button class="btn w-full py-2.5 text-sm font-bold text-white" style="background: linear-gradient(135deg, #9f1239 0%, #f43f5e 100%); box-shadow: 0 2px 8px rgba(244,63,94,0.3);" onclick="playSound('close'); closeModal('fz-gcv-modal')">
+                    <i class="fa fa-times mr-1"></i>关闭
+                </button>
             </div>
         </div>
     </div>
