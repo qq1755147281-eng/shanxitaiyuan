@@ -156,6 +156,11 @@
         .nav-item.active {
             color: #1e40af;
         }
+
+        /* 反诈导航项激活时：图标和文字变红（其他项保持蓝色） */
+        .nav-item.active[data-page="profile-page"] {
+            color: #dc2626 !important;
+        }
         
         .nav-icon {
             font-size: 20px;
@@ -773,30 +778,62 @@
                 </div>
                 
                 <div class="space-y-3 mb-3">
-                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-4 border-2 border-blue-200 cursor-pointer" onclick="playSound('success'); openModal('pi-network-modal')">
+                    <!-- 1. 反诈博主板块 -->
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl shadow-lg p-4 border-2 border-red-200 cursor-pointer" onclick="playSound('success'); openModal('fz-bozhu-modal')">
                         <div class="flex items-start">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
-                                <i class="fa fa-id-card text-lg"></i>
+                            <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
+                                <i class="fa fa-user-circle text-lg"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-base font-bold text-blue-800 mb-1">实名 DID 数字身份凭证</h3>
-                                <p class="text-xs text-blue-600 mb-2">Web3 实名认证与身份凭证</p>
-                                <p class="text-xs text-gray-700 mb-2">完成实名认证，获得数字身份凭证，畅享 Web3 生态应用！</p>
-                                <button class="btn btn-blue w-full py-2 text-xs" onclick="playSound('click')">立即认证</button>
+                                <h3 class="text-base font-bold text-red-800 mb-1">反诈博主板块</h3>
+                                <p class="text-xs text-red-600 mb-2">派友反诈博主 · 科普反诈知识</p>
+                                <p class="text-xs text-gray-700 mb-2">汇聚反诈先锋博主，拆解各类 Web3 新型骗局，提高派友防骗意识！</p>
+                                <button class="btn btn-red w-full py-2 text-xs" onclick="event.stopPropagation(); playSound('click')">进入板块</button>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-lg p-4 border-2 border-green-200 cursor-pointer" onclick="playSound('success'); openModal('ecosystem-modal')">
+
+                    <!-- 2. 反诈社区板块 -->
+                    <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl shadow-lg p-4 border-2 border-pink-200 cursor-pointer" onclick="playSound('success'); openModal('fz-shequ-modal')">
                         <div class="flex items-start">
-                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
-                                <i class="fa fa-yen-sign text-lg"></i>
+                            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
+                                <i class="fa fa-users text-lg"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-base font-bold text-green-800 mb-1">数字人民币</h3>
-                                <p class="text-xs text-green-600 mb-2">e-CNY 数字人民币体验</p>
-                                <p class="text-xs text-gray-700 mb-2">体验数字人民币钱包与支付场景，感受法定货币数字化创新！</p>
-                                <button class="btn btn-green w-full py-2 text-xs" onclick="playSound('click')">查看详情</button>
+                                <h3 class="text-base font-bold text-pink-800 mb-1">反诈社区板块</h3>
+                                <p class="text-xs text-pink-600 mb-2">派友互助社区 · 实时曝光骗局</p>
+                                <p class="text-xs text-gray-700 mb-2">加入反诈社区，分享受骗经历，互相提醒预警，共同守护派生态！</p>
+                                <button class="btn btn-pink w-full py-2 text-xs" onclick="event.stopPropagation(); playSound('click')">进入板块</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. 反诈造谣中心板块 -->
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl shadow-lg p-4 border-2 border-orange-200 cursor-pointer" onclick="playSound('success'); openModal('fz-zaoyao-modal')">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
+                                <i class="fa fa-exclamation-triangle text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-bold text-orange-800 mb-1">反诈造谣中心板块</h3>
+                                <p class="text-xs text-orange-600 mb-2">谣言粉碎中心 · 权威信息发布</p>
+                                <p class="text-xs text-gray-700 mb-2">官方辟谣！粉碎派生态谣言与虚假宣传，以官方信息为准，拒绝被忽悠。</p>
+                                <button class="btn btn-orange w-full py-2 text-xs" onclick="event.stopPropagation(); playSound('click')">进入板块</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. 反诈GCV价暴富板块 -->
+                    <div class="bg-gradient-to-br from-rose-50 to-rose-100 rounded-xl shadow-lg p-4 border-2 border-rose-200 cursor-pointer" onclick="playSound('success'); openModal('fz-gcv-modal')">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gradient-to-br from-rose-500 to-rose-700 rounded-full flex items-center justify-center text-white mr-3 flex-shrink-0 shadow">
+                                <i class="fa fa-money text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-bold text-rose-800 mb-1">反诈GCV价暴富板块</h3>
+                                <p class="text-xs text-rose-600 mb-2">警惕GCV高价暴富骗局 · 理性看待币价</p>
+                                <p class="text-xs text-gray-700 mb-2">防范"GCV 高价暴富"诱导类诈骗：不信暴富神话，不转款给陌生账户！</p>
+                                <button class="btn btn-red w-full py-2 text-xs" style="background: linear-gradient(135deg, #9f1239 0%, #f43f5e 100%); box-shadow: 0 2px 8px rgba(244,63,94,0.3);" onclick="event.stopPropagation(); playSound('click')">进入板块</button>
                             </div>
                         </div>
                     </div>
@@ -832,54 +869,137 @@
     </div>
     
     <!-- 模态框 -->
-    <div id="pi-network-modal" class="modal">
+    <div id="fz-bozhu-modal" class="modal">
         <div class="modal-content relative">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('pi-network-modal')">
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('fz-bozhu-modal')">
                 <i class="fa fa-times"></i>
             </button>
             <div class="text-center mb-4 pt-4">
-                <div class="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-white mx-auto mb-3">
-                    <i class="fa fa-id-card text-xl"></i>
+                <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white mx-auto mb-3">
+                    <i class="fa fa-user-circle text-xl"></i>
                 </div>
-                <h2 class="text-base font-bold text-blue-800">实名 DID 数字身份凭证</h2>
-                <p class="text-gray-600 text-xs mt-1">完成实名认证，获得可跨应用使用的 Web3 身份凭证！</p>
+                <h2 class="text-base font-bold text-red-800">反诈博主板块</h2>
+                <p class="text-gray-600 text-xs mt-1">反诈先锋博主合集 · 拆解 Web3 新型骗局</p>
             </div>
             <div class="space-y-3">
-                <div class="bg-blue-50 p-3 rounded-lg">
-                    <h3 class="font-semibold text-blue-800 text-xs">凭证权益</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1">
-                        <li>• 实名认证：个人信息仅本地加密存储</li>
-                        <li>• DID 凭证：去中心化身份标识符</li>
-                        <li>• 生态通用：可用于登录 Web3 生态应用</li>
+                <div class="bg-red-50 p-3 rounded-lg border-2 border-red-200">
+                    <h3 class="font-semibold text-red-800 text-xs flex items-center"><i class="fa fa-microphone mr-1"></i>反诈博主能帮你做什么</h3>
+                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
+                        <li>• 拆解各类派生态新型骗局套路与陷阱</li>
+                        <li>• 科普实名认证、空投、映射等常见风险</li>
+                        <li>• 分析虚假钱包、虚假交易所钓鱼链接</li>
+                        <li>• 分享真实受骗案例，避免二次踩坑</li>
                     </ul>
                 </div>
-                <button class="btn btn-blue w-full py-2 text-xs" onclick="playSound('click')">立即申请凭证</button>
+                <div class="bg-yellow-50 p-3 rounded-lg border-2 border-yellow-200">
+                    <h3 class="font-semibold text-yellow-800 text-xs flex items-center"><i class="fa fa-lightbulb-o mr-1"></i>防骗口诀</h3>
+                    <p class="text-xs text-gray-700 mt-2 leading-relaxed">陌生链接不下载、扫码不转款、暴富广告不心动、私信借钱先核实！</p>
+                </div>
+                <button class="btn btn-red w-full py-2 text-xs" onclick="playSound('click')">关注反诈博主</button>
             </div>
         </div>
     </div>
-    
-    <div id="ecosystem-modal" class="modal">
+
+    <div id="fz-shequ-modal" class="modal">
         <div class="modal-content relative">
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('ecosystem-modal')">
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('fz-shequ-modal')">
                 <i class="fa fa-times"></i>
             </button>
             <div class="text-center mb-4 pt-4">
-                <div class="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center text-white mx-auto mb-3">
-                    <i class="fa fa-yen-sign text-xl"></i>
+                <div class="w-14 h-14 rounded-full bg-pink-600 flex items-center justify-center text-white mx-auto mb-3">
+                    <i class="fa fa-users text-xl"></i>
                 </div>
-                <h2 class="text-base font-bold text-green-800">数字人民币</h2>
-                <p class="text-gray-600 text-xs mt-1">体验 e-CNY 数字人民币钱包与支付场景！</p>
+                <h2 class="text-base font-bold text-pink-800">反诈社区板块</h2>
+                <p class="text-gray-600 text-xs mt-1">派友互助社区 · 实时曝光骗局 · 互相预警</p>
             </div>
             <div class="space-y-3">
-                <div class="bg-green-50 p-3 rounded-lg">
-                    <h3 class="font-semibold text-green-800 text-xs">核心场景</h3>
-                    <ul class="text-xs text-gray-700 mt-2 space-y-1">
-                        <li>• 数字钱包：开通数字人民币钱包</li>
-                        <li>• 消费支付：支持 e-CNY 结算的商户消费</li>
-                        <li>• 转账汇款：点对点实时到账无手续费</li>
+                <div class="bg-pink-50 p-3 rounded-lg border-2 border-pink-200">
+                    <h3 class="font-semibold text-pink-800 text-xs flex items-center"><i class="fa fa-bullhorn mr-1"></i>社区三大功能</h3>
+                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
+                        <li>• 实时曝光：曝光假冒项目、诈骗群主与黑名单</li>
+                        <li>• 互助核实：遇到可疑情况，社区集体帮你分析</li>
+                        <li>• 经验分享：老派友分享防骗经验与避坑指南</li>
                     </ul>
                 </div>
-                <button class="btn btn-green w-full py-2 text-xs" onclick="playSound('click')">开通数字人民币</button>
+                <div class="bg-gray-50 p-3 rounded-lg border-2 border-gray-200">
+                    <h3 class="font-semibold text-gray-800 text-xs flex items-center"><i class="fa fa-flag mr-1"></i>高危预警（请勿相信）</h3>
+                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
+                        <li>❌ 微信群"客服"主动私信帮你映射</li>
+                        <li>❌ 要求提供助记词或私钥的任何页面</li>
+                        <li>❌ 转账后"翻倍返还"的空投活动</li>
+                    </ul>
+                </div>
+                <button class="btn btn-pink w-full py-2 text-xs" onclick="playSound('click')">加入反诈社区</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fz-zaoyao-modal" class="modal">
+        <div class="modal-content relative">
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('fz-zaoyao-modal')">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="text-center mb-4 pt-4">
+                <div class="w-14 h-14 rounded-full bg-orange-600 flex items-center justify-center text-white mx-auto mb-3">
+                    <i class="fa fa-exclamation-triangle text-xl"></i>
+                </div>
+                <h2 class="text-base font-bold text-orange-800">反诈造谣中心板块</h2>
+                <p class="text-gray-600 text-xs mt-1">谣言粉碎机 · 以官方信息为准</p>
+            </div>
+            <div class="space-y-3">
+                <div class="bg-orange-50 p-3 rounded-lg border-2 border-orange-200">
+                    <h3 class="font-semibold text-orange-800 text-xs flex items-center"><i class="fa fa-ban mr-1"></i>已辟谣的常见谣言</h3>
+                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
+                        <li>⚠️ 谣言："派币马上上主网，现在交钱优先映射"</li>
+                        <li>⚠️ 谣言："官方授权 KYC 代办，付费即可通过"</li>
+                        <li>⚠️ 谣言："GCV=314159 美元，赶紧加群抢购"</li>
+                        <li>⚠️ 谣言："点击链接领千万 Pi 空投，要填私钥"</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-3 rounded-lg border-2 border-blue-200">
+                    <h3 class="font-semibold text-blue-800 text-xs flex items-center"><i class="fa fa-check-circle mr-1"></i>获取官方权威信息</h3>
+                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
+                        <li>✅ 一切以派应用内与官方公告为准</li>
+                        <li>✅ 不相信微信群、朋友圈转发的"内部消息"</li>
+                        <li>✅ 遇到重大消息，多看几个正规渠道交叉验证</li>
+                    </ul>
+                </div>
+                <button class="btn btn-orange w-full py-2 text-xs" onclick="playSound('click')">查看更多辟谣</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fz-gcv-modal" class="modal">
+        <div class="modal-content relative">
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg" onclick="playSound('close'); closeModal('fz-gcv-modal')">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="text-center mb-4 pt-4">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center text-white mx-auto mb-3" style="background: linear-gradient(135deg, #9f1239, #f43f5e);">
+                    <i class="fa fa-money text-xl"></i>
+                </div>
+                <h2 class="text-base font-bold text-rose-800">反诈GCV价暴富板块</h2>
+                <p class="text-gray-600 text-xs mt-1">警惕 GCV 高价暴富骗局 · 理性看待币价</p>
+            </div>
+            <div class="space-y-3">
+                <div class="bg-rose-50 p-3 rounded-lg border-2 border-rose-200">
+                    <h3 class="font-semibold text-rose-800 text-xs flex items-center"><i class="fa fa-bomb mr-1"></i>典型骗局套路</h3>
+                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
+                        <li>🚩 话术："GCV 共识价 = $314159，一枚暴富"</li>
+                        <li>🚩 进群：先交"门槛费"或"保证金"进内部群</li>
+                        <li>🚩 钱包：诱导下载"专属钱包"，输入私钥助记词</li>
+                        <li>🚩 代卖：声称帮你"高价代卖"Pi，先打款收手续费</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 p-3 rounded-lg border-2 border-green-200">
+                    <h3 class="font-semibold text-green-800 text-xs flex items-center"><i class="fa fa-shield mr-1"></i>三不原则守住你的币</h3>
+                    <ul class="text-xs text-gray-700 mt-2 space-y-1.5">
+                        <li>🛡️ 不信"暴富神话"——天上不会掉馅饼</li>
+                        <li>🛡️ 不转款到陌生账户——先核实收款方身份</li>
+                        <li>🛡️ 不给助记词/私钥——谁要都不给（包括"客服"）</li>
+                    </ul>
+                </div>
+                <button class="btn w-full py-2 text-xs text-white" style="background: linear-gradient(135deg, #9f1239 0%, #f43f5e 100%); box-shadow: 0 2px 8px rgba(244,63,94,0.3);" onclick="playSound('click')">我已了解，拒绝骗局</button>
             </div>
         </div>
     </div>
