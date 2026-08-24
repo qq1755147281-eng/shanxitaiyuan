@@ -2120,8 +2120,14 @@
             document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
             document.getElementById(pageName).classList.remove('hidden');
             
-            // 如果是数据页面，初始化数据
+            // 如果是数据页面，初始化数据：每次进入都重置为全新的真随机走势 + 零点零几起步
             if (pageName === 'data-page') {
+                // 清空旧的区间和定时器，确保随机性重置
+                if (dataUpdateInterval) { clearInterval(dataUpdateInterval); dataUpdateInterval = null; }
+                piChartPoints = [];
+                _piTick = 0;
+                _trendDir = 0;
+                _trendTTL = 0;
                 initDataPage();
             }
         }
@@ -2245,34 +2251,72 @@
         const CHART_WINDOW = 168;
         let piChartPoints = []; // {time, price}
         let chartDrawPending = false;
-        let _piTick = 0;
+        // 微趋势惯性：短时间内保持同一个方向的概率更高，像交易所真实行情
+        let _trendDir = 0;
+        let _trendTTL = 0;
 
-        // ---------- 每秒价格步进的固定公式 ----------
+        // ---------- 每秒价格步进：真随机模拟交易所行情 ----------
         // 规则：
-        //   u = sin(tick * 9.137 + 3.7) * 10.827, 再取小数部分 => 0~1
-        //   stepAmp = 0.001 + u * 0.004    =>   0.001 ~ 0.005
-        //   direction: 当价格 <= PRICE_MIN 强制正；>= PRICE_MAX 强制负；否则用"周期波+伪随机"确定方向
-        //   输出：nextPrice 夹紧在 [PRICE_MIN, PRICE_MAX]
+        //   stepAmp = 0.001 + Math.random() * 0.008   =>  零点零几（0.001 ~ 0.009）
+        //   direction:
+        //     · 有"微趋势"：前 3~8 步内保持相同方向的概率 ~75%
+        //     · 无趋势时：基础 50/50 涨跌，叠加"靠近边界时反向偏置"
+        //     · 触底 0.08 必须向上，触顶 0.11 必须向下
+        //     · 价格 > 0.095 时给个下压偏置，确保"向下浮动，在零点零几"
+        //   初始化后前几步强向下偏置，快速压到 0.08x~0.09x
+        let _piTick = 0;
         function stepPiPrice(prevPrice) {
             _piTick++;
-            const p = Math.sin(_piTick * 9.137 + 3.7) * 10.827;
-            const u = p - Math.floor(p); // 0 ~ 1
-            const stepAmp = 0.001 + u * 0.004; // 0.001 ~ 0.005
+            // 零点零几：基础步长 0.001~0.009，高位 (≥0.092) 自动缩短步长避免冲太高
+            let stepAmp = 0.001 + Math.random() * 0.008;
+            if (prevPrice >= 0.092) stepAmp *= 0.7;
+            if (prevPrice >= 0.098) stepAmp *= 0.5;
+
+            // ---- 方向决定 ----
             let dir;
-            if (prevPrice <= PRICE_MIN + 0.0001) dir = 1; // 触底必须向上
-            else if (prevPrice >= PRICE_MAX - 0.0001) dir = -1; // 触顶必须向下
+
+            // 1. 边界保护：触底强制向上，触顶强制向下
+            if (prevPrice <= PRICE_MIN + 0.0001) { dir = 1; }
+            else if (prevPrice >= PRICE_MAX - 0.0001) { dir = -1; }
             else {
-                // 周期波 + 伪随机方向交替，保证上下走动
-                const wave = Math.sin((_piTick / 37) * Math.PI * 2);
-                const rnd = (u - 0.5) * 2; // -1 ~ 1
-                dir = (wave + rnd) >= 0 ? 1 : -1;
-                // 如果按 dir + stepAmp 会直接越界，就反向走（避免出现"越界再回弹=0 变化"）
-                const wouldOverflow = (dir === 1 && prevPrice + stepAmp > PRICE_MAX)
-                                   || (dir === -1 && prevPrice - stepAmp < PRICE_MIN);
-                if (wouldOverflow) dir = -dir;
+                // 2. 微趋势：每隔几拍刷新一次短期方向，保持惯性
+                if (_trendTTL <= 0) {
+                    _trendDir = Math.random() < 0.5 ? -1 : 1;
+                    _trendTTL = 3 + Math.floor(Math.random() * 6); // 3~8 步
+                }
+                _trendTTL--;
+
+                // 3. 启动前 35 步：强向下偏置，把价格拉到 0.08x~0.09x 区间
+                const startupBias = _piTick <= 35 ? -0.75 : 0;
+
+                // 4. 分级高压：超过 0.09 逐级强力下压，确保大多数时候在"零点零几"
+                //    0.090~0.094 轻微下压，0.095~0.099 中度下压，≥0.100 重度下压
+                let highZoneBias = 0;
+                if (prevPrice >= 0.100) highZoneBias = -1.4;
+                else if (prevPrice >= 0.095) highZoneBias = -1.0;
+                else if (prevPrice >= 0.090) highZoneBias = -0.45;
+
+                // 5. 边界偏置：越靠近顶越容易跌，越靠近底越容易涨
+                const normalizedPos = (prevPrice - PRICE_MIN) / (PRICE_MAX - PRICE_MIN);
+                const boundaryBias = (0.5 - normalizedPos) * 0.8;
+
+                // 6. 趋势惯性（权重降低，避免微趋势把价格长期拉到顶）
+                const trendBias = _trendDir * 0.25;
+
+                // 7. 基础随机噪声
+                const noise = (Math.random() - 0.5) * 2;
+
+                const score = startupBias + highZoneBias + boundaryBias + trendBias + noise;
+                dir = score >= 0 ? 1 : -1;
             }
+
+            // 如果按 dir + stepAmp 会直接越界，就反向走（避免 0 变化）
+            const wouldOverflow = (dir === 1 && prevPrice + stepAmp > PRICE_MAX)
+                               || (dir === -1 && prevPrice - stepAmp < PRICE_MIN);
+            if (wouldOverflow) dir = -dir;
+
             let next = prevPrice + dir * stepAmp;
-            // 夹紧兜底
+            // 兜底夹紧
             next = Math.max(PRICE_MIN, Math.min(PRICE_MAX, next));
             return Number(next.toFixed(5));
         }
@@ -2288,15 +2332,26 @@
             const START_DATE = new Date(2026, 7, 24, 0, 0, 0); // 2026-08-24 00:00
             const HOURS = 7 * 24; // 7 天共 168 小时
             const data = [];
-            let price = PRICE_MID;
+            // 真随机历史走势：不再固定 sin 曲线，模仿交易所的有涨有跌
+            let price = PRICE_MIN + 0.002 + Math.random() * 0.006; // 起点在 0.082 ~ 0.088
+            let localTrend = Math.random() < 0.5 ? -1 : 1;
+            let trendTTL = 6 + Math.floor(Math.random() * 15); // 6~20 小时的短趋势
             for (let h = 0; h < HOURS; h++) {
                 const t = START_DATE.getTime() + h * 3600 * 1000;
-                const pseudo = Math.sin(h * 12.9898 + 42.1) * 43758.5453;
-                const rand = pseudo - Math.floor(pseudo); // 0~1
-                const hourlyWave = (rand - 0.5) * 0.006;
-                const cycleWave = Math.sin((h / 84) * Math.PI * 2) * 0.012;
-                const trendWave = Math.sin((h / 168) * Math.PI * 2) * 0.004;
-                price = PRICE_MID + hourlyWave + cycleWave + trendWave;
+                // 每小时步长：零点零几（0.001 ~ 0.006），方向跟随短趋势 + 随机抖动
+                if (trendTTL <= 0) {
+                    localTrend = Math.random() < 0.5 ? -1 : 1;
+                    trendTTL = 6 + Math.floor(Math.random() * 15);
+                }
+                trendTTL--;
+                const amp = 0.001 + Math.random() * 0.005;
+                // 趋势跟随 + 噪声
+                const drift = localTrend * 0.55 + (Math.random() - 0.5);
+                const dir = drift >= 0 ? 1 : -1;
+                price = price + dir * amp;
+                // 边界反弹：靠近顶/底时给反向牵引
+                if (price > PRICE_MAX - 0.001) price = PRICE_MAX - 0.001 - Math.random() * 0.003;
+                if (price < PRICE_MIN + 0.001) price = PRICE_MIN + 0.001 + Math.random() * 0.003;
                 price = Math.max(PRICE_MIN, Math.min(PRICE_MAX, price));
                 data.push({ time: t, price: Number(price.toFixed(5)) });
             }
@@ -2322,19 +2377,19 @@
 
         function pad2(n) { return n.toString().padStart(2, '0'); }
 
-        // 初始化图表窗口：末尾种子价之后按秒级步进生成 CHART_WINDOW 个点
+        // 初始化图表窗口：零点零几中下部起步，按真随机秒级步进生成 CHART_WINDOW 个点
         function initChartWindow() {
-            const hourly = generateHourlyPriceData();
-            let seedPrice = hourly[hourly.length - 1].price;
-            const seedTime = hourly[hourly.length - 1].time; // 2026-08-30 23:00
             const now = Date.now();
-            // 若当前真实时间晚于种子时间+窗口，就把起点拉回"现在-窗口秒"，让末端对应当前时间
-            const baseTime = now > seedTime + CHART_WINDOW * 1000
-                ? now - CHART_WINDOW * 1000
-                : seedTime;
+            // 初始价格：0.082 ~ 0.088（零点零几中下部），符合"向下浮动在零点零几"
+            const seedPrice = Number((PRICE_MIN + 0.002 + Math.random() * 0.006).toFixed(5));
+            const baseTime = now - CHART_WINDOW * 1000;
             const points = [];
             _piTick = 0;
+            _trendDir = 0;
+            _trendTTL = 0;
             let p = seedPrice;
+            // 前 CHART_WINDOW 步里不要启动向下偏置（startupBias 只影响"实时 tick"）
+            // 但先给个统一的 0 值，保证历史窗口也是真随机走势
             for (let i = 0; i < CHART_WINDOW; i++) {
                 p = stepPiPrice(p);
                 points.push({ time: baseTime + i * 1000, price: p });
