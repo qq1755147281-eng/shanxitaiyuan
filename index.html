@@ -147,6 +147,13 @@
             font-size: 12px;
             border-radius: 8px;
         }
+
+        .btn-pill {
+            border-radius: 9999px !important;
+            padding: 8px 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
         
         .bottom-nav {
             background: rgba(255, 255, 255, 0.95);
@@ -518,7 +525,7 @@
                         </div>
                     </div>
                     <div class="p-3">
-                        <div id="event-date" class="font-bold text-gray-800 text-base mb-2">2026年6月30日 14:30</div>
+                        <div id="event-date" class="font-bold text-gray-800 text-base mb-2">2026年9月26日 14:30</div>
                         <p class="text-gray-600 text-xs mb-1">毕向阳：155 1363 6709</p>
                         <p class="text-gray-600 text-xs mb-1">魏国炳：155 3645 5536</p>
                         <div class="bg-gray-50 p-2 rounded-lg mt-2 border border-gray-100">
@@ -1560,8 +1567,8 @@
         // 应用数据
         const appList1 = [
             { type: "eco-main", name: "派导航（不可下载，必须从派浏览器进入）", desc: "精选派99个派币生态。Pi Dapp生态。复制下面网址粘贴派浏览器进入。", icon: "fa-external-link", color: "orange", videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=814654", copyUrl: "https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad" },
-            { type: "t-talk", name: "TELTLK - 派生态（可下载APP）", desc: "派友必备社群生态", icon: "fa-comment", color: "orange", url: "https://www.teltlk.com/#/register?invite=sss444", copyUrl: "https://www.teltlk.com/#/register?invite=sss444", copy: true },
-            { type: "dopai", name: "DOPAI多派元宇宙（可下载APP）", desc: "元宇宙模块资产/场景", icon: "fa-bullseye", color: "orange", url: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copyUrl: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copy: true },
+            { type: "t-talk", name: "TELTLK - 派生态（可下载APP）", desc: "派友必备社群生态", icon: "fa-comment", color: "orange", url: "https://www.teltlk.com/zh/", copyUrl: "https://www.teltlk.com/#/register?invite=sss444", copy: true, regUrl: "https://www.teltlk.com/#/register?invite=sss444" },
+            { type: "dopai", name: "DOPAI多派元宇宙（可下载APP）", desc: "元宇宙模块资产/场景", icon: "fa-bullseye", color: "orange", url: "https://share.feijipan.com/s/YH9mxyJp", copyUrl: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copy: true, regUrl: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi" },
             { name: "Happypi欢乐派（可下载app）", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-11-11T13:19:31", share: "原始股份：200万枚", progress: "社区建设中" },
             { name: "SPACE-派社区生态", desc: "Pi生态应用市场，汇聚各类优质生态应用，欢迎开发者入驻", icon: "fa-rocket", color: "blue", url: "https://spacepi333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-12-12T03:15:15", share: "已统计：200+生态应用", progress: "生态对接进行中" },
             { type: "umap-map", name: "Umap派地图（微信扫码小程序）", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
@@ -1569,8 +1576,8 @@
         ];
         
         const appList2 = [
-            { name: "界外app（可下载app）", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://share.feijipan.com/s/Zn6o51Cs", copy: true, action: "download" },
-            { name: "OPA免费生态挖矿（可下载app）", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815" },
+            { name: "界外app（可下载app）", desc: "派生态实名身份认证系统，为您提供安全可信的数字身份凭证", icon: "fa-id-card", color: "green", url: "https://share.feijipan.com/s/Zn6o51Cs", copy: true, action: "download", regUrl: "https://milu.jiewai.pro/jw-download/?inviteCode=009014" },
+            { name: "OPA免费生态挖矿（可下载app）", desc: "签到 免费获得OPA代币奖励及分红", icon: "fa-gift", color: "orange", url: "https://share.feijipan.com/s/Ct24IYSE", copy: true, action: "download", inviteCode: "XH910815", regUrl: "https://omniporta.com/" },
             { type: "umap-map", name: "湖南鼎俏日用品（微信小程序）", desc: "湖南鼎俏科技有限公司出品，老百姓的实惠日用品牌", icon: "fa-globe", color: "pink", iconType: "soap", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入", modalFeaturesTitle: "品牌亮点", modalCTA: "立即了解", modalFeatures: ["湖南鼎俏科技自主研发，源头工厂直供", "主营洗衣液、洁厕净等日用清洁系列", "价格亲民实惠，老百姓都用得起", "品质保障，好用不贵、家庭必备"] },
             { type: "umap-map", name: "青蓝山泉免费喝水（微信小程序）", desc: "微信小程序上线，高品质山泉健康水，喝水还能赚钱", icon: "fa-globe", color: "green", iconType: "water", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入", modalFeaturesTitle: "喝水赚钱攻略", modalCTA: "立即免费喝水", modalFeatures: ["微信小程序即可使用，19.9 / 29.9 / 39.9 / 99.9 / 128.9 多档套餐可选", "每日签到送红包、签到越多返现越多", "花出去的钱还能拿回来，相当于实现免费喝水", "源自天然山泉，水质纯净健康，家人放心饮用"] },
             { type: "umap-map", name: "数字oad银行送红包（微信小程序）", desc: "对接国家数字银行政策，登录绑卡即享高额补贴", icon: "fa-globe", color: "red", iconType: "redpacket", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入", modalFeaturesTitle: "红包补贴详情", modalCTA: "立即领红包", modalFeatures: ["对接国家数字银行，严格遵循国家政策，安全合规有保障", "登录绑定银行卡后，银行直接补贴 99% 的费用", "您只需支付 1 分钱 — 5 元基础快递费", "买到价值几十、几百甚至更高的优质商品", "各大银行补贴 30 / 50 / 80 / 100 元不等，数字人民币额外补贴 150 元"] },
@@ -1683,17 +1690,16 @@
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
-                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
-                                    ${btnText}
-                                </button>
                             </div>
                             ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
                             ${extra}
-                            ${app.copy ? `
-                                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
-                                    <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
-                                    <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
-                                        <i class="fa fa-copy mr-1"></i>复制
+                            ${app.regUrl ? `
+                                <div class="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+                                    <button class="btn btn-blue btn-pill flex-1" onclick="playSound('click'); window.open('${app.regUrl}', '_blank')">
+                                        <i class="fa fa-user-plus mr-1"></i>点击注册
+                                    </button>
+                                    <button class="${colors.btn} btn-pill flex-1" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
+                                        ${btnText}
                                     </button>
                                 </div>
                             ` : ''}
@@ -1736,17 +1742,16 @@
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
-                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
-                                    ${btnText}
-                                </button>
                             </div>
                             ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
                             ${extra}
-                            ${app.copy ? `
-                                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
-                                    <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
-                                    <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
-                                        <i class="fa fa-copy mr-1"></i>复制
+                            ${app.regUrl ? `
+                                <div class="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+                                    <button class="btn btn-blue btn-pill flex-1" onclick="playSound('click'); window.open('${app.regUrl}', '_blank')">
+                                        <i class="fa fa-user-plus mr-1"></i>点击注册
+                                    </button>
+                                    <button class="${colors.btn} btn-pill flex-1" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
+                                        ${btnText}
                                     </button>
                                 </div>
                             ` : ''}
@@ -1982,13 +1987,20 @@
                                 <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                 ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                             </div>
-                            <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
-                                ${btnText}
-                            </button>
+                            ${app.regUrl ? '' : `<button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">${btnText}</button>`}
                         </div>
                         ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
                         ${extra}
-                        ${app.copy ? `
+                        ${app.regUrl ? `
+                            <div class="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+                                <button class="btn btn-blue btn-pill flex-1" onclick="playSound('click'); window.open('${app.regUrl}', '_blank')">
+                                    <i class="fa fa-user-plus mr-1"></i>点击注册
+                                </button>
+                                <button class="${colors.btn} btn-pill flex-1" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
+                                    ${btnText}
+                                </button>
+                            </div>
+                        ` : app.copy ? `
                             <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
                                 <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
                                 <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
@@ -2183,11 +2195,11 @@
         
         // 事件倒计时
         function startEventCountdown() {
-            const target = new Date('2026-08-16T14:30:00');
+            const target = new Date('2026-09-26T14:30:00');
             const targetTime = target.getTime();
             
             // 格式化日期显示
-            document.getElementById('event-date').textContent = '2026年8月16日 14:30';
+            document.getElementById('event-date').textContent = '2026年9月26日 14:30';
             
             const update = () => {
                 const currentTime = new Date().getTime();
