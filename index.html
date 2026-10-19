@@ -525,7 +525,7 @@
                         </div>
                     </div>
                     <div class="p-3">
-                        <div id="event-date" class="font-bold text-gray-800 text-base mb-2">2026年9月26日 14:30</div>
+                        <div id="event-date" class="font-bold text-gray-800 text-base mb-2">2026年10月28日 14:30</div>
                         <p class="text-gray-600 text-xs mb-1">毕向阳：155 1363 6709</p>
                         <p class="text-gray-600 text-xs mb-1">魏国炳：155 3645 5536</p>
                         <div class="bg-gray-50 p-2 rounded-lg mt-2 border border-gray-100">
@@ -541,14 +541,36 @@
                         <div class="marquee inline-block text-sm">加入群聊节点搭建，共建Web3生态</div>
                     </div>
                 </div>
+
+                <!-- 八大业务 / 福利领取 -->
+                <div class="flex gap-2 mb-3 items-stretch">
+                    <button class="btn font-bold" style="flex: 1 1 auto; min-width: 0; height: 112px; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 8px 10px; text-align: left; overflow: hidden; color: #fff; background: linear-gradient(135deg, #1d4ed8 0%, #4f46e5 40%, #7c3aed 75%, #a855f7 100%); box-shadow: 0 2px 8px rgba(124, 58, 237, 0.45);" onclick="playSound('click'); createRipple(event.clientX, event.clientY); window.open('https://8badayewu.pages.dev/', '_blank')">
+                        <span style="font-size: 22px; font-weight: 700; white-space: nowrap; display: block; text-align: center; font-family: 'KaiTi', 'STKaiti', '楷体', serif; letter-spacing: 2px;">区块链社区办理业务</span>
+                        <span style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                            <span style="width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 0 8px rgba(255,255,255,0.8), inset 0 0 6px rgba(255,255,255,0.45); display: flex; align-items: center; justify-content: center; line-height: 0;">
+                                <span style="color: #ffffff; font-size: 27px; font-weight: 700; line-height: 1; font-family: 'Times New Roman', Georgia, serif; display: block; transform: translateY(-2.5px);">π</span>
+                            </span>
+                            <span style="flex: 1; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 6px; font-size: 12px; font-weight: 700; font-family: 'KaiTi', 'STKaiti', '楷体', serif;">
+                                <span style="white-space: nowrap;"><span style="color: #fde047; margin-right: 3px;">◆</span>基础操作</span>
+                                <span style="white-space: nowrap;"><span style="color: #fde047; margin-right: 3px;">◆</span>节点搭建</span>
+                                <span style="white-space: nowrap;"><span style="color: #fde047; margin-right: 3px;">◆</span>加密货币代购</span>
+                                <span style="white-space: nowrap;"><span style="color: #fde047; margin-right: 3px;">◆</span>生态服务</span>
+                            </span>
+                        </span>
+                    </button>
+                    <button class="btn font-bold flex-shrink-0 flex flex-col items-center justify-center" style="width: 112px; height: 112px; padding: 8px; color: #fff; background: linear-gradient(135deg, #b91c1c 0%, #dc2626 40%, #f97316 75%, #fde047 100%); box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);" onclick="playSound('click'); createStars(event.clientX, event.clientY)">
+                        <i class="fa fa-gift" style="font-size: 34px; margin-bottom: 4px;"></i>
+                        <span style="font-size: 19px; line-height: 1; font-family: 'KaiTi', 'STKaiti', '楷体', serif;">福利领取</span>
+                    </button>
+                </div>
                 
                 <!-- 主内容区 -->
                 <div class="card overflow-hidden relative">
                     <!-- 三个按钮 -->
-                    <div class="flex gap-2 mb-3 mt-2">
-                        <button class="btn btn-purple flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(appList1); hideEcoDocking();">推荐派应用</button>
-                        <button class="btn btn-blue flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(appList2); showEcoDocking();">生态对接</button>
-                        <button class="btn btn-green flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(toolsList); hideEcoDocking();">工具</button>
+                    <div class="flex gap-2 mb-3" style="margin-top: -8px;">
+                        <button class="btn btn-purple flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(appList1); hideEcoDocking();">派币生态</button>
+                        <button class="btn btn-blue flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(appList2); showEcoDocking();">对接生态</button>
+                        <button class="btn btn-green flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(toolsList); hideEcoDocking();">派友工具</button>
                     </div>
                     
                     <!-- 应用列表 -->
@@ -601,49 +623,49 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="text-center">
                             <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                                <img src="images/IMG_20260423_224814.jpg" class="w-full h-full object-contain" alt="山西太原">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20card%20design%2C%20WeChat%20community%20group%20QR%20code%2C%20Taiyuan%20Shanxi%20China%20city%20theme%2C%20green%20white%20clean%20flat%20design%2C%20centered%20square%20QR%20code&image_size=square" class="w-full h-full object-contain" alt="山西太原">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">山西太原</p>
                         </div>
                         <div class="text-center">
                             <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                                <img src="images/mmexport1774878331644.jpg" class="w-full h-full object-contain" alt="派信娱乐">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20card%20design%2C%20entertainment%20social%20community%20QR%20code%2C%20purple%20playful%20theme%2C%20centered%20square%20QR%20code%2C%20clean%20flat%20design&image_size=square" class="w-full h-full object-contain" alt="派信娱乐">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">派信娱乐</p>
                         </div>
                         <div class="text-center">
                             <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                                <img src="images/mmexport1774878330254.jpg" class="w-full h-full object-contain" alt="实名DID聊">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20card%20design%2C%20digital%20identity%20DID%20chat%20community%20QR%20code%2C%20blue%20technology%20theme%2C%20centered%20square%20QR%20code%2C%20clean%20flat%20design&image_size=square" class="w-full h-full object-contain" alt="实名DID聊">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">实名DID聊</p>
                         </div>
                         <div class="text-center">
                             <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                                <img src="images/Screenshot_2026-03-30-16-59-13-80_82b10d9f3584360f08225ddcebbb4f6d.jpg" class="w-full h-full object-contain" alt="派币节点搭建群聊">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20card%20design%2C%20blockchain%20node%20setup%20community%20QR%20code%2C%20dark%20blue%20technology%20theme%20with%20server%20icons%2C%20centered%20square%20QR%20code&image_size=square" class="w-full h-full object-contain" alt="派币节点搭建群聊">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">派币节点搭建群聊</p>
                         </div>
                         <div class="text-center">
                             <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                                <img src="images/Screenshot_2026-03-30-15-47-52-78_f86b2690ff7296bf8d1db1bf739c2ed8.jpg" class="w-full h-full object-contain" alt="数字人民币推广一群">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20card%20design%2C%20digital%20yuan%20e-CNY%20promotion%20community%20QR%20code%2C%20red%20gold%20Chinese%20theme%2C%20centered%20square%20QR%20code&image_size=square" class="w-full h-full object-contain" alt="数字人民币推广一群">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">数字人民币推广一群</p>
                         </div>
                         <div class="text-center">
                             <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                                <img src="images/Screenshot_2026-04-25-19-09-55-66_37905f839bb7b4e2495a2c0e3c06a631.jpg" class="w-full h-full object-contain" alt="数字人民币推广二群">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20card%20design%2C%20digital%20currency%20promotion%20community%20QR%20code%2C%20red%20orange%20Chinese%20festive%20theme%2C%20centered%20square%20QR%20code&image_size=square" class="w-full h-full object-contain" alt="数字人民币推广二群">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">数字人民币推广二群</p>
                         </div>
                         <div class="text-center">
                             <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                                <img src="images/Screenshot_2026-04-25-19-14-47-09_37905f839bb7b4e2495a2c0e3c06a631.jpg" class="w-full h-full object-contain" alt="派币其他俱乐部群聊">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20card%20design%2C%20crypto%20club%20community%20QR%20code%2C%20golden%20orange%20theme%2C%20centered%20square%20QR%20code%2C%20clean%20flat%20design&image_size=square" class="w-full h-full object-contain" alt="派币其他俱乐部群聊">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">派币其他俱乐部群聊</p>
                         </div>
                         <div class="text-center">
                             <div class="w-full aspect-square max-w-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                                <img src="images/MEITU_20260408_180809645.jpg" class="w-full h-full object-contain" alt="更多群聊对接中">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20card%20design%2C%20minimal%20placeholder%20community%20QR%20code%2C%20soft%20gray%20theme%20with%20plus%20symbol%2C%20centered%20square%20QR%20code%2C%20clean%20flat%20design&image_size=square" class="w-full h-full object-contain" alt="更多群聊对接中">
                             </div>
                             <p class="text-sm mt-3 font-bold text-gray-700">更多群聊对接中</p>
                         </div>
@@ -1566,13 +1588,14 @@
         
         // 应用数据
         const appList1 = [
-            { type: "eco-main", name: "派导航（不可下载，必须从派浏览器进入）", desc: "精选派99个派币生态。Pi Dapp生态。复制下面网址粘贴派浏览器进入。", icon: "fa-external-link", color: "orange", videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=814654", copyUrl: "https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad" },
+            { type: "eco-main", name: "派导航（派币浏览器进入）", desc: "精选41个派生态。复制网址粘贴派浏览器。", icon: "fa-external-link", color: "orange", videoUrl: "https://mysticring.jiewai.pro/Share/#/home?trendsId=814654", copyUrl: "https://app-cdn.minepi.com/mobile-app-ui/app/-b6f05cb51b828fad" },
             { type: "t-talk", name: "TELTLK - 派生态（可下载APP）", desc: "派友必备社群生态", icon: "fa-comment", color: "orange", url: "https://www.teltlk.com/zh/", copyUrl: "https://www.teltlk.com/#/register?invite=sss444", copy: true, regUrl: "https://www.teltlk.com/#/register?invite=sss444" },
             { type: "dopai", name: "DOPAI多派元宇宙（可下载APP）", desc: "元宇宙模块资产/场景", icon: "fa-bullseye", color: "orange", url: "https://share.feijipan.com/s/YH9mxyJp", copyUrl: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi", copy: true, regUrl: "https://www.dopaimeta.net/#/pages/login/register/?uid=OKCfsi" },
-            { name: "Happypi欢乐派（可下载app）", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-11-11T13:19:31", share: "原始股份：200万枚", progress: "社区建设中" },
-            { name: "SPACE-派社区生态", desc: "Pi生态应用市场，汇聚各类优质生态应用，欢迎开发者入驻", icon: "fa-rocket", color: "blue", url: "https://spacepi333.pages.dev/", copy: true, btnText: "进入详情", countdown: true, targetDate: "2026-12-12T03:15:15", share: "已统计：200+生态应用", progress: "生态对接进行中" },
-            { type: "umap-map", name: "Umap派地图（微信扫码小程序）", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" },
-            { type: "duopai-love", name: "多派相亲派对（微信扫码小程序）", desc: "多派元宇宙开发的派友相亲平台。", icon: "fa-heart", color: "red", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入" }
+            { name: "Happypi欢乐派（可下载app）", desc: "派社区生态社交娱乐平台，集社交、娱乐、游戏于一体的Web3应用", icon: "fa-gamepad", color: "purple", url: "https://pixinyule333.pages.dev/", regUrl: "https://pixinyule333.pages.dev/", regText: "进入详情", btnText: "点击下载" },
+            { name: "SPACE-派社区生态", desc: "Pi生态应用市场，汇聚各类优质生态应用，欢迎开发者入驻", icon: "fa-rocket", color: "blue", url: "https://spacepi333.pages.dev/", regUrl: "https://spacepi333.pages.dev/", regText: "查看详情", btnText: "点击下载" },
+            { type: "umap-map", name: "Umap派地图（微信扫码小程序）", desc: "派币生态地图。看到全国所有的派友俱乐部。", icon: "fa-globe", color: "blue", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入（微信进入即可）" },
+            { type: "duopai-love", name: "多派相亲派对（微信扫码小程序）", desc: "多派元宇宙开发的派友相亲平台。", icon: "fa-heart", color: "red", url: "https://mysticring.jiewai.pro/Share/#/home?trendsId=777571", btnText: "点击进入（微信进入即可）" },
+            { type: "docking-soon", name: "正在对接", desc: "正在对接其他生态", icon: "fa-link", color: "green" }
         ];
         
         const appList2 = [
@@ -1640,15 +1663,15 @@
                                     <p class="text-xs text-gray-600 mt-0.5">${app.desc}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-2 mb-3 justify-end">
-                                <button class="btn btn-orange font-bold shadow-md hover:shadow-lg border border-gray-800 px-4 py-1.5 text-sm" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
+                            <div class="flex gap-2 mb-2 items-center">
+                                <div class="flex items-center bg-white/90 rounded-lg px-2 py-1 border border-gray-400 gap-1.5 min-w-0">
+                                    <span class="text-gray-500 whitespace-nowrap" style="font-size: 11px;">${app.copyUrl.substring(0, 9)}…</span>
+                                    <button class="btn btn-yellow border border-gray-800 flex-shrink-0" style="padding: 4px 10px; font-size: 12px; border-radius: 8px;" onclick="playSound('click'); copyToClipboard('${app.copyUrl}'); alert('已复制网址到剪贴板！');">
+                                        <i class="fa fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                                <button class="btn btn-orange font-bold shadow-md hover:shadow-lg border border-gray-800 flex-shrink-0 px-4 py-1.5 text-sm" onclick="playSound('click'); window.open('${app.videoUrl}', '_blank');">
                                     <i class="fa fa-play-circle mr-1"></i>操作视频
-                                </button>
-                            </div>
-                            <div class="flex items-center bg-white/90 rounded-lg px-2 py-1 border-2 border-gray-800 gap-2">
-                                <span class="text-xs text-gray-600 truncate flex-1 min-w-0">${app.copyUrl}</span>
-                                <button class="btn btn-yellow btn-small border border-gray-800 flex-shrink-0 px-2" onclick="playSound('click'); copyToClipboard('${app.copyUrl}'); alert('已复制网址到剪贴板！');">
-                                    <i class="fa fa-copy mr-1"></i>复制
                                 </button>
                             </div>
                         </div>
@@ -1680,6 +1703,9 @@
                         </svg>
                     `;
                     return `
+                        <div class="flex items-center justify-center mb-2 mt-1">
+                            <span class="text-xs text-green-700 bg-green-50 border border-green-200 rounded-full px-3 py-1"><i class="fa fa-info-circle mr-1"></i>下面的派币生态无需从派浏览器进入</span>
+                        </div>
                         <div class="app-item">
                             <div class="flex items-start">
                                 <div class="icon-box bg-gradient-to-br ${colors.bg} flex items-center justify-center">
@@ -1694,7 +1720,7 @@
                             ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
                             ${extra}
                             ${app.regUrl ? `
-                                <div class="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+                                <div class="mt-1.5 pt-1.5 border-t border-gray-100 flex gap-2">
                                     <button class="btn btn-blue btn-pill flex-1" onclick="playSound('click'); window.open('${app.regUrl}', '_blank')">
                                         <i class="fa fa-user-plus mr-1"></i>点击注册
                                     </button>
@@ -1746,7 +1772,7 @@
                             ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
                             ${extra}
                             ${app.regUrl ? `
-                                <div class="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+                                <div class="mt-1.5 pt-1.5 border-t border-gray-100 flex gap-2">
                                     <button class="btn btn-blue btn-pill flex-1" onclick="playSound('click'); window.open('${app.regUrl}', '_blank')">
                                         <i class="fa fa-user-plus mr-1"></i>点击注册
                                     </button>
@@ -1877,14 +1903,16 @@
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
-                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); openUmapModal('${JSON.stringify(app).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}');">
-                                    ${btnText}
-                                </button>
                             </div>
                             ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
                             ${extra}
+                            <div class="mt-1.5 pt-1.5 border-t border-gray-100 flex gap-2">
+                                <button class="${colors.btn} btn-pill flex-1" onclick="playSound('click'); openUmapModal('${JSON.stringify(app).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}');">
+                                    ${btnText}
+                                </button>
+                            </div>
                             ${app.copy ? `
-                                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
+                                <div class="mt-1.5 pt-1.5 border-t border-gray-100 flex items-center">
                                     <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
                                     <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
                                         <i class="fa fa-copy mr-1"></i>复制
@@ -1937,20 +1965,44 @@
                                     <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
                                     ${app.inviteCode ? `<div class="mt-1 flex items-center bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fa fa-user-plus text-orange-500 mr-1 text-xs"></i><span class="text-xs font-bold text-orange-700">邀请码：${app.inviteCode}</span></div>` : ''}
                                 </div>
-                                <button class="${colors.btn} text-xs px-3 py-2 flex-shrink-0" onclick="playSound('click'); openModal('duopai-love-modal');">
-                                    ${btnText}
-                                </button>
                             </div>
                             ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
                             ${extra}
+                            <div class="mt-1.5 pt-1.5 border-t border-gray-100 flex gap-2">
+                                <button class="${colors.btn} btn-pill flex-1" onclick="playSound('click'); openModal('duopai-love-modal');">
+                                    ${btnText}
+                                </button>
+                            </div>
                             ${app.copy ? `
-                                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center">
+                                <div class="mt-1.5 pt-1.5 border-t border-gray-100 flex items-center">
                                     <span class="text-xs text-gray-500 flex-1 truncate bg-gray-50 px-2 py-1 rounded border border-gray-200">${app.copyUrl || app.url}</span>
                                     <button class="btn btn-blue text-xs px-3 py-1.5 ml-2" onclick="playSound('copy'); copyUrl(event, '${app.copyUrl || app.url}', this)">
                                         <i class="fa fa-copy mr-1"></i>复制
                                     </button>
                                 </div>
                             ` : ''}
+                        </div>
+                    `;
+                }
+                // 正在对接占位卡片（绿色敬请期待按钮，不可点击）
+                if (app.type === 'docking-soon') {
+                    const colors = colorMap[app.color] || colorMap.green;
+                    return `
+                        <div class="app-item">
+                            <div class="flex items-start">
+                                <div class="icon-box bg-gradient-to-br ${colors.bg} flex items-center justify-center">
+                                    <i class="fa ${app.icon} ${colors.text} text-xl"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 mx-3">
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1">${app.name}</h4>
+                                    <p class="text-xs text-gray-600 leading-snug">${app.desc}</p>
+                                </div>
+                            </div>
+                            <div class="mt-1.5 pt-1.5 border-t border-gray-100 flex gap-2">
+                                <button class="btn btn-green btn-pill flex-1 opacity-60 cursor-not-allowed" disabled>
+                                    <i class="fa fa-hourglass-half mr-1"></i>敬请期待
+                                </button>
+                            </div>
                         </div>
                     `;
                 }
@@ -1992,9 +2044,9 @@
                         ${app.countdown ? `<div class="text-center mt-3 text-xs text-red-600 font-bold" id="cd-${index}">即将上线</div>` : ''}
                         ${extra}
                         ${app.regUrl ? `
-                            <div class="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+                            <div class="mt-1.5 pt-1.5 border-t border-gray-100 flex gap-2">
                                 <button class="btn btn-blue btn-pill flex-1" onclick="playSound('click'); window.open('${app.regUrl}', '_blank')">
-                                    <i class="fa fa-user-plus mr-1"></i>点击注册
+                                    <i class="fa fa-user-plus mr-1"></i>${app.regText || '点击注册'}
                                 </button>
                                 <button class="${colors.btn} btn-pill flex-1" onclick="handleAppClick(event, '${app.url}', '${app.action || ''}', ${app.copy})">
                                     ${btnText}
@@ -2195,11 +2247,11 @@
         
         // 事件倒计时
         function startEventCountdown() {
-            const target = new Date('2026-09-26T14:30:00');
+            const target = new Date('2026-10-28T14:30:00');
             const targetTime = target.getTime();
             
             // 格式化日期显示
-            document.getElementById('event-date').textContent = '2026年9月26日 14:30';
+            document.getElementById('event-date').textContent = '2026年10月28日 14:30';
             
             const update = () => {
                 const currentTime = new Date().getTime();
