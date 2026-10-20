@@ -210,6 +210,11 @@
             border-top-color: #a855f7;
             background: linear-gradient(135deg, #f9fafb 0%, white 100%);
         }
+
+        /* 三个标签页对应的卡片顶部横杠颜色 */
+        #app-list.tab-pai .app-item { border-top-color: #a855f7; }
+        #app-list.tab-eco .app-item { border-top-color: #3b82f6; }
+        #app-list.tab-tools .app-item { border-top-color: #22c55e; }
         
         .icon-box {
             width: 48px;
@@ -486,6 +491,39 @@
                 padding: 12px;
             }
         }
+
+        /* 蓝紫渐变发光细线 */
+        .glow-line {
+            height: 2px;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #3b82f6 0%, #6366f1 25%, #a855f7 50%, #6366f1 75%, #3b82f6 100%);
+            box-shadow: 0 0 6px rgba(59, 130, 246, 0.8), 0 0 14px rgba(168, 85, 247, 0.7);
+            margin-bottom: 12px;
+            animation: lineGlow 2s ease-in-out infinite alternate;
+        }
+        .glow-line-below {
+            height: 2px;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
+            box-shadow: 0 0 6px rgba(168, 85, 247, 0.8), 0 0 14px rgba(59, 130, 246, 0.7);
+            margin-top: 12px;
+            margin-bottom: 14px;
+            animation: lineGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes lineGlow {
+            from { box-shadow: 0 0 4px rgba(59, 130, 246, 0.6), 0 0 8px rgba(168, 85, 247, 0.5); }
+            to   { box-shadow: 0 0 8px rgba(59, 130, 246, 1), 0 0 18px rgba(168, 85, 247, 0.9); }
+        }
+
+        /* 顶部三按钮选中态：黄色发光边框 */
+        .tab-selected {
+            border: 2px solid #facc15 !important;
+            animation: tabGlow 1.2s ease-in-out infinite alternate;
+        }
+        @keyframes tabGlow {
+            from { box-shadow: 0 0 4px rgba(250, 204, 21, 0.7), 0 0 10px rgba(250, 204, 21, 0.5), inset 0 0 4px rgba(250, 204, 21, 0.4); }
+            to   { box-shadow: 0 0 8px rgba(250, 204, 21, 1), 0 0 18px rgba(250, 204, 21, 0.85), inset 0 0 8px rgba(250, 204, 21, 0.6); }
+        }
     </style>
 </head>
 <body>
@@ -504,7 +542,7 @@
                     <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-3 text-center">
                         <h2 class="text-base font-bold">山西太原派生态社区 · 线下聚会</h2>
                     </div>
-                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 p-4">
+                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 py-2 px-4">
                         <div class="flex justify-center gap-3 items-center">
                             <div class="countdown-box flex items-center gap-1">
                                 <span id="event-days" class="countdown-num text-2xl">00</span>
@@ -524,23 +562,29 @@
                             </div>
                         </div>
                     </div>
-                    <div class="p-3">
-                        <div id="event-date" class="font-bold text-gray-800 text-base mb-2">2026年10月28日 14:30</div>
+                    <div style="padding: 8px 12px 12px;">
+                        <div id="event-date" class="font-bold text-gray-800 text-base mb-1">2026年10月28日 14:30</div>
                         <p class="text-gray-600 text-xs mb-1">毕向阳：155 1363 6709</p>
                         <p class="text-gray-600 text-xs mb-1">魏国炳：155 3645 5536</p>
-                        <div class="bg-gray-50 p-2 rounded-lg mt-2 border border-gray-100">
-                            <p class="text-gray-600 text-xs">📍 山西省太原市和平北路营村优山美郡17号楼2单元负1层0102号</p>
+                        <div class="bg-gray-50 rounded-lg mt-1.5 border border-gray-100" style="padding: 6px 8px;">
+                            <p class="text-gray-600 text-xs whitespace-nowrap">📍 太原市和平北路营村优山美郡17号楼2单元负1层0102号</p>
                         </div>
                     </div>
                 </div>
                 
                 <!-- 公告栏 -->
-                <div class="bg-white p-3 mb-4 rounded-2xl shadow flex items-center border border-gray-100">
+                <div class="bg-white mb-3 rounded-2xl shadow flex items-center border border-gray-100" style="padding: 5px 12px;">
                     <span class="font-bold text-sm mr-2 whitespace-nowrap">📢 公告</span>
                     <div class="flex-1 overflow-hidden">
                         <div class="marquee inline-block text-sm">加入群聊节点搭建，共建Web3生态</div>
                     </div>
                 </div>
+
+                <!-- 分区提示文字（蓝紫渐变） -->
+                <p style="text-align: center; font-family: 'KaiTi', 'STKaiti', '楷体', serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; background: linear-gradient(90deg, #2563eb 0%, #7c3aed 50%, #2563eb 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;">派币生态社区 点击办理服务</p>
+
+                <!-- 蓝紫发光细线（八大业务上方） -->
+                <div class="glow-line"></div>
 
                 <!-- 八大业务 / 福利领取 -->
                 <div class="flex gap-2 mb-3 items-stretch">
@@ -558,21 +602,24 @@
                             </span>
                         </span>
                     </button>
-                    <button class="btn font-bold flex-shrink-0 flex flex-col items-center justify-center" style="width: 112px; height: 112px; padding: 8px; color: #fff; background: linear-gradient(135deg, #b91c1c 0%, #dc2626 40%, #f97316 75%, #fde047 100%); box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);" onclick="playSound('click'); createStars(event.clientX, event.clientY)">
+                    <button class="btn font-bold flex-shrink-0 flex flex-col items-center justify-center" style="width: 112px; height: 112px; padding: 8px; color: #fff; background: linear-gradient(135deg, #b91c1c 0%, #dc2626 40%, #f97316 75%, #fde047 100%); box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);" onclick="playSound('click'); createStars(event.clientX, event.clientY); window.open('https://fulikongtou.pages.dev/', '_blank')">
                         <i class="fa fa-gift" style="font-size: 34px; margin-bottom: 4px;"></i>
                         <span style="font-size: 19px; line-height: 1; font-family: 'KaiTi', 'STKaiti', '楷体', serif;">福利领取</span>
                     </button>
                 </div>
                 
+                <!-- 三个按钮（独立于卡片外，位于应用列表上方） -->
+                <div class="flex gap-3 mb-3" style="margin-top: 12px;">
+                    <button class="btn btn-purple flex-1 py-3 font-bold whitespace-nowrap" style="font-size: 17px; font-family: 'KaiTi', 'STKaiti', '楷体', serif;" onclick="playSound('click'); selectTab(this); renderAppList(appList1); hideEcoDocking();">派币生态</button>
+                    <button class="btn btn-blue flex-1 py-3 font-bold whitespace-nowrap" style="font-size: 17px; font-family: 'KaiTi', 'STKaiti', '楷体', serif;" onclick="playSound('click'); selectTab(this); renderAppList(appList2); showEcoDocking();">对接生态</button>
+                    <button class="btn btn-green flex-1 py-3 font-bold whitespace-nowrap" style="font-size: 17px; font-family: 'KaiTi', 'STKaiti', '楷体', serif;" onclick="playSound('click'); selectTab(this); renderAppList(toolsList); hideEcoDocking();">派友工具</button>
+                </div>
+
+                <!-- 蓝紫发光细线（三按钮下方） -->
+                <div class="glow-line-below"></div>
+
                 <!-- 主内容区 -->
                 <div class="card overflow-hidden relative">
-                    <!-- 三个按钮 -->
-                    <div class="flex gap-2 mb-3" style="margin-top: -8px;">
-                        <button class="btn btn-purple flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(appList1); hideEcoDocking();">派币生态</button>
-                        <button class="btn btn-blue flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(appList2); showEcoDocking();">对接生态</button>
-                        <button class="btn btn-green flex-1 py-3 text-xs" onclick="playSound('click'); renderAppList(toolsList); hideEcoDocking();">派友工具</button>
-                    </div>
-                    
                     <!-- 应用列表 -->
                     <div id="app-list"></div>
                     
@@ -1508,6 +1555,14 @@
             document.body.removeChild(textarea);
         }
         
+        // 顶部三按钮选中态切换：点击的按钮加黄色发光边框，其余恢复原状
+        function selectTab(btn) {
+            document.querySelectorAll('.tab-selected').forEach(function (b) {
+                if (b !== btn) b.classList.remove('tab-selected');
+            });
+            btn.classList.add('tab-selected');
+        }
+
         function playSound(type) {
             initAudio();
             if (!audioCtx) return;
@@ -1639,6 +1694,8 @@
         function renderAppList(appList) {
             const container = document.getElementById('app-list');
             const isEco = appList === appList2;
+            // 根据当前标签页设置卡片顶部横杠颜色：派币生态紫 / 对接生态蓝 / 派友工具绿
+            container.className = appList === appList2 ? 'tab-eco' : (appList === toolsList ? 'tab-tools' : 'tab-pai');
             container.innerHTML = appList.map((app, index) => {
                 // 派生态主卡片（特殊样式）
                 if (app.type === 'eco-main') {
